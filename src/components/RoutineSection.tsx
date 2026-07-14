@@ -1,3 +1,4 @@
+import { homeContent } from "../content/homeContent";
 import {
   professionalGuidance,
   usageFact,
@@ -5,9 +6,10 @@ import {
 } from "../data/productFacts";
 
 export function RoutineSection() {
-  const confirmedWarnings = warningFacts.filter(
+  const warnings = warningFacts.filter(
     (warning) => warning.status === "confirmed",
   );
+  const { routine } = homeContent;
   const hasExactDuration =
     usageFact.durationDays !== null &&
     usageFact.durationDays !== undefined &&
@@ -16,63 +18,49 @@ export function RoutineSection() {
 
   return (
     <section
-      className="product-detail routine-section"
+      className="routine-section"
       id="rotina"
       aria-labelledby="routine-title"
     >
-      <div className="section-shell product-detail__layout">
-        <div className="product-detail__heading">
-          <p className="institutional-eyebrow">Rotina de uso</p>
+      <div className="section-shell routine-section__layout">
+        <div className="routine-section__heading">
+          <p className="eyebrow">{routine.eyebrow}</p>
           <h2 id="routine-title">
-            Uma orientação simples, exatamente como informada na embalagem.
+            <span>{routine.titleLead}</span>
+            <em>{routine.titleAccent}</em>
           </h2>
-          <p>
-            A sugestão de uso confirmada é apresentada sem acrescentar horários,
-            combinações ou recomendações que não constam nas fontes auditadas.
-          </p>
+          <p>{routine.body}</p>
         </div>
 
-        <div className="routine-section__content">
-          <dl className="usage-list">
-            <div className="usage-list__row">
-              <dt>Sugestão de uso</dt>
-              <dd>{usageFact.suggestedUse}</dd>
+        {hasExactDuration ? (
+          <div className="routine-equation" aria-label="Cálculo da duração">
+            <div>
+              <strong>{usageFact.totalCapsules}</strong>
+              <span>no frasco</span>
             </div>
-            <div className="usage-list__row">
-              <dt>Conteúdo do frasco</dt>
-              <dd>{usageFact.totalCapsules} cápsulas</dd>
+            <span aria-hidden="true">÷</span>
+            <div>
+              <strong>{usageFact.capsulesPerDay}</strong>
+              <span>por dia</span>
             </div>
-            {hasExactDuration ? (
-              <div className="usage-list__row">
-                <dt>Duração calculada</dt>
-                <dd>{usageFact.durationDays} dias</dd>
-              </div>
-            ) : null}
-            <div className="usage-list__row">
-              <dt>Público informado</dt>
-              <dd>{usageFact.audience}</dd>
+            <span aria-hidden="true">=</span>
+            <div>
+              <strong>{usageFact.durationDays}</strong>
+              <span>dias</span>
             </div>
-          </dl>
+          </div>
+        ) : null}
 
-          {hasExactDuration ? (
-            <p className="duration-explanation">
-              A duração de {usageFact.durationDays} dias resulta do cálculo
-              exato de {usageFact.totalCapsules} cápsulas dividido por{" "}
-              {usageFact.capsulesPerDay} cápsulas ao dia.
-            </p>
-          ) : null}
-
-          <aside
-            className="institutional-guidance"
-            aria-labelledby="guidance-title"
-          >
-            <h3 id="guidance-title">Antes de incluir na rotina</h3>
-            {confirmedWarnings.map((warning) => (
+        <aside className="routine-guidance" aria-labelledby="guidance-title">
+          <h3 id="guidance-title">Antes de incluir na rotina</h3>
+          <div>
+            <p>{usageFact.audience}.</p>
+            {warnings.map((warning) => (
               <p key={warning.id}>{warning.text}</p>
             ))}
             <p>{professionalGuidance}</p>
-          </aside>
-        </div>
+          </div>
+        </aside>
       </div>
     </section>
   );

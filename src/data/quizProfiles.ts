@@ -5,10 +5,12 @@ export type QuizProfile =
 
 export interface QuizResultProfile {
   readonly id: QuizProfile;
-  readonly eyebrow: string;
+  readonly eyebrow: "Seu ritmo";
   readonly title: string;
   readonly description: string;
   readonly characteristics: readonly string[];
+  readonly ritualTitle: string;
+  readonly ritual: string;
   readonly nextStep: string;
 }
 
@@ -21,45 +23,54 @@ export const quizProfileOrder: readonly QuizProfile[] = [
 export const quizProfiles: Readonly<Record<QuizProfile, QuizResultProfile>> = {
   "simple-start": {
     id: "simple-start",
-    eyebrow: "Perfil de rotina",
-    title: "Começo simples",
+    eyebrow: "Seu ritmo",
+    title: "Começo sem peso",
     description:
-      "Você tende a se adaptar melhor a rotinas diretas, com poucos passos e espaço para avaliar a experiência antes de assumir compromissos maiores.",
+      "Você encontra espaço para o cuidado quando o primeiro passo é leve o bastante para não disputar energia com o resto do dia.",
     characteristics: [
-      "Prefere começar com clareza.",
-      "Valoriza pouca complexidade.",
-      "Evita compromissos longos no início.",
+      "Prefere entender o essencial primeiro.",
+      "Começa melhor com pouca fricção.",
+      "Ajusta a rotina enquanto vive, não antes.",
     ],
+    ritualTitle: "Um ritual possível",
+    ritual:
+      "Escolha um único ponto do dia que já acontece. Deixe a próxima ação visível ali e avalie, depois de uma semana, se esse lugar foi natural.",
     nextStep:
-      "Conheça a composição e o modo de uso do CeluClin antes de decidir.",
+      "Conheça a composição, o modo de uso e o rótulo do CeluClin antes de decidir se ele cabe no seu começo.",
   },
   "gradual-consistency": {
     id: "gradual-consistency",
-    eyebrow: "Perfil de rotina",
-    title: "Constância gradual",
+    eyebrow: "Seu ritmo",
+    title: "Ritmo que volta",
     description:
-      "Você tende a manter melhor uma rotina quando existe organização, continuidade e um plano claro para acompanhar os próximos meses.",
+      "Para você, constância não é uma sequência perfeita. É saber retomar sem fazer de um dia fora do plano uma desistência.",
     characteristics: [
-      "Valoriza um plano compreensível.",
-      "Prefere construir constância aos poucos.",
-      "Organiza a rotina por alguns meses.",
+      "Responde bem a referências simples.",
+      "Constrói ritmo por repetição, não cobrança.",
+      "Precisa que a retomada seja fácil.",
     ],
+    ritualTitle: "Um ritual possível",
+    ritual:
+      "Defina uma âncora e uma regra de retorno: se um dia escapar, o próximo gesto é apenas voltar ao uso informado, sem compensação.",
     nextStep:
-      "Revise a composição e o modo de uso do CeluClin para fazer uma escolha informada.",
+      "Veja o que compõe o CeluClin e como o uso informado pode conversar com uma rotina que sempre deixa espaço para voltar.",
   },
   "conscious-continuity": {
     id: "conscious-continuity",
-    eyebrow: "Perfil de rotina",
-    title: "Continuidade consciente",
+    eyebrow: "Seu ritmo",
+    title: "Cuidado em curso",
     description:
-      "Você já valoriza hábitos consistentes e prefere planejar a continuidade com antecedência, evitando interrupções e reposições frequentes.",
+      "Você protege melhor o autocuidado quando enxerga a continuidade e deixa as próximas decisões encaminhadas.",
     characteristics: [
-      "Mantém hábitos com regularidade.",
-      "Planeja a continuidade com antecedência.",
-      "Prefere reduzir reposições frequentes.",
+      "Gosta de visualizar o que vem depois.",
+      "Integra novos gestos a hábitos existentes.",
+      "Organização reduz interrupções desnecessárias.",
     ],
+    ritualTitle: "Um ritual possível",
+    ritual:
+      "Ligue o gesto a um hábito já estável e escolha um lembrete de reposição. Planejar aqui significa abrir espaço, não exigir perfeição.",
     nextStep:
-      "Consulte a composição e o modo de uso do CeluClin antes de organizar sua próxima rotina.",
+      "Consulte composição, uso e rótulo do CeluClin. Uma escolha organizada continua sendo uma escolha informada.",
   },
 };
 

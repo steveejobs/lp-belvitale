@@ -23,159 +23,182 @@ await server.listen();
 const browser = await chromium.launch({ channel: "chrome" });
 const baseURL = "http://127.0.0.1:4174";
 
-async function captureInstitutionalScreenshots(width, height) {
+const simpleQuizOptions = [
+  "begin-small",
+  "perfect-start",
+  "make-it-smaller",
+  "direct-to-essential",
+  "notice-last-minute",
+  "light-enough-to-return",
+];
+
+const fixtureBase = {
+  title: "1 mês",
+  bottles: 1,
+  approximateDurationMonths: 1,
+  totalCapsules: 60,
+  checkoutStatus: "confirmed",
+  contentsStatus: "confirmed",
+  price: {
+    cash: 120,
+    installments: 3,
+    installmentValue: 40,
+    hasInterest: false,
+    status: "confirmed",
+  },
+  image: {
+    src: "/internal-fixture.webp",
+    width: 1600,
+    height: 1600,
+    rightsConfirmed: true,
+    resolutionApproved: true,
+    status: "confirmed",
+  },
+  publicationStatus: "confirmed",
+};
+
+const fixtureOffers = [
+  {
+    ...fixtureBase,
+    id: "one-month",
+    checkoutUrl: "https://belvitale.pay.yampi.com.br/r/PWJOI4I112",
+  },
+  {
+    ...fixtureBase,
+    id: "three-months",
+    title: "3 meses",
+    bottles: 3,
+    approximateDurationMonths: 3,
+    totalCapsules: 180,
+    checkoutUrl: "https://belvitale.pay.yampi.com.br/r/1E8NNCGJW9",
+    price: {
+      cash: 300,
+      installments: 3,
+      installmentValue: 100,
+      hasInterest: false,
+      status: "confirmed",
+    },
+  },
+  {
+    ...fixtureBase,
+    id: "seven-months",
+    title: "7 meses",
+    bottles: 5,
+    additionalBottles: 2,
+    approximateDurationMonths: 7,
+    totalCapsules: 420,
+    checkoutUrl: "https://belvitale.pay.yampi.com.br/r/41CHX4MGPX",
+    price: {
+      cash: 560,
+      installments: 4,
+      installmentValue: 140,
+      hasInterest: false,
+      status: "confirmed",
+    },
+  },
+];
+
+async function settle(page, milliseconds = 450) {
+  await page.waitForLoadState("domcontentloaded");
+  await page.waitForTimeout(milliseconds);
+}
+
+async function scrollTo(page, selector) {
+  await page.locator(selector).evaluate((element) => {
+    element.scrollIntoView({ block: "start", behavior: "instant" });
+  });
+  await page.waitForTimeout(550);
+}
+
+function screenshotPath(name) {
+  return path.join(screenshotDirectory, name + ".png");
+}
+
+async function captureHome(width, height) {
   const context = await browser.newContext({ viewport: { width, height } });
   const page = await context.newPage();
-  await page.goto(baseURL);
-  await page.waitForLoadState("networkidle");
-  await page.waitForFunction((selector) => {
-    const element = globalThis.document.querySelector(selector);
-    return (
-      element !== null && globalThis.getComputedStyle(element).opacity === "1"
-    );
-  }, ".institutional-hero__copy");
-  await page.waitForTimeout(150);
+  await page.goto(baseURL + "/");
+  await settle(page, 900);
+  const prefix = String(width) + "x" + String(height) + "-";
 
-  await page.screenshot({
-    path: path.join(
-      screenshotDirectory,
-      `${String(width)}x${String(height)}-institutional-hero.png`,
-    ),
-  });
+  await page.screenshot({ path: screenshotPath(prefix + "home-hero") });
 
-  await page
-    .locator(".celuclin-intro")
-    .evaluate((element) =>
-      element.scrollIntoView({ block: "start", behavior: "instant" }),
-    );
+  const sections =
+    width < 700
+      ? [
+          ["home-emotional", ".freedom-editorial"],
+          ["home-product", "#celuclin"],
+          ["home-formula", "#composicao"],
+          ["home-offers", "#kits"],
+        ]
+      : [
+          ["home-product", "#celuclin"],
+          ["home-offers", "#kits"],
+        ];
+
+  for (const [name, selector] of sections) {
+    await scrollTo(page, selector);
+    await page.screenshot({ path: screenshotPath(prefix + name) });
+  }
+
+  await page.locator(".site-footer").scrollIntoViewIfNeeded();
   await page.waitForTimeout(300);
-  await page.screenshot({
-    path: path.join(
-      screenshotDirectory,
-      `${String(width)}x${String(height)}-institutional-intro.png`,
-    ),
+  await page.addStyleTag({
+    content:
+      "#conteudo-principal > section { content-visibility: visible !important; contain-intrinsic-size: none !important; }",
   });
-
+  await page.waitForTimeout(700);
+  await page.screenshot({
+    path: screenshotPath(prefix + "home-full"),
+    fullPage: true,
+  });
   await context.close();
 }
 
-async function captureProductDetailScreenshots(width, height) {
-  const context = await browser.newContext({ viewport: { width, height } });
-  const page = await context.newPage();
-  await page.goto(baseURL);
-  await page.waitForLoadState("networkidle");
-
-  await page
-    .locator("#composicao")
-    .evaluate((element) =>
-      element.scrollIntoView({ block: "start", behavior: "instant" }),
-    );
-  await page.waitForTimeout(650);
-  await page.screenshot({
-    path: path.join(
-      screenshotDirectory,
-      `${String(width)}x${String(height)}-formula.png`,
-    ),
-  });
-
-  await page
-    .locator("#rotina")
-    .evaluate((element) =>
-      element.scrollIntoView({ block: "start", behavior: "instant" }),
-    );
-  await page.waitForTimeout(650);
-  await page.screenshot({
-    path: path.join(
-      screenshotDirectory,
-      `${String(width)}x${String(height)}-routine.png`,
-    ),
-  });
-
-  await context.close();
+async function completeQuiz(page) {
+  for (const [index, optionId] of simpleQuizOptions.entries()) {
+    await page
+      .locator('input[value="' + optionId + '"]')
+      .locator("..")
+      .click();
+    await page
+      .getByRole("button", {
+        name:
+          index === simpleQuizOptions.length - 1
+            ? "Ver meu ritmo"
+            : "Continuar",
+      })
+      .click();
+    await page.waitForTimeout(180);
+  }
 }
 
-async function captureInstitutionalCompletionScreenshots(width, height) {
+async function captureQuiz(width, height) {
   const context = await browser.newContext({ viewport: { width, height } });
   const page = await context.newPage();
-  await page.goto(baseURL);
-  await page.waitForLoadState("networkidle");
+  await page.goto(baseURL + "/quiz");
+  await settle(page, 700);
+  const prefix = String(width) + "x" + String(height) + "-";
 
-  await page
-    .locator("#faq")
-    .evaluate((element) =>
-      element.scrollIntoView({ block: "start", behavior: "instant" }),
-    );
-  await page
-    .getByRole("button", { name: /O que é o CeluClin/ })
-    .evaluate((element) => element.click());
+  await page.screenshot({ path: screenshotPath(prefix + "quiz-start") });
+  await page.getByRole("button", { name: "Descobrir meu ritmo" }).click();
   await page.waitForTimeout(350);
+  if (width < 700) {
+    await page.screenshot({
+      path: screenshotPath(prefix + "quiz-question"),
+    });
+  }
+  await completeQuiz(page);
+  await page.waitForTimeout(600);
+  await page.screenshot({ path: screenshotPath(prefix + "quiz-result") });
   await page.screenshot({
-    path: path.join(
-      screenshotDirectory,
-      `${String(width)}x${String(height)}-faq.png`,
-    ),
+    path: screenshotPath(prefix + "quiz-result-full"),
+    fullPage: true,
   });
-
-  await page
-    .locator("#belvitale")
-    .evaluate((element) =>
-      element.scrollIntoView({ block: "start", behavior: "instant" }),
-    );
-  await page.waitForTimeout(300);
-  await page.screenshot({
-    path: path.join(
-      screenshotDirectory,
-      `${String(width)}x${String(height)}-institutional-brand.png`,
-    ),
-  });
-
-  await page
-    .locator(".site-footer")
-    .evaluate((element) =>
-      element.scrollIntoView({ block: "end", behavior: "instant" }),
-    );
-  await page.waitForTimeout(300);
-  await page.screenshot({
-    path: path.join(
-      screenshotDirectory,
-      `${String(width)}x${String(height)}-footer.png`,
-    ),
-  });
-
   await context.close();
 }
 
-async function captureScreenshots(width, height) {
-  const context = await browser.newContext({ viewport: { width, height } });
-  const page = await context.newPage();
-  await page.goto(baseURL);
-  await page.waitForLoadState("networkidle");
-
-  await page.locator(".proof-gallery").scrollIntoViewIfNeeded();
-  await page.screenshot({
-    path: path.join(
-      screenshotDirectory,
-      `${String(width)}x${String(height)}-gallery.png`,
-    ),
-  });
-
-  const label = page.locator("#rotulo");
-  await label.evaluate((element) =>
-    element.scrollIntoView({ block: "start", behavior: "instant" }),
-  );
-  await label.waitFor({ state: "visible" });
-  await page.waitForTimeout(1800);
-  await page.screenshot({
-    path: path.join(
-      screenshotDirectory,
-      `${String(width)}x${String(height)}-label.png`,
-    ),
-  });
-
-  await context.close();
-}
-
-async function recordSwipe() {
+async function recordVideo(name, run) {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
     hasTouch: true,
@@ -186,176 +209,149 @@ async function recordSwipe() {
     },
   });
   const page = await context.newPage();
-  await page.goto(baseURL);
-  await page.waitForLoadState("networkidle");
   const video = page.video();
-  const scroller = page.locator(".gallery-mobile");
-  await scroller.evaluate((element) =>
-    element.scrollIntoView({ block: "center", behavior: "instant" }),
-  );
-  await page.waitForTimeout(300);
-  const box = await scroller.boundingBox();
-  if (box === null) throw new Error("Área de swipe ausente na gravação.");
-
-  const session = await context.newCDPSession(page);
-  const startX = box.x + box.width * 0.8;
-  const y = box.y + box.height * 0.5;
-  await page.waitForTimeout(600);
-  await session.send("Input.dispatchTouchEvent", {
-    type: "touchStart",
-    touchPoints: [{ x: startX, y }],
-  });
-  for (let step = 1; step <= 10; step += 1) {
-    await page.waitForTimeout(34);
-    await session.send("Input.dispatchTouchEvent", {
-      type: "touchMove",
-      touchPoints: [{ x: startX - step * 23, y }],
-    });
+  await run(page);
+  await context.close();
+  if (video !== null) {
+    await video.saveAs(path.join(recordingDirectory, name));
   }
-  await session.send("Input.dispatchTouchEvent", {
-    type: "touchEnd",
-    touchPoints: [],
-  });
-  await page.waitForTimeout(900);
-  await session.detach();
-  await context.close();
-  await video?.saveAs(path.join(recordingDirectory, "gallery-swipe.webm"));
 }
 
-async function recordMobileMenu() {
-  const context = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-    recordVideo: {
-      dir: temporaryVideoDirectory,
-      size: { width: 390, height: 844 },
-    },
-  });
-  const page = await context.newPage();
-  await page.goto(baseURL);
-  await page.waitForLoadState("networkidle");
-  const video = page.video();
-
-  await page.waitForTimeout(500);
-  await page.getByRole("button", { name: "Abrir menu" }).click();
-  await page.waitForTimeout(900);
-  await page.keyboard.press("Escape");
-  await page.waitForTimeout(500);
-  await page.getByRole("button", { name: "Abrir menu" }).click();
-  await page.waitForTimeout(650);
-  await page.getByRole("button", { name: "Fechar menu" }).click();
-  await page.waitForTimeout(350);
-
-  await context.close();
-  await video?.saveAs(path.join(recordingDirectory, "mobile-menu.webm"));
-}
-
-async function recordFormulaToLabel() {
-  const context = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-    recordVideo: {
-      dir: temporaryVideoDirectory,
-      size: { width: 390, height: 844 },
-    },
-  });
-  const page = await context.newPage();
-  await page.goto(baseURL);
-  await page.waitForLoadState("networkidle");
-  const video = page.video();
-
-  await page
-    .locator("#composicao")
-    .evaluate((element) =>
-      element.scrollIntoView({ block: "start", behavior: "instant" }),
+async function recordHomeFirstMinute() {
+  await recordVideo("home-first-60-seconds.webm", async (page) => {
+    await page.goto(baseURL + "/");
+    await settle(page, 2500);
+    const maximum = await page.evaluate(
+      () => globalThis.document.documentElement.scrollHeight - globalThis.innerHeight,
     );
-  await page.waitForTimeout(900);
-  const labelLink = page.getByRole("link", {
-    name: "Consultar rótulo original",
+    const steps = 78;
+    for (let index = 1; index <= steps; index += 1) {
+      await page.evaluate(
+        ({ top }) => scrollTo({ top, behavior: "smooth" }),
+        { top: (maximum * index) / steps },
+      );
+      await page.waitForTimeout(500);
+    }
+    await page.waitForTimeout(1800);
   });
-  await labelLink.evaluate((element) => element.click());
-  await page.waitForTimeout(1800);
-
-  await context.close();
-  await video?.saveAs(path.join(recordingDirectory, "formula-to-label.webm"));
 }
 
-async function recordFaqInteraction() {
-  const context = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-    recordVideo: {
-      dir: temporaryVideoDirectory,
-      size: { width: 390, height: 844 },
-    },
+async function recordFormula() {
+  await recordVideo("formula-interaction.webm", async (page) => {
+    await page.goto(baseURL + "/");
+    await settle(page);
+    await scrollTo(page, "#composicao");
+    const tabs = page.getByRole("tab");
+    for (let index = 1; index < (await tabs.count()); index += 1) {
+      await tabs.nth(index).click();
+      await page.waitForTimeout(550);
+    }
+    await tabs.last().focus();
+    await page.keyboard.press("ArrowRight");
+    await page.waitForTimeout(900);
   });
-  const page = await context.newPage();
-  await page.goto(baseURL);
-  await page.waitForLoadState("networkidle");
-  const video = page.video();
-
-  await page
-    .locator("#faq")
-    .evaluate((element) =>
-      element.scrollIntoView({ block: "start", behavior: "instant" }),
-    );
-  await page.waitForTimeout(650);
-  const first = page.getByRole("button", { name: /O que é o CeluClin/ });
-  const second = page.getByRole("button", { name: /CeluClin é medicamento/ });
-  await first.click();
-  await page.waitForTimeout(650);
-  await second.click();
-  await page.waitForTimeout(650);
-  await first.click();
-  await page.waitForTimeout(450);
-
-  await context.close();
-  await video?.saveAs(path.join(recordingDirectory, "faq-interaction.webm"));
 }
 
-async function recordLabelOpening() {
-  const context = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-    recordVideo: {
-      dir: temporaryVideoDirectory,
-      size: { width: 390, height: 844 },
-    },
+async function recordLabel() {
+  await recordVideo("label-interaction.webm", async (page) => {
+    await page.goto(baseURL + "/");
+    await settle(page);
+    await page.locator("#rotulo").evaluate((element) => {
+      element.scrollIntoView({ block: "start", behavior: "smooth" });
+    });
+    await page.waitForTimeout(1800);
+    await page.getByRole("button", { name: "Ampliar para ler" }).click();
+    await page.waitForTimeout(1800);
+    const viewport = page.locator(".label-modal__viewport");
+    await viewport.evaluate((element) => {
+      element.scrollTo({ left: element.scrollWidth, behavior: "smooth" });
+    });
+    await page.waitForTimeout(1400);
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(700);
   });
-  const page = await context.newPage();
-  await page.goto(baseURL);
-  await page.waitForLoadState("networkidle");
-  const video = page.video();
-  await page.waitForTimeout(350);
-  await page
-    .locator("#rotulo")
-    .evaluate((element) =>
-      element.scrollIntoView({ block: "start", behavior: "smooth" }),
+}
+
+async function recordQuizFlow() {
+  await recordVideo("quiz-complete-flow.webm", async (page) => {
+    await page.goto(baseURL + "/quiz");
+    await settle(page, 1200);
+    await page.getByRole("button", { name: "Descobrir meu ritmo" }).click();
+    await page.waitForTimeout(700);
+    for (const [index, optionId] of simpleQuizOptions.entries()) {
+      await page
+        .locator('input[value="' + optionId + '"]')
+        .locator("..")
+        .click();
+      await page.waitForTimeout(450);
+      await page
+        .getByRole("button", {
+          name:
+            index === simpleQuizOptions.length - 1
+              ? "Ver meu ritmo"
+              : "Continuar",
+        })
+        .click();
+      await page.waitForTimeout(600);
+    }
+    await page.waitForTimeout(1800);
+    await page.evaluate(() =>
+      globalThis.scrollBy({ top: 360, behavior: "smooth" }),
     );
-  await page.waitForTimeout(1800);
-  await page.getByRole("button", { name: "Ampliar rótulo" }).click();
-  await page.waitForTimeout(900);
-  await page.keyboard.press("Escape");
-  await page.waitForTimeout(350);
-  await context.close();
-  await video?.saveAs(
-    path.join(recordingDirectory, "label-reveal-and-modal.webm"),
-  );
+    await page.waitForTimeout(1200);
+  });
+}
+
+async function recordCheckoutHandoff() {
+  await recordVideo("home-to-checkout.webm", async (page) => {
+    await page.addInitScript((offers) => {
+      const target = globalThis;
+      target.__BELVITALE_COMMERCIAL_FIXTURE__ = {
+        name: "commercial-ready",
+        offers,
+        dependencies: {
+          refundPolicyStatus: "approved",
+          institutionalIdentificationStatus: "confirmed",
+        },
+      };
+    }, fixtureOffers);
+    await page.route(
+      "https://belvitale.pay.yampi.com.br/r/1E8NNCGJW9",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "text/html; charset=utf-8",
+          body:
+            "<!doctype html><meta name='viewport' content='width=device-width'><style>body{margin:0;display:grid;min-height:100vh;place-content:center;padding:24px;background:#24101e;color:#fff;font:18px Arial;text-align:center}strong{font:600 48px Georgia;color:#ffb8d8}p{max-width:28ch;line-height:1.5}</style><strong>Saída validada</strong><p>Checkout Yampi exato interceptado apenas para esta gravação interna. Nenhuma oferta foi publicada.</p>",
+        });
+      },
+    );
+    await page.goto(baseURL + "/");
+    await settle(page);
+    await scrollTo(page, "#kits");
+    await page.waitForTimeout(1000);
+    await page
+      .getByRole("link", { name: "Escolher continuidade" })
+      .click();
+    await page.waitForTimeout(2200);
+  });
 }
 
 try {
-  await captureInstitutionalScreenshots(390, 844);
-  await captureInstitutionalScreenshots(1440, 900);
-  await captureProductDetailScreenshots(390, 844);
-  await captureProductDetailScreenshots(1440, 900);
-  await captureInstitutionalCompletionScreenshots(390, 844);
-  await captureInstitutionalCompletionScreenshots(1440, 900);
-  await captureScreenshots(390, 844);
-  await captureScreenshots(1440, 900);
-  await recordMobileMenu();
-  await recordFormulaToLabel();
-  await recordFaqInteraction();
-  await recordSwipe();
-  await recordLabelOpening();
+  await captureHome(390, 844);
+  await captureQuiz(390, 844);
+  await captureHome(1440, 900);
+  await captureQuiz(1440, 900);
+  await recordHomeFirstMinute();
+  await recordFormula();
+  await recordLabel();
+  await recordQuizFlow();
+  await recordCheckoutHandoff();
 } finally {
   await browser.close();
   await server.close();
 }
 
-process.stdout.write("Screenshots e gravações salvos em artifacts/.\n");
+process.stdout.write(
+  "Screenshots e gravações finais salvos em artifacts/screenshots e artifacts/recordings.\n",
+);

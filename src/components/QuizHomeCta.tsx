@@ -2,24 +2,38 @@ import { quizPublicationApproved } from "../data/quizPublicationConfig";
 import "../quiz/homeQuizCta.css";
 
 export function QuizHomeCta() {
-  if (!quizPublicationApproved) return null;
+  const internalPreview = import.meta.env.VITE_INTERNAL_QUIZ === "true";
+  if (!import.meta.env.DEV && !quizPublicationApproved && !internalPreview) {
+    return null;
+  }
 
   return (
-    <section className="home-quiz-cta" aria-labelledby="home-quiz-title">
+    <section
+      className="home-quiz-cta"
+      aria-labelledby="home-quiz-title"
+      data-internal-preview={internalPreview}
+    >
+      <div className="home-quiz-cta__band" aria-hidden="true">
+        seis escolhas · um ritmo
+      </div>
       <div className="section-shell home-quiz-cta__layout">
         <div>
-          <p className="institutional-eyebrow">Quiz de rotina</p>
+          <p className="eyebrow eyebrow--light">Editorial interativo</p>
           <h2 id="home-quiz-title">
-            Entenda qual tipo de rotina combina com seu momento
+            Que ritmo faz
+            <em>o cuidado continuar?</em>
           </h2>
-          <p>
-            Responda seis perguntas rápidas sobre seus hábitos e preferências.
-            Sem diagnóstico e sem coleta de dados pessoais.
-          </p>
         </div>
-        <a className="home-quiz-cta__link" href="/quiz">
-          Fazer o quiz
-        </a>
+        <div className="home-quiz-cta__body">
+          <p>
+            Seis escolhas rápidas sobre começo, retomada e vida real. O
+            resultado é um perfil de organização — nunca um diagnóstico.
+          </p>
+          <a className="button button--light" href="/quiz">
+            Descobrir meu ritmo
+          </a>
+          <small>Menos de 2 minutos · sem dados pessoais</small>
+        </div>
       </div>
     </section>
   );

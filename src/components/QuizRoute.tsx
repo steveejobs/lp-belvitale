@@ -6,20 +6,23 @@ import {
   type RefObject,
 } from "react";
 import { canonicalUrl } from "../config/site";
-import {
-  getQuizAccessMode,
-} from "../data/quizPublication";
+import { getQuizAccessMode } from "../data/quizPublication";
 import {
   quizPublicationApproved,
   quizPublicationStatus,
 } from "../data/quizPublicationConfig";
 import { quizQuestions, type QuizQuestion } from "../data/quizQuestions";
 import { quizProfiles, type QuizProfile } from "../data/quizProfiles";
+import { recordQuizEvent } from "../quiz/quizEvents";
+import {
+  getQuizRoutePath,
+  getQuizUrl,
+  type QuizRoutePath,
+} from "../quiz/quizRouting";
 import {
   calculateQuizProfile,
   type QuizAnswer,
 } from "../quiz/quizScoring";
-import { recordQuizEvent } from "../quiz/quizEvents";
 import {
   clearQuizState,
   createInitialQuizState,
@@ -27,15 +30,10 @@ import {
   saveQuizState,
   type QuizStoredState,
 } from "../quiz/quizStorage";
-import {
-  getQuizRoutePath,
-  getQuizUrl,
-  type QuizRoutePath,
-} from "../quiz/quizRouting";
 import "../quiz/quiz.css";
 
 const privacyNotice =
-  "Este quiz não solicita dados pessoais e não realiza diagnóstico. As respostas ficam armazenadas apenas neste dispositivo para permitir que você continue depois.";
+  "Sem diagnóstico, sem dados pessoais. As respostas ficam neste dispositivo por até 30 dias para você poder continuar depois.";
 
 function useTitleFocus(
   reference: RefObject<HTMLHeadingElement | null>,
@@ -50,80 +48,70 @@ function useTitleFocus(
 function QuizMetadata({ path }: { readonly path: QuizRoutePath }) {
   useEffect(() => {
     const isResult = path === "result";
-    globalThis.document.title = isResult
-      ? "Perfil de rotina | Belvitale"
-      : "Quiz de rotina | Belvitale";
+    document.title = isResult
+      ? "Seu ritmo de autocuidado | Belvitale"
+      : "Que ritmo faz o cuidado continuar? | Belvitale";
 
     const descriptionText = isResult
-      ? "Consulte seu perfil neutro de rotina de autocuidado, sem diagnóstico ou promessa de resultado."
-      : "Responda seis perguntas sobre hábitos e preferências para conhecer um perfil neutro de rotina de autocuidado.";
-    let description = globalThis.document.querySelector<HTMLMetaElement>(
+      ? "Um perfil de organização da rotina de autocuidado, sem diagnóstico ou promessa de resultado."
+      : "Seis escolhas rápidas para entender o que ajuda uma rotina de autocuidado a caber na vida real.";
+    let description = document.querySelector<HTMLMetaElement>(
       'meta[name="description"]',
     );
     if (description === null) {
-      description = globalThis.document.createElement("meta");
+      description = document.createElement("meta");
       description.name = "description";
-      globalThis.document.head.append(description);
+      document.head.append(description);
     }
     description.content = descriptionText;
 
-    let robots = globalThis.document.querySelector<HTMLMetaElement>(
+    let robots = document.querySelector<HTMLMetaElement>(
       'meta[name="robots"]',
     );
     if (robots === null) {
-      robots = globalThis.document.createElement("meta");
+      robots = document.createElement("meta");
       robots.name = "robots";
-      globalThis.document.head.append(robots);
+      document.head.append(robots);
     }
-    const resultRoute = path === "result";
     robots.content = quizPublicationApproved
-      ? resultRoute
+      ? isResult
         ? "noindex, follow"
         : "index, follow"
       : "noindex, nofollow";
 
-    const currentCanonical = globalThis.document.querySelector<HTMLLinkElement>(
+    const currentCanonical = document.querySelector<HTMLLinkElement>(
       'link[rel="canonical"]',
     );
     if (!quizPublicationApproved || canonicalUrl === null) {
       currentCanonical?.remove();
     } else {
       const canonical =
-        currentCanonical ?? globalThis.document.createElement("link");
+        currentCanonical ?? document.createElement("link");
       canonical.rel = "canonical";
       canonical.href = new URL(getQuizUrl("quiz"), canonicalUrl).toString();
-      if (currentCanonical === null) globalThis.document.head.append(canonical);
+      if (currentCanonical === null) document.head.append(canonical);
     }
 
-    const openGraphValues = {
-      "og:title": "Quiz de rotina | Belvitale",
-      "og:description":
-        "Seis perguntas sobre hábitos e preferências para conhecer um perfil neutro de rotina de autocuidado.",
-      "og:type": "website",
-      ...(canonicalUrl === null
-        ? {}
-        : { "og:url": new URL(getQuizUrl("quiz"), canonicalUrl).toString() }),
-    };
-
-    globalThis.document
+    document
       .querySelectorAll<HTMLMetaElement>('meta[property^="og:"]')
-      .forEach((meta) => {
-        if (!quizPublicationApproved) meta.remove();
-      });
-
-    if (quizPublicationApproved) {
-      Object.entries(openGraphValues).forEach(([property, content]) => {
-        const existing = globalThis.document.querySelector<HTMLMetaElement>(
-          `meta[property="${property}"]`,
-        );
-        const meta = existing ?? globalThis.document.createElement("meta");
+      .forEach((meta) => meta.remove());
+    if (quizPublicationApproved && canonicalUrl !== null) {
+      const values = {
+        "og:title": "Que ritmo faz o cuidado continuar? | Belvitale",
+        "og:description":
+          "Seis escolhas rápidas sobre começo, retomada e vida real.",
+        "og:type": "website",
+        "og:url": new URL(getQuizUrl("quiz"), canonicalUrl).toString(),
+      };
+      Object.entries(values).forEach(([property, content]) => {
+        const meta = document.createElement("meta");
         meta.setAttribute("property", property);
         meta.content = content;
-        if (existing === null) globalThis.document.head.append(meta);
+        document.head.append(meta);
       });
     }
 
-    globalThis.document
+    document
       .querySelectorAll('script[type="application/ld+json"]')
       .forEach((schema) => schema.remove());
   }, [path]);
@@ -140,9 +128,9 @@ function QuizBrand() {
     <header className="quiz-header">
       <div className="quiz-shell quiz-header__inner">
         <a className="quiz-brand" href="/" aria-label="Belvitale — início">
-          Belvitale
+          belvitale
         </a>
-        <span>Autocuidado com transparência</span>
+        <span>CeluClin · seu ritmo</span>
       </div>
     </header>
   );
@@ -155,21 +143,31 @@ function QuizStart({ onStart }: { readonly onStart: () => void }) {
   return (
     <main className="quiz-main" id="conteudo-quiz">
       <div className="quiz-shell quiz-start">
-        <div className="quiz-start__line" aria-hidden="true" />
+        <div className="quiz-start__art" aria-hidden="true">
+          <span />
+          <span />
+          <strong>6</strong>
+          <small>escolhas</small>
+        </div>
         <div className="quiz-start__content">
-          <p className="quiz-eyebrow">Quiz de rotina</p>
+          <p className="quiz-eyebrow">Um editorial interativo</p>
           <h1 ref={titleRef} tabIndex={-1}>
-            Qual tipo de rotina combina com o seu momento?
+            <span>Que ritmo faz</span>
+            <em>o cuidado continuar?</em>
           </h1>
           <p className="quiz-lead">
-            Responda seis perguntas rápidas sobre seus hábitos e preferências. O
-            resultado não é diagnóstico nem recomendação médica.
+            Seis escolhas rápidas para entender o que ajuda uma rotina a
+            caber na sua vida — inclusive quando o dia sai do plano.
           </p>
-          <button className="quiz-button quiz-button--primary" onClick={onStart}>
-            Começar o quiz
+          <button
+            className="quiz-button quiz-button--primary"
+            type="button"
+            onClick={onStart}
+          >
+            Descobrir meu ritmo
           </button>
           <p className="quiz-microcopy">
-            Leva cerca de 1 minuto. Nenhum dado pessoal é solicitado.
+            Menos de 2 minutos. Você pode voltar e mudar respostas.
           </p>
         </div>
         <QuizPrivacyNotice />
@@ -201,8 +199,7 @@ function QuizQuestionScreen({
 }: QuizQuestionScreenProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   useTitleFocus(titleRef, question.id);
-  const errorId = `quiz-error-${question.id}`;
-  const progress = ((step + 1) / quizQuestions.length) * 100;
+  const errorId = "quiz-error-" + question.id;
 
   function selectOption(event: ChangeEvent<HTMLInputElement>) {
     onSelect(event.currentTarget.value);
@@ -213,14 +210,15 @@ function QuizQuestionScreen({
       <div
         className="quiz-shell quiz-question"
         data-direction={direction}
-        key={question.id}
+        data-presentation={question.presentation}
       >
         <div className="quiz-question__topline">
           <button className="quiz-back" type="button" onClick={onBack}>
-            <span aria-hidden="true">←</span> Voltar
+            <span aria-hidden="true">←</span>
+            Voltar
           </button>
-          <p aria-live="polite">
-            Pergunta {String(step + 1)} de {String(quizQuestions.length)}
+          <p>
+            {String(step + 1).padStart(2, "0")} / {String(quizQuestions.length).padStart(2, "0")}
           </p>
         </div>
 
@@ -231,16 +229,27 @@ function QuizQuestionScreen({
           aria-valuemin={1}
           aria-valuemax={quizQuestions.length}
           aria-valuenow={step + 1}
-          aria-valuetext={`Pergunta ${String(step + 1)} de ${String(quizQuestions.length)}`}
+          aria-valuetext={
+            "Pergunta " + String(step + 1) + " de " + String(quizQuestions.length)
+          }
         >
-          <span style={{ width: `${String(progress)}%` }} />
+          {quizQuestions.map((item, index) => (
+            <span
+              key={item.id}
+              data-complete={index <= step}
+              aria-hidden="true"
+            />
+          ))}
         </div>
 
         <section className="quiz-step" aria-labelledby="quiz-question-title">
-          <p className="quiz-eyebrow">Sobre sua rotina</p>
-          <h1 id="quiz-question-title" ref={titleRef} tabIndex={-1}>
-            {question.title}
-          </h1>
+          <div className="quiz-step__heading">
+            <p className="quiz-eyebrow">{question.eyebrow}</p>
+            <h1 id="quiz-question-title" ref={titleRef} tabIndex={-1}>
+              {question.title}
+            </h1>
+            <p>{question.hint}</p>
+          </div>
 
           <fieldset
             className="quiz-options"
@@ -248,8 +257,12 @@ function QuizQuestionScreen({
             aria-invalid={errorVisible}
           >
             <legend className="sr-only">Escolha uma resposta</legend>
-            {question.options.map((option, index) => (
-              <label className="quiz-option" key={option.id}>
+            {question.options.map((option) => (
+              <label
+                className="quiz-option"
+                data-selected={selectedOptionId === option.id}
+                key={option.id}
+              >
                 <input
                   type="radio"
                   name={question.id}
@@ -257,14 +270,22 @@ function QuizQuestionScreen({
                   checked={selectedOptionId === option.id}
                   onChange={selectOption}
                 />
-                <span className="quiz-option__marker" aria-hidden="true">
-                  {String.fromCharCode(65 + index)}
+                <span className="quiz-option__marker" aria-hidden="true" />
+                <span className="quiz-option__copy">
+                  <strong>{option.label}</strong>
+                  {option.detail === undefined ? null : (
+                    <small>{option.detail}</small>
+                  )}
                 </span>
-                <span>{option.label}</span>
               </label>
             ))}
           </fieldset>
 
+          <p className="quiz-feedback" aria-live="polite">
+            {selectedOptionId === null
+              ? "Escolha a frase mais próxima do seu cotidiano."
+              : "Escolha registrada. Você pode continuar ou mudar a resposta."}
+          </p>
           <p
             className="quiz-error"
             id={errorId}
@@ -280,12 +301,10 @@ function QuizQuestionScreen({
             onClick={onContinue}
           >
             {step === quizQuestions.length - 1
-              ? "Ver meu perfil"
+              ? "Ver meu ritmo"
               : "Continuar"}
           </button>
         </section>
-
-        <QuizPrivacyNotice />
       </div>
     </main>
   );
@@ -303,48 +322,69 @@ function QuizResult({
   useTitleFocus(titleRef, profileId);
 
   return (
-    <main className="quiz-main" id="conteudo-quiz">
-      <div className="quiz-shell quiz-result">
-        <div className="quiz-result__intro">
-          <p className="quiz-eyebrow">{profile.eyebrow}</p>
-          <h1 ref={titleRef} tabIndex={-1}>
-            Seu perfil é {profile.title}.
-          </h1>
-          <p className="quiz-lead">{profile.description}</p>
+    <main className="quiz-main quiz-main--result" id="conteudo-quiz">
+      <div className="quiz-result">
+        <div className="quiz-result__reveal">
+          <div className="quiz-shell">
+            <p className="quiz-eyebrow">{profile.eyebrow}</p>
+            <h1 ref={titleRef} tabIndex={-1}>
+              {profile.title}
+            </h1>
+            <p>{profile.description}</p>
+          </div>
         </div>
 
-        <section className="quiz-result__details" aria-labelledby="traits-title">
-          <h2 id="traits-title">O que caracteriza este momento</h2>
-          <ul>
-            {profile.characteristics.map((characteristic) => (
-              <li key={characteristic}>{characteristic}</li>
-            ))}
-          </ul>
-          <div className="quiz-next-step">
-            <p className="quiz-eyebrow">Próximo passo</p>
+        <div className="quiz-shell quiz-result__body">
+          <section className="quiz-result__traits" aria-labelledby="traits-title">
+            <h2 id="traits-title">O que aparece no seu jeito de cuidar</h2>
+            <ul>
+              {profile.characteristics.map((characteristic) => (
+                <li key={characteristic}>{characteristic}</li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="quiz-result__ritual" aria-labelledby="ritual-title">
+            <p className="quiz-eyebrow">Para levar para a vida real</p>
+            <h2 id="ritual-title">{profile.ritualTitle}</h2>
+            <p>{profile.ritual}</p>
+          </section>
+
+          <section className="quiz-next-step" aria-labelledby="next-step-title">
+            <p className="quiz-eyebrow">Um próximo passo possível</p>
+            <h2 id="next-step-title">Conhecer antes de escolher.</h2>
             <p>{profile.nextStep}</p>
-          </div>
-          <div className="quiz-result__actions">
-            <a
-              className="quiz-button quiz-button--primary"
-              href="/#composicao"
-              onClick={() =>
-                recordQuizEvent("quiz_composition_click", { source: "quiz" })
-              }
-            >
-              Ver composição
-            </a>
+            <div className="quiz-result__actions">
+              <a
+                className="quiz-button quiz-button--primary"
+                href="/#composicao"
+                onClick={() =>
+                  recordQuizEvent("quiz_composition_click", { source: "quiz" })
+                }
+              >
+                Abrir a composição
+              </a>
+              <a className="quiz-text-link" href="/#rotulo">
+                Ler o rótulo original
+              </a>
+            </div>
+          </section>
+
+          <div className="quiz-result__footer">
+            <p>
+              Este perfil descreve preferências de organização. Não é
+              diagnóstico, avaliação corporal ou recomendação médica.
+            </p>
             <button
-              className="quiz-button quiz-button--secondary"
+              className="quiz-text-button"
               type="button"
               onClick={onRestart}
             >
-              Recomeçar quiz
+              Refazer o quiz
             </button>
           </div>
-        </section>
-
-        <QuizPrivacyNotice />
+          <QuizPrivacyNotice />
+        </div>
       </div>
     </main>
   );
@@ -352,24 +392,18 @@ function QuizResult({
 
 function QuizInvalidResult({ onStart }: { readonly onStart: () => void }) {
   const titleRef = useRef<HTMLHeadingElement>(null);
-  useTitleFocus(titleRef, "invalid-result");
+  useTitleFocus(titleRef, "invalid");
 
   return (
     <main className="quiz-main" id="conteudo-quiz">
-      <div className="quiz-shell quiz-unavailable quiz-invalid-result">
-        <p className="quiz-eyebrow">Quiz de rotina</p>
-        <h1 ref={titleRef} tabIndex={-1}>
-          Este resultado não está disponível.
-        </h1>
+      <div className="quiz-shell quiz-state-message">
+        <p className="quiz-eyebrow">Resultado incompleto</p>
+        <h1 ref={titleRef} tabIndex={-1}>Seu ritmo precisa das seis escolhas.</h1>
         <p>
-          Para conhecer um perfil de rotina, responda às seis perguntas do quiz.
-          Nenhum resultado é criado sem respostas válidas.
+          Nenhum perfil é criado sem respostas válidas. Comece de novo para
+          chegar a uma revelação que realmente use o conjunto.
         </p>
-        <button
-          className="quiz-button quiz-button--primary"
-          type="button"
-          onClick={onStart}
-        >
+        <button className="quiz-button quiz-button--primary" onClick={onStart}>
           Começar o quiz
         </button>
       </div>
@@ -383,17 +417,15 @@ function QuizUnavailable() {
 
   return (
     <main className="quiz-main" id="conteudo-quiz">
-      <div className="quiz-shell quiz-unavailable">
-        <p className="quiz-eyebrow">Quiz de rotina</p>
-        <h1 ref={titleRef} tabIndex={-1}>
-          Esta experiência ainda não está publicada.
-        </h1>
+      <div className="quiz-shell quiz-state-message">
+        <p className="quiz-eyebrow">Experiência em revisão</p>
+        <h1 ref={titleRef} tabIndex={-1}>O quiz ainda não está publicado.</h1>
         <p>
-          Você pode consultar agora as informações confirmadas sobre a composição
-          e o modo de uso do CeluClin.
+          Enquanto a revisão humana e os gates de produção não terminam, você
+          pode consultar as informações confirmadas do CeluClin.
         </p>
         <a className="quiz-button quiz-button--primary" href="/#composicao">
-          Ver composição
+          Abrir a composição
         </a>
       </div>
     </main>
@@ -405,38 +437,40 @@ function upsertAnswer(
   questionId: string,
   optionId: string,
 ): readonly QuizAnswer[] {
-  const updated = answers.filter((answer) => answer.questionId !== questionId);
-  return [...updated, { questionId, optionId }];
+  return [
+    ...answers.filter((answer) => answer.questionId !== questionId),
+    { questionId, optionId },
+  ];
 }
 
 export function QuizRoute() {
-  const initialRoute = getQuizRoutePath(globalThis.location.pathname) ?? "quiz";
+  const initialRoute = getQuizRoutePath(location.pathname) ?? "quiz";
   const [route, setRoute] = useState<QuizRoutePath>(initialRoute);
   const [quizState, setQuizState] = useState<QuizStoredState>(loadQuizState);
-  const [direction, setDirection] = useState<"forward" | "backward">(
-    "forward",
-  );
+  const [direction, setDirection] = useState<"forward" | "backward">("forward");
   const [errorVisible, setErrorVisible] = useState(false);
   const viewRecorded = useRef(false);
-  const internalFlag = import.meta.env.VITE_INTERNAL_QUIZ === "true";
   const accessMode = getQuizAccessMode(
     quizPublicationStatus,
     import.meta.env.DEV,
-    internalFlag,
+    import.meta.env.VITE_INTERNAL_QUIZ === "true",
   );
 
   function navigate(nextRoute: QuizRoutePath, replace = false) {
-    const method = replace ? "replaceState" : "pushState";
-    globalThis.history[method](null, "", getQuizUrl(nextRoute));
+    history[replace ? "replaceState" : "pushState"](
+      null,
+      "",
+      getQuizUrl(nextRoute),
+    );
     setRoute(nextRoute);
   }
 
   useEffect(() => {
     function handlePopState() {
-      setRoute(getQuizRoutePath(globalThis.location.pathname) ?? "quiz");
+      setRoute(getQuizRoutePath(location.pathname) ?? "quiz");
     }
-    globalThis.addEventListener("popstate", handlePopState);
-    return () => globalThis.removeEventListener("popstate", handlePopState);
+    addEventListener("popstate", handlePopState);
+    return () => removeEventListener("popstate", handlePopState);
   }, []);
 
   useEffect(() => {
@@ -493,6 +527,7 @@ export function QuizRoute() {
       source: "quiz",
       step: quizState.currentStep + 1,
     });
+
     if (quizState.currentStep < quizQuestions.length - 1) {
       persistState({
         answers: quizState.answers,
@@ -502,13 +537,12 @@ export function QuizRoute() {
     }
 
     const profile = calculateQuizProfile(quizState.answers);
-    const completedState: QuizStoredState = {
+    persistState({
       answers: quizState.answers,
       currentStep: quizQuestions.length,
       profile,
       completedAt: new Date().toISOString(),
-    };
-    persistState(completedState);
+    });
     recordQuizEvent("quiz_complete", { source: "quiz", profile });
     navigate("result");
   }
@@ -540,11 +574,13 @@ export function QuizRoute() {
         )?.optionId ?? null);
 
   return (
-    <div className="quiz-route" data-publication-status={quizPublicationStatus}>
+    <div
+      className="quiz-route"
+      data-publication-status={quizPublicationStatus}
+      data-route={route}
+    >
       <QuizMetadata path={route} />
-      <a className="skip-link" href="#conteudo-quiz">
-        Ir para o conteúdo
-      </a>
+      <a className="skip-link" href="#conteudo-quiz">Ir para o conteúdo</a>
       <QuizBrand />
       {accessMode === "unavailable" ? (
         <QuizUnavailable />

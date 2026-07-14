@@ -141,3 +141,28 @@
 | Segurança | Verificador cobre gate, CTA, sitemap, resultado, preço, checkout, rede e storage | Concluído |
 | Evidências | Quatro screenshots e gravação do caminho homepage → quiz | Concluído |
 | Qualidade | Lint, typecheck, builds bloqueado/aprovado e Playwright integral limpo | Concluído |
+# Reconstrução editorial CeluClin — 14/07/2026
+
+| Requisito | Implementação/validação | Status |
+| --- | --- | --- |
+| UI/UX Pro Max real | Skill instalada, busca executada com 8/6/3, recomendação confrontada e sistema persistido | Concluído |
+| Tese “liberdade consciente” | Hero, identificação, educação, produto e encerramento com copy específica | Concluído |
+| Paleta dos assets | Amostras do rótulo, tampa e cápsulas; escala e contrastes em `design-system/` | Concluído |
+| Home não linear | Doze momentos com escala, silhueta, densidade e iluminação próprias | Concluído |
+| Produto sem packshot falso | Rótulo oficial em composição editorial; gate do packshot visível apenas internamente | Concluído |
+| Fórmula tátil | Sete ingredientes confirmados em foco navegável; cúrcuma bloqueada | Concluído |
+| Rótulo legível | Reveal, modal, Escape, retorno de foco, erro de imagem e PDF | Concluído |
+| Prova responsável | Zero depoimento ou mídia fictícia; direção interna sem lacuna pública | Concluído |
+| Kits responsáveis | Comparação 30/90/210 em desenvolvimento; preço, condição e checkout bloqueados | Concluído |
+| Quiz editorial | Seis ângulos, quatro apresentações e progresso pelas faixas do rótulo | Concluído |
+| Perfis humanos | Começo sem peso, Ritmo que volta e Cuidado em curso | Concluído |
+| Recomendação não manipulativa | Conveniência somente após gates; estado atual retorna `null` | Concluído |
+| Mobile-first | 360, 375, 390, 412, 430; alvos 44 px, safe area, sem overflow e 200% | Concluído |
+| Desktop | 1366 × 768 e 1440 × 900 inspecionados e testados | Concluído |
+| Acessibilidade | Teclado, foco, leitor semântico, reduced motion, erros e retorno de contexto | Concluído |
+| Performance | Lighthouse 95/100/100; TBT 90 ms; CLS 0; chunks e lazy loading | Concluído com limitação de LCP 2,7 s |
+| SEO/release | Sem domínio fictício, canonical ou sitemap; home/quiz noindex enquanto gates fechados | Concluído |
+| Produção bloqueada | Sem Yampi, oferta, prova, packshot ou mídia restrita no build | Concluído |
+| Evidências | 13 capturas, quatro páginas inteiras, cinco WebM e Lighthouse JSON | Concluído |
+| Preview | Vercel não produtivo, quiz com flag interna, proteção de equipe preservada | Concluído |
+| Qualidade | Lint, typecheck, build, verificador e Playwright 49/49 | Concluído |

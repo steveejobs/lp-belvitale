@@ -7,65 +7,36 @@
     <meta name="robots" content="noindex, nofollow" />
     <meta
       name="description"
-      content="Resultado do quiz de rotina da Belvitale, sem diagnóstico, oferta ou coleta de dados pessoais."
+      content="Resultado do quiz de ritmo da Belvitale, sem diagnóstico, avaliação corporal ou promessa de resultado."
     />
-    <title>Perfil de rotina | Belvitale</title>
+    <title>Seu ritmo de autocuidado | Belvitale</title>
+    <style>
+      body { margin: 0; color: #fff; background: #5a1837; font-family: Arial, sans-serif; }
+      .result-bootstrap { width: min(calc(100% - 2.5rem), 78rem); min-height: 100vh; margin: auto; }
+      .result-bootstrap header { display: flex; min-height: 4.25rem; align-items: center; justify-content: space-between; border-bottom: 1px solid rgb(255 255 255 / 28%); }
+      .result-bootstrap header a { color: inherit; font: 700 1.4rem Georgia, serif; text-decoration: none; }
+      .result-bootstrap main { display: flex; min-height: calc(100vh - 4.25rem); padding-block: 2rem; flex-direction: column; justify-content: center; }
+      .result-bootstrap small { color: #ffc6df; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+      .result-bootstrap h1 { max-width: 10ch; margin: .7rem 0 0; font: 600 clamp(3.3rem, 14vw, 8rem) / .86 Georgia, serif; letter-spacing: -.05em; }
+      .result-bootstrap p { max-width: 34rem; color: #f1cfdd; line-height: 1.55; }
+      .result-bootstrap a[href="/quiz"] { display: inline-flex; width: fit-content; min-height: 3.25rem; margin-top: 1rem; padding-inline: 1.2rem; align-items: center; color: white; background: #d90a73; font-weight: 700; text-decoration: none; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <noscript>
-      <style>
-        body {
-          margin: 0;
-          background: #f8f4ef;
-          color: #271d2d;
-          font-family: Arial, sans-serif;
-        }
-        .quiz-no-js {
-          display: flex;
-          width: min(calc(100% - 2rem), 48rem);
-          min-height: 100vh;
-          margin: auto;
-          flex-direction: column;
-          justify-content: center;
-        }
-        .quiz-no-js strong {
-          color: #173d30;
-          font: 600 1.5rem Georgia, serif;
-        }
-        .quiz-no-js h1 {
-          max-width: 14ch;
-          margin: 3rem 0 0;
-          color: #173d30;
-          font: 500 clamp(2.5rem, 10vw, 5rem) / 1 Georgia, serif;
-        }
-        .quiz-no-js p {
-          max-width: 40rem;
-          color: #665d68;
-          line-height: 1.6;
-        }
-        .quiz-no-js a {
-          width: fit-content;
-          margin-top: 1rem;
-          padding: 0.9rem 1.25rem;
-          border-radius: 999px;
-          background: #173d30;
-          color: white;
-          font-weight: 700;
-          text-decoration: none;
-        }
-      </style>
-      <main class="quiz-no-js">
-        <strong>Belvitale</strong>
-        <h1>O resultado interativo exige JavaScript.</h1>
-        <p>
-          As respostas do quiz ficam somente neste dispositivo. Ative o JavaScript
-          para retomar ou consulte diretamente as informações confirmadas do
-          CeluClin.
-        </p>
-        <a href="/#composicao">Ver composição do CeluClin</a>
-      </main>
-    </noscript>
+    <div id="root">
+      <div class="result-bootstrap">
+        <header><a href="/">belvitale</a><span>CeluClin · seu ritmo</span></header>
+        <main>
+          <small>Resultado incompleto</small>
+          <h1>Seu ritmo precisa das seis escolhas.</h1>
+          <p>
+            Nenhum perfil é criado sem respostas válidas. A experiência não
+            diagnostica, avalia o corpo ou recomenda tratamento.
+          </p>
+          <a href="/quiz">Começar o quiz</a>
+        </main>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

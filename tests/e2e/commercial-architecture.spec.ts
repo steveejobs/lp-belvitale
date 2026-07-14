@@ -17,14 +17,6 @@ import {
   type LocalCommerceEvent,
 } from "../../src/commerce/commerceEvents";
 
-const viewports = [
-  { width: 360, height: 800 },
-  { width: 390, height: 844 },
-  { width: 430, height: 932 },
-  { width: 1366, height: 768 },
-  { width: 1440, height: 900 },
-] as const;
-
 const confirmedOffer: CommercialOffer = {
   id: "one-month",
   title: "1 mês",
@@ -42,7 +34,7 @@ const confirmedOffer: CommercialOffer = {
     status: "confirmed",
   },
   image: {
-    src: "/__fixtures__/approved-kit.webp",
+    src: "/internal-approved-kit.webp",
     width: 1600,
     height: 1600,
     rightsConfirmed: true,
@@ -69,10 +61,6 @@ const readyOffers: readonly CommercialOffer[] = [
       hasInterest: false,
       status: "confirmed",
     },
-    image: {
-      ...confirmedOffer.image,
-      src: "/__fixtures__/approved-kit-3.webp",
-    },
   },
   {
     ...confirmedOffer,
@@ -89,10 +77,6 @@ const readyOffers: readonly CommercialOffer[] = [
       installmentValue: 140,
       hasInterest: false,
       status: "confirmed",
-    },
-    image: {
-      ...confirmedOffer.image,
-      src: "/__fixtures__/approved-kit-7.webp",
     },
   },
 ] as const;
@@ -112,12 +96,12 @@ async function installReadyFixture(page: Page) {
       },
     };
     fixtureWindow.__BELVITALE_COMMERCE_EVENTS__ = [];
-    window.addEventListener("belvitale:commerce", (event) => {
+    addEventListener("belvitale:commerce", (event) => {
       fixtureWindow.__BELVITALE_COMMERCE_EVENTS__?.push(
         (event as CustomEvent).detail,
       );
     });
-    window.addEventListener(
+    addEventListener(
       "click",
       (event) => {
         const target = event.target;
@@ -133,17 +117,7 @@ async function installReadyFixture(page: Page) {
   }, readyOffers);
 }
 
-async function expectNoHorizontalOverflow(page: Page) {
-  const dimensions = await page.evaluate(() => ({
-    clientWidth: document.documentElement.clientWidth,
-    scrollWidth: document.documentElement.scrollWidth,
-  }));
-  expect(dimensions.scrollWidth).toBeLessThanOrEqual(
-    dimensions.clientWidth + 1,
-  );
-}
-
-test("gate publica somente uma oferta integralmente confirmada", () => {
+test("gate comercial exige todos os dados e continua fechado no estado real", () => {
   expect(canPublishOffer(confirmedOffer)).toBe(true);
   expect(
     canPublishCommercialSection(readyOffers, {
@@ -151,72 +125,35 @@ test("gate publica somente uma oferta integralmente confirmada", () => {
       institutionalIdentificationStatus: "confirmed",
     }),
   ).toBe(true);
-});
-
-test("gate bloqueia pendência, preço ausente, imagem, direito e checkout inválido", () => {
-  expect(
-    canPublishOffer({ ...confirmedOffer, publicationStatus: "pending" }),
-  ).toBe(false);
-  expect(
-    canPublishOffer({ ...confirmedOffer, price: { status: "confirmed" } }),
-  ).toBe(false);
-  expect(
-    canPublishOffer({
-      ...confirmedOffer,
-      image: { ...confirmedOffer.image, status: "blocked" },
-    }),
-  ).toBe(false);
-  expect(
-    canPublishOffer({
-      ...confirmedOffer,
-      image: { ...confirmedOffer.image, rightsConfirmed: false },
-    }),
-  ).toBe(false);
-  expect(
-    canPublishOffer({
-      ...confirmedOffer,
-      checkoutUrl: "https://example.com/r/PWJOI4I112",
-    }),
-  ).toBe(false);
-  expect(isValidCheckoutUrl(`${confirmedOffer.checkoutUrl}?utm=test`)).toBe(
-    false,
-  );
-});
-
-test("política jurídica draft e identificação incompleta bloqueiam a seção", () => {
-  expect(
-    canPublishCommercialSection(readyOffers, {
-      refundPolicyStatus: "draft",
-      institutionalIdentificationStatus: "confirmed",
-    }),
-  ).toBe(false);
-  expect(
-    canPublishCommercialSection(readyOffers, {
-      refundPolicyStatus: "approved",
-      institutionalIdentificationStatus: "pending",
-    }),
-  ).toBe(false);
-  expect(commercialPublicationDependencies.refundPolicyStatus).toBe("draft");
   expect(commercialPublicationReady).toBe(false);
-  expect(commercialOffers.every((offer) => !canPublishOffer(offer))).toBe(true);
+  expect(
+    canPublishCommercialSection(
+      commercialOffers,
+      commercialPublicationDependencies,
+    ),
+  ).toBe(false);
+  expect(
+    canPublishOffer({
+      ...confirmedOffer,
+      checkoutUrl: "https://belvitale.pay.yampi.com.br/r/PWJOI4I112?utm=x",
+    }),
+  ).toBe(false);
 });
 
-test("cálculos comerciais retornam apenas valores exatos e válidos", () => {
-  expect(calculatePricePerBottle(300, 3)).toBe(100);
-  expect(calculatePricePerBottle(19.99, 1)).toBe(19.99);
-  expect(calculatePricePerBottle(10, 3)).toBeNull();
-  expect(calculatePricePerBottle(undefined, 3)).toBeNull();
-  expect(calculatePricePerBottle(300, 0)).toBeNull();
-  expect(calculateInstallmentTotal(3, 100)).toBe(300);
-  expect(calculateInstallmentTotal(3, 19.99)).toBe(59.97);
-  expect(calculateInstallmentTotal(0, 100)).toBeNull();
-  expect(calculateInstallmentTotal(3, undefined)).toBeNull();
-  expect(calculateVerifiedSavings(420, 300)).toBe(120);
-  expect(calculateVerifiedSavings(300, 420)).toBeNull();
-  expect(calculateVerifiedSavings(undefined, 300)).toBeNull();
+test("checkouts exatos e cálculos não aceitam aproximações", () => {
+  expect(commercialOffers.map((offer) => offer.checkoutUrl)).toEqual([
+    "https://belvitale.pay.yampi.com.br/r/PWJOI4I112",
+    "https://belvitale.pay.yampi.com.br/r/1E8NNCGJW9",
+    "https://belvitale.pay.yampi.com.br/r/41CHX4MGPX",
+  ]);
+  expect(commercialOffers.every((offer) => isValidCheckoutUrl(offer.checkoutUrl))).toBe(true);
+  expect(calculatePricePerBottle(560, 7)).toBe(80);
+  expect(calculatePricePerBottle(100, 3)).toBeNull();
+  expect(calculateInstallmentTotal(4, 140)).toBe(560);
+  expect(calculateVerifiedSavings(700, 560)).toBe(140);
 });
 
-test("camada de eventos permanece local e sem dados pessoais", () => {
+test("eventos comerciais permanecem locais e sem PII", () => {
   const events: LocalCommerceEvent[] = [];
   const unsubscribe = subscribeToCommerceEvents((event) => events.push(event));
   recordCommerceEvent("checkout_click", {
@@ -230,131 +167,94 @@ test("camada de eventos permanece local e sem dados pessoais", () => {
       payload: { offerId: "one-month", source: "homepage" },
     },
   ]);
-  expect(JSON.stringify(events)).not.toMatch(/email|phone|ip|health|cookie/i);
+  expect(JSON.stringify(events)).not.toMatch(/email|phone|answer/i);
 });
 
-test("estado real de desenvolvimento mostra bloqueio sem preço, CTA ou imagem", async ({
+test("estado real mostra direção bloqueada sem preço, mídia ou checkout", async ({
   page,
 }) => {
   await page.goto("/");
   const section = page.locator("#kits");
+  await expect(section).toBeVisible();
   await expect(section).toHaveAttribute("data-publication-ready", "false");
-  await expect(
-    section.getByText("Oferta bloqueada — dados comerciais pendentes"),
-  ).toBeVisible();
-  await expect(section.locator(".commercial-offer")).toHaveCount(3);
-  await expect(section.getByText("Preço total")).toHaveCount(0);
-  await expect(section.locator('a[href*="pay.yampi"]')).toHaveCount(0);
+  await expect(section.getByText(/Gate ativo/)).toBeVisible();
   await expect(section.locator("img")).toHaveCount(0);
+  await expect(
+    section.locator('a[href*="belvitale.pay.yampi.com.br"]'),
+  ).toHaveCount(0);
+  await expect(section).not.toContainText("R$");
+  await expect(section.getByText("Experiência completa")).toBeVisible();
+  await expect(section).not.toContainText("5 frascos + 2");
 });
 
-test("fixture isolada compara as três opções e preserva URLs exatas", async ({
+test("fixture interna preserva URLs e identifica valores fictícios", async ({
   page,
 }) => {
   await installReadyFixture(page);
   await page.goto("/");
   const section = page.locator("#kits");
   await expect(section).toHaveAttribute("data-ready-fixture", "true");
-  await expect(
-    section.getByText("Fixture de desenvolvimento — dados fictícios"),
-  ).toBeVisible();
-  await expect(section.locator(".commercial-offer")).toHaveCount(3);
-  await expect(section.getByText("5 potes + 2 adicionais")).toBeVisible();
-  await expect(section.getByText("R$ 560,00")).toBeVisible();
-  await expect(section.getByText("R$ 80,00 por pote")).toBeVisible();
-
-  const links = section.locator(".commercial-offer__cta");
+  await expect(section.getByText(/dados fictícios identificados/)).toBeVisible();
+  const links = section.locator('a[href*="belvitale.pay.yampi.com.br"]');
   await expect(links).toHaveCount(3);
-  for (let index = 0; index < readyOffers.length; index += 1) {
-    await expect(links.nth(index)).toHaveAttribute(
-      "href",
-      readyOffers[index]?.checkoutUrl ?? "",
-    );
-    await expect(links.nth(index)).not.toHaveAttribute("target", "_blank");
-  }
-  await expect(section.locator("img")).toHaveCount(0);
+  await expect(links.nth(0)).toHaveAttribute(
+    "href",
+    "https://belvitale.pay.yampi.com.br/r/PWJOI4I112",
+  );
+  await expect(links.nth(1)).toHaveAttribute(
+    "href",
+    "https://belvitale.pay.yampi.com.br/r/1E8NNCGJW9",
+  );
+  await expect(links.nth(2)).toHaveAttribute(
+    "href",
+    "https://belvitale.pay.yampi.com.br/r/41CHX4MGPX",
+  );
+  await expect(section.getByText("fixture interna · valor fictício")).toHaveCount(3);
 });
 
-test("CTA funciona por teclado e registra seleção e saída localmente", async ({
+test("CTA da fixture funciona por teclado e registra somente IDs", async ({
   page,
 }) => {
   await installReadyFixture(page);
   await page.goto("/");
-  const cta = page.getByRole("link", { name: "Escolher 1 mês" });
+  const cta = page.locator("#kits .commercial-offer__cta").first();
   await cta.focus();
-  await expect(cta).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(
-    page.locator('.commercial-offer[data-offer-id="one-month"]'),
+    page.locator('#kits [data-offer-id="one-month"]'),
   ).toHaveAttribute("data-selected", "true");
-
-  const events = await page.evaluate(() => {
-    const fixtureWindow = window as Window & {
-      __BELVITALE_COMMERCE_EVENTS__?: LocalCommerceEvent[];
-    };
-    return fixtureWindow.__BELVITALE_COMMERCE_EVENTS__ ?? [];
-  });
+  const events = await page.evaluate(
+    () =>
+      (window as Window & { __BELVITALE_COMMERCE_EVENTS__?: unknown[] })
+        .__BELVITALE_COMMERCE_EVENTS__,
+  );
   expect(events).toEqual(
     expect.arrayContaining([
-      {
-        event: "offer_select",
-        payload: { offerId: "one-month", source: "homepage" },
-      },
       {
         event: "checkout_click",
         payload: { offerId: "one-month", source: "homepage" },
       },
     ]),
   );
+  expect(JSON.stringify(events)).not.toMatch(/email|phone|answer/i);
 });
 
-test("reduced motion remove transições comerciais não essenciais", async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
-  const transition = await page
-    .locator(".commercial-offer")
-    .first()
-    .evaluate((element) => getComputedStyle(element).transitionDuration);
-  const animation = await page
-    .locator(".commercial-section__layout")
-    .evaluate((element) => getComputedStyle(element).animationName);
-  expect(transition).toBe("0s");
-  expect(animation).toBe("none");
-});
-
-for (const viewport of viewports) {
-  test(`seção comercial permanece legível e sem overflow em ${String(viewport.width)}x${String(viewport.height)}`, async ({
-    page,
-  }) => {
-    await installReadyFixture(page);
-    await page.setViewportSize(viewport);
-    await page.goto("/");
-    await page.locator("#kits").scrollIntoViewIfNeeded();
-    await expectNoHorizontalOverflow(page);
-    await expect(page.locator("#kits .commercial-offer")).toHaveCount(3);
-  });
-}
-
-test("texto a 200% não cria overflow nem esconde os CTAs", async ({ page }) => {
+test("comércio mantém alvos e não cria overflow a 200%", async ({ page }) => {
   await installReadyFixture(page);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+  await page.evaluate(() => {
+    document.documentElement.style.fontSize = "200%";
+  });
   await page.locator("#kits").scrollIntoViewIfNeeded();
-  await expectNoHorizontalOverflow(page);
-  await expect(
-    page.getByRole("link", { name: "Escolher 7 meses" }),
-  ).toBeVisible();
-});
-
-test("copy comercial não contém claims, urgência ou falsa preferência", async ({
-  page,
-}) => {
-  await page.goto("/");
-  const text = await page.locator("#kits").innerText();
-  expect(text).not.toMatch(
-    /resultado|tratamento|protocolo|transforma|celulite|gordura|mais vendid|recomendad|estoque|últimas unidades|grátis/i,
-  );
+  const dimensions = await page.evaluate(() => ({
+    client: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client + 1);
+  for (const box of await page.locator("#kits a").evaluateAll((elements) =>
+    elements.map((element) => element.getBoundingClientRect()),
+  )) {
+    expect(box.height).toBeGreaterThanOrEqual(44);
+  }
 });

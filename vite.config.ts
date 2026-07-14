@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv, type Plugin } from "vite";
+import { regulatoryPublicationReady } from "./src/data/regulatoryFacts";
 
 const rootDirectory = path.dirname(fileURLToPath(import.meta.url));
 const restrictedPublicFolders = ["proof", "product", "lifestyle", "brand"];
@@ -28,7 +29,15 @@ function parseCanonicalUrl(value: string | undefined): URL | null {
   if (value === undefined || value.trim().length === 0) return null;
   try {
     const url = new URL(value.trim());
-    return url.protocol === "https:" || url.protocol === "http:" ? url : null;
+    const hostname = url.hostname.toLowerCase();
+    const reserved =
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "::1" ||
+      hostname.endsWith(".test") ||
+      hostname.endsWith(".invalid") ||
+      hostname.endsWith(".example");
+    return url.protocol === "https:" && !reserved ? url : null;
   } catch {
     return null;
   }
@@ -103,8 +112,16 @@ export default defineConfig(({ command, mode }) => {
     loadedEnvironment.VITE_QUIZ_PUBLICATION_STATUS;
   const canonicalValue =
     process.env.VITE_CANONICAL_URL ?? loadedEnvironment.VITE_CANONICAL_URL;
-  const publicationApproved = publicationValue === "approved";
+  const publicationRequested = publicationValue === "approved";
+  const publicationApproved =
+    publicationRequested && regulatoryPublicationReady;
   const canonicalBase = parseCanonicalUrl(canonicalValue);
+
+  if (publicationRequested && !regulatoryPublicationReady) {
+    throw new Error(
+      "O quiz não pode ser aprovado enquanto o gate sanitário estiver pendente.",
+    );
+  }
 
   if (publicationApproved && canonicalBase === null) {
     throw new Error(

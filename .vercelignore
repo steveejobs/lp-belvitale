@@ -1,0 +1,16 @@
+.agents/
+.codex/
+.tmp/
+artifacts/
+design-system/
+docs/
+galeria belvitale/
+test-results/
+tests/
+playwright.config.ts
+public/brand/
+public/lifestyle/
+public/product/
+public/proof/
+.preview.*.log
+.vite.*.log

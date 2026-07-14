@@ -1,3 +1,17 @@
+# Impacto da reconstrução editorial de 14/07/2026
+
+Esta rodada substitui os contratos de preservação visual e hashes registrados nas rodadas históricas abaixo. A autorização foi reconstruir a camada visual, narrativa e experiencial, preservando verdade, dados, gates, privacidade, acessibilidade, checkouts e infraestrutura saudável.
+
+- Checkpoint anterior ao redesign: commit `4d538aa`.
+- Home, quiz e resultado foram recompostos; `CeluClinIntro` e `TrustBar` foram removidos.
+- Novos contratos centrais: `homeContent`, `regulatoryFacts`, `commercialPublicationGate`, `quizRecommendation` e design system persistido.
+- O rótulo aprovado continua sendo a única mídia real publicada. Foi criada apenas uma derivação WebP responsiva do mesmo arquivo para o hero, sem alterar texto ou desenho.
+- Ofertas, provas e packshot ficam disponíveis apenas como direção interna; seus dados e chunks não entram na produção bloqueada.
+- Perguntas e pesos do quiz mudaram; scoring puro, storage, privacidade, rotas e recuperação foram preservados.
+- HTML crítico, lazy loading, preloads latinos, content visibility e code splitting foram revistos.
+- Evidências antigas foram substituídas pelos 13 enquadramentos, quatro páginas inteiras e cinco gravações requeridos.
+- Resultado final e limitações: `docs/redesign-delivery.md`.
+
 # Impacto da rodada institucional
 
 Registrado antes da implementação em 14/07/2026.

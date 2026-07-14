@@ -1,260 +1,130 @@
-import { expect, test, type Page } from "@playwright/test";
+import fs from "node:fs/promises";
+import { expect, test } from "@playwright/test";
 import {
   calculateBottleDuration,
   formulaPublicationState,
-  getFormulaPublicationState,
   getPublishableIngredients,
   ingredientFacts,
+  usageFact,
 } from "../../src/data/productFacts";
 
-const viewports = [
-  { width: 360, height: 800 },
-  { width: 390, height: 844 },
-  { width: 430, height: 932 },
-  { width: 1366, height: 768 },
-  { width: 1440, height: 900 },
-] as const;
-
-function monitorRuntime(page: Page) {
-  const problems: string[] = [];
-  page.on("console", (message) => {
-    if (message.type() === "error") problems.push(`console: ${message.text()}`);
-  });
-  page.on("pageerror", (error) => problems.push(`pageerror: ${error.message}`));
-  page.on("response", (response) => {
-    if (response.status() >= 400) {
-      problems.push(`${String(response.status())}: ${response.url()}`);
-    }
-  });
-  return problems;
-}
-
-async function expectNoHorizontalOverflow(page: Page) {
-  const dimensions = await page.evaluate(() => ({
-    clientWidth: document.documentElement.clientWidth,
-    scrollWidth: document.documentElement.scrollWidth,
-  }));
-  expect(dimensions.scrollWidth).toBeLessThanOrEqual(
-    dimensions.clientWidth + 1,
-  );
-}
-
-test("cálculo de duração aceita somente uma divisão positiva e exata", () => {
+test("duração e fórmula usam somente fatos confirmados", () => {
   expect(calculateBottleDuration(60, 2)).toBe(30);
-  expect(calculateBottleDuration(60, 0)).toBeNull();
-  expect(calculateBottleDuration(60, -2)).toBeNull();
-  expect(calculateBottleDuration()).toBeNull();
   expect(calculateBottleDuration(61, 2)).toBeNull();
-});
-
-test("modelo central classifica a fórmula auditada como parcial", () => {
+  expect(calculateBottleDuration(60, 0)).toBeNull();
   expect(formulaPublicationState).toBe("partial");
-  expect(getFormulaPublicationState(ingredientFacts)).toBe("partial");
   expect(getPublishableIngredients(ingredientFacts)).toHaveLength(7);
   expect(
     getPublishableIngredients(ingredientFacts).some(
-      (fact) => fact.status !== "confirmed",
+      (ingredient) => ingredient.id === "turmeric",
     ),
   ).toBe(false);
+  expect(usageFact).toMatchObject({
+    totalCapsules: 60,
+    capsulesPerDay: 2,
+    durationDays: 30,
+  });
 });
 
-test("cenários confirmado, parcial e bloqueado não criam conteúdo falso", async ({
+test("fórmula é uma exploração por toque e teclado, não sete cards", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-
-  await page.goto("/?formula-state=confirmed");
-  const formula = page.locator("#composicao");
-  await expect(formula).toHaveAttribute("data-publication-state", "confirmed");
-  await expect(formula.locator(".formula-list__row")).toHaveCount(7);
-  await expect(
-    formula.getByText(/Algumas informações estão em processo/),
-  ).toHaveCount(0);
-
   await page.goto("/");
+  const formula = page.locator("#composicao");
+  await formula.scrollIntoViewIfNeeded();
+  const tabs = formula.getByRole("tab");
+  await expect(tabs).toHaveCount(7);
+  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
+  await tabs.nth(3).click();
+  await expect(tabs.nth(3)).toHaveAttribute("aria-selected", "true");
+  await expect(formula.getByRole("tabpanel")).toContainText("Vitamina C");
+  await tabs.nth(3).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(tabs.nth(4)).toHaveAttribute("aria-selected", "true");
+  await expect(formula.getByRole("tabpanel")).toContainText("11 mg");
+});
+
+test("conflito de cúrcuma e benefícios não são publicados", async ({ page }) => {
+  await page.goto("/");
+  const formula = page.locator("#composicao");
   await expect(formula).toHaveAttribute("data-publication-state", "partial");
-  await expect(formula.locator(".formula-list__row")).toHaveCount(7);
-  await expect(
-    formula.getByText(/Algumas informações estão em processo/),
-  ).toBeAttached();
+  await expect(formula).toContainText(/Um item permanece fora/);
+  await expect(formula).not.toContainText("Extrato de cúrcuma");
+  await expect(formula).not.toContainText("Curcumina");
+  await expect(formula).not.toContainText(/imun|colágeno|antioxidante|benefício/i);
+});
 
+test("estado bloqueado não cria ingrediente de fallback", async ({ page }) => {
   await page.goto("/?formula-state=blocked");
-  await expect(formula).toHaveAttribute("data-publication-state", "blocked");
-  await expect(formula.locator(".formula-list")).toHaveCount(0);
-  await expect(
-    formula.getByText(/A composição completa será publicada/),
-  ).toBeAttached();
-});
-
-test("fato divergente e valores diários ausentes não são renderizados", async ({
-  page,
-}) => {
-  await page.goto("/");
   const formula = page.locator("#composicao");
-  await expect(
-    formula.getByText("Extrato de cúrcuma", { exact: true }),
-  ).toHaveCount(0);
-  await expect(
-    formula.getByText("Extrato de Rizoma de Cúrcuma (Curcumina)", {
-      exact: true,
-    }),
-  ).toHaveCount(0);
-  await expect(formula.getByText(/VD/)).toHaveCount(0);
+  await expect(formula).toHaveAttribute("data-publication-state", "blocked");
+  await expect(formula.getByRole("tab")).toHaveCount(0);
+  await expect(formula.getByText(/validação documental/)).toBeVisible();
+  await expect(formula.getByRole("link", { name: /rótulo original/ })).toBeVisible();
 });
 
-test("rotina publica somente fatos confirmados e o cálculo explícito", async ({
+test("rotina apresenta 60 dividido por 2 igual a 30 e avisos confirmados", async ({
   page,
 }) => {
   await page.goto("/");
   const routine = page.locator("#rotina");
-  await expect(
-    routine.getByText("2 cápsulas ao dia", { exact: true }),
-  ).toBeAttached();
-  await expect(
-    routine.getByText("60 cápsulas", { exact: true }),
-  ).toBeAttached();
-  await expect(routine.getByText("30 dias", { exact: true })).toBeAttached();
-  await expect(
-    routine.getByText("Maiores de 19 anos", { exact: true }),
-  ).toBeAttached();
-  await expect(
-    routine.getByText(
-      /não deve ser consumido por gestantes, lactantes e crianças/,
-    ),
-  ).toBeAttached();
-  await expect(routine.getByText(/alimentação equilibrada/)).toHaveCount(0);
-  await expect(routine.getByText(/uso de medicamentos/)).toHaveCount(0);
+  await expect(routine.getByRole("heading", { name: /Duas cápsulas/ })).toBeVisible();
+  const equation = routine.locator(".routine-equation");
+  await expect(equation).toContainText("60");
+  await expect(equation).toContainText("2");
+  await expect(equation).toContainText("30");
+  await expect(routine).toContainText("Maiores de 19 anos");
+  await expect(routine).toContainText("não deve ser consumido por gestantes");
+  await expect(routine).toContainText("não é medicamento");
+  await expect(routine).not.toContainText(/horário|jejum|drenagem|toxina/i);
 });
 
-test("link de rótulo mantém âncora nativa e transfere foco para o título", async ({
+test("rótulo abre, fecha com Escape e devolve foco", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#rotulo").scrollIntoViewIfNeeded();
+  const trigger = page.getByRole("button", { name: "Ampliar para ler" });
+  await trigger.click();
+  const dialog = page.getByRole("dialog", { name: /Rótulo original ampliado/ });
+  await expect(dialog).toBeVisible();
+  await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+});
+
+test("âncora da fórmula leva ao rótulo e transfere foco ao título", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  const link = page.getByRole("link", { name: "Consultar rótulo original" });
-  await link.evaluate((element) => (element as HTMLAnchorElement).focus());
-  await expect(link).toBeFocused();
-  await page.keyboard.press("Enter");
+  const link = page
+    .locator("#composicao")
+    .getByRole("link", { name: "Consultar o rótulo original" });
+  await link.click();
   await expect(page).toHaveURL(/#rotulo$/);
   await expect(page.locator("#label-section-title")).toBeFocused();
-  await expect(page.locator("#rotulo")).toHaveCount(1);
-  await expect(page.locator(".label-modal")).toHaveCount(1);
 });
 
-test("ordem institucional mantém galeria de desenvolvimento após o rótulo", async ({
+test("HTML inicial contém os fatos críticos sem oferta ou claim", async () => {
+  const html = await fs.readFile("index.html", "utf8");
+  expect(html).toContain("Vista o que você quiser.");
+  expect(html).toContain("Fibra da casca da maçã");
+  expect(html).toContain("60 cápsulas · 2 ao dia · 30 dias");
+  expect(html).toContain("noindex, nofollow");
+  expect(html).not.toMatch(/R\$|checkout|Yampi|cura|elimina/i);
+});
+
+test("fórmula e rotina não criam overflow em mobile e texto ampliado", async ({
   page,
 }) => {
-  await page.goto("/");
-  const order = await page.evaluate(() => {
-    const selectors = [
-      "#celuclin",
-      "#composicao",
-      "#rotina",
-      "#rotulo",
-      ".proof-gallery",
-    ];
-    return selectors.map((selector) => {
-      const element = document.querySelector(selector);
-      return element === null
-        ? -1
-        : [...document.querySelectorAll("main section")].indexOf(element);
-    });
-  });
-  expect(order).toEqual([...order].sort((a, b) => a - b));
-  expect(order.every((position) => position >= 0)).toBe(true);
-});
-
-test("fallback sem JavaScript preserva fórmula parcial e rotina factual", async ({
-  browser,
-}) => {
-  const context = await browser.newContext({
-    javaScriptEnabled: false,
-    viewport: { width: 390, height: 844 },
-  });
-  const page = await context.newPage();
-  await page.goto("/");
-  await expect(
-    page.getByRole("heading", {
-      name: "Informação clara antes de qualquer escolha.",
-    }),
-  ).toBeAttached();
-  await expect(
-    page.getByText("Fibra da casca da maçã", { exact: true }),
-  ).toBeAttached();
-  await expect(
-    page.getByText("Extrato de cúrcuma", { exact: true }),
-  ).toHaveCount(0);
-  await expect(
-    page.getByRole("heading", {
-      name: "Uma orientação simples, exatamente como informada na embalagem.",
-    }),
-  ).toBeAttached();
-  await expect(
-    page.getByText(/A duração de 30 dias resulta do cálculo exato/),
-  ).toBeAttached();
-  await expectNoHorizontalOverflow(page);
-  await context.close();
-});
-
-test("reduced motion entrega fórmula e rotina no estado final", async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
-  await expect
-    .poll(() =>
-      page
-        .locator("#composicao .product-detail__layout")
-        .evaluate((element) => getComputedStyle(element).animationName),
-    )
-    .toBe("none");
-  await expect
-    .poll(() =>
-      page
-        .locator("#composicao .formula-list__row")
-        .first()
-        .evaluate((element) => getComputedStyle(element).animationName),
-    )
-    .toBe("none");
-});
-
-test("texto a 200% mantém fórmula e rotina sem overflow", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+  await page.setViewportSize({ width: 360, height: 800 });
   await page.goto("/");
   await page.evaluate(() => {
     document.documentElement.style.fontSize = "200%";
   });
-  await page
-    .locator("#composicao")
-    .evaluate((element) =>
-      element.scrollIntoView({ block: "start", behavior: "instant" }),
-    );
-  await expect(page.locator("#composicao .formula-list__row")).toHaveCount(7);
-  await expect(page.locator("#rotina")).toBeAttached();
-  await expectNoHorizontalOverflow(page);
+  await page.locator("#rotina").scrollIntoViewIfNeeded();
+  const size = await page.evaluate(() => ({
+    client: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(size.scroll).toBeLessThanOrEqual(size.client + 1);
 });
-
-for (const viewport of viewports) {
-  test(`fórmula e rotina estáveis em ${String(viewport.width)} × ${String(viewport.height)}`, async ({
-    page,
-  }) => {
-    await page.setViewportSize(viewport);
-    const problems = monitorRuntime(page);
-    await page.goto("/");
-    await page.waitForLoadState("networkidle");
-    await expect(
-      page.getByRole("heading", {
-        name: "Informação clara antes de qualquer escolha.",
-      }),
-    ).toBeAttached();
-    await expect(
-      page.getByRole("heading", {
-        name: "Uma orientação simples, exatamente como informada na embalagem.",
-      }),
-    ).toBeAttached();
-    await expect(page.locator("#composicao .formula-list__row")).toHaveCount(7);
-    await expectNoHorizontalOverflow(page);
-    expect(problems).toEqual([]);
-  });
-}

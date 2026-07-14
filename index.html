@@ -4,20 +4,42 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="data:," />
+    <link
+      rel="preload"
+      href="/node_modules/@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/node_modules/@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/label/celuclin-label-front-hero.webp"
+      as="image"
+      type="image/webp"
+      fetchpriority="high"
+    />
+    <meta name="robots" content="noindex, nofollow" />
     <meta
       name="description"
-      content="Conheça o CeluClin, suplemento alimentar da Belvitale, e acesse informações claras sobre composição, uso e embalagem."
+      content="Conheça o CeluClin, suplemento alimentar em cápsulas da Belvitale, sua composição confirmada, o uso informado e o rótulo original."
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:site_name" content="Belvitale" />
     <meta
       property="og:title"
-      content="Belvitale — autocuidado com transparência"
+      content="Vista o que você quiser. Sem negociar com o espelho. | Belvitale"
     />
     <meta
       property="og:description"
-      content="CeluClin é um suplemento alimentar pensado para uma rotina de autocuidado simples e consciente."
+      content="CeluClin é um suplemento alimentar em cápsulas apresentado com composição, uso e rótulo à vista."
     />
     <script type="application/ld+json">
       {
@@ -26,578 +48,235 @@
         "name": "Belvitale"
       }
     </script>
-    <title>Belvitale | CeluClin — autocuidado com transparência</title>
+    <title>Belvitale | CeluClin — liberdade consciente</title>
+    <style>
+      .bootstrap {
+        min-height: 100vh;
+        margin: 0;
+        color: #24101e;
+        background: #fff8f4;
+        font-family: Arial, sans-serif;
+      }
+      .bootstrap * {
+        box-sizing: border-box;
+      }
+      .bootstrap__shell {
+        width: min(calc(100% - 2.5rem), 90rem);
+        margin-inline: auto;
+      }
+      .bootstrap header {
+        display: flex;
+        min-height: 4.25rem;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgb(36 16 30 / 18%);
+      }
+      .bootstrap header a {
+        color: inherit;
+        font: 700 1.4rem Georgia, serif;
+        text-decoration: none;
+      }
+      .bootstrap__hero {
+        display: grid;
+        min-height: calc(100vh - 4.25rem);
+        align-content: center;
+        padding-block: 2.5rem;
+      }
+      .bootstrap__eyebrow {
+        margin: 0;
+        color: #7a173b;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .bootstrap h1,
+      .bootstrap h2 {
+        max-width: 10ch;
+        margin: 0.8rem 0 0;
+        font-family: Georgia, serif;
+        font-weight: 600;
+        line-height: 0.92;
+        letter-spacing: -0.04em;
+      }
+      .bootstrap h1 {
+        font-size: clamp(3rem, 13vw, 7rem);
+      }
+      .bootstrap h1 em {
+        display: block;
+        color: #d90a73;
+        font-weight: 500;
+      }
+      .bootstrap h2 {
+        font-size: clamp(2.6rem, 10vw, 5rem);
+      }
+      .bootstrap__copy {
+        max-width: 36rem;
+        margin: 1.25rem 0 0;
+        color: #513847;
+        line-height: 1.55;
+      }
+      .bootstrap__actions {
+        display: flex;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+      .bootstrap__actions a {
+        display: inline-flex;
+        min-height: 3.25rem;
+        padding: 0.8rem 1.15rem;
+        align-items: center;
+        color: white;
+        background: #d90a73;
+        font-weight: 700;
+        text-decoration: none;
+      }
+      .bootstrap__meta {
+        margin-top: 1rem;
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+      .bootstrap__media {
+        position: relative;
+        min-height: 8rem;
+        margin-top: 1rem;
+        overflow: hidden;
+        background: linear-gradient(105deg, #7a173b 0 38%, #ec0791 38% 70%, #5a2895 70%);
+        transform: rotate(-2deg);
+      }
+      .bootstrap__media img {
+        position: absolute;
+        top: 24%;
+        left: -8%;
+        width: 116%;
+        height: 58%;
+        object-fit: cover;
+        transform: rotate(2deg);
+      }
+      .bootstrap__facts {
+        padding-block: 4rem;
+        color: white;
+        background: #24101e;
+      }
+      .bootstrap__facts dl {
+        margin: 2rem 0 0;
+        border-top: 1px solid rgb(255 255 255 / 42%);
+      }
+      .bootstrap__facts dl div {
+        display: flex;
+        padding-block: 0.8rem;
+        justify-content: space-between;
+        gap: 1rem;
+        border-bottom: 1px solid rgb(255 255 255 / 32%);
+      }
+      .bootstrap__facts dd {
+        margin: 0;
+        font-weight: 700;
+      }
+      .bootstrap__label {
+        padding-block: 4rem;
+      }
+      .bootstrap__label img {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin-top: 2rem;
+      }
+      .bootstrap__label a {
+        display: inline-block;
+        min-height: 2.75rem;
+        margin-top: 1rem;
+        color: #7a173b;
+        font-weight: 700;
+      }
+      @media (min-width: 56rem) {
+        .bootstrap__hero {
+          grid-template-columns: 1.2fr 0.8fr;
+          align-items: center;
+          gap: 3rem;
+        }
+        .bootstrap h1 {
+          font-size: 7rem;
+        }
+        .bootstrap__media {
+          min-height: 36rem;
+          margin-top: 0;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <noscript>
-      <style>
-        body {
-          margin: 0;
-          background: #f8f4ef;
-          color: #271d2d;
-          font-family: Arial, sans-serif;
-        }
-        .no-js-header {
-          border-bottom: 1px solid #d4c7cf;
-          background: #fffaf7;
-        }
-        .no-js-header div,
-        .no-js-section {
-          width: min(calc(100% - 2rem), 74rem);
-          margin: auto;
-        }
-        .no-js-header div {
-          display: flex;
-          min-height: 4rem;
-          align-items: center;
-          justify-content: space-between;
-          gap: 1rem;
-        }
-        .no-js-brand {
-          color: #173d30;
-          font:
-            600 1.5rem Georgia,
-            serif;
-          text-decoration: none;
-        }
-        .no-js-header nav {
-          display: flex;
-          gap: 1rem;
-          flex-wrap: wrap;
-        }
-        .no-js a {
-          color: #173d30;
-          font-weight: 700;
-        }
-        .no-js-hero {
-          padding: clamp(3rem, 8vw, 7rem) 0;
-        }
-        .no-js-eyebrow {
-          color: #642c46;
-          font-size: 0.72rem;
-          font-weight: 800;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-        }
-        .no-js h1,
-        .no-js h2 {
-          max-width: 14ch;
-          margin: 1rem 0;
-          color: #173d30;
-          font-family: Georgia, serif;
-          font-weight: 500;
-          line-height: 1;
-        }
-        .no-js h1 {
-          font-size: clamp(2.8rem, 10vw, 6rem);
-        }
-        .no-js h2 {
-          font-size: clamp(2.3rem, 8vw, 4.8rem);
-        }
-        .no-js-copy {
-          max-width: 42rem;
-          color: #665d68;
-          line-height: 1.65;
-        }
-        .no-js-actions {
-          display: flex;
-          gap: 0.75rem;
-          flex-wrap: wrap;
-          margin-top: 1.5rem;
-        }
-        .no-js-actions a {
-          padding: 0.85rem 1.15rem;
-          border: 1px solid #173d30;
-          border-radius: 999px;
-          text-decoration: none;
-        }
-        .no-js-actions a:first-child {
-          background: #173d30;
-          color: white;
-        }
-        .no-js-notice {
-          color: #665d68;
-          font-size: 0.75rem;
-        }
-        .no-js-bar {
-          display: flex;
-          padding: 1rem;
-          background: #173d30;
-          color: white;
-          justify-content: center;
-          gap: 0.65rem;
-          flex-wrap: wrap;
-          text-align: center;
-        }
-        .no-js-bar span + span::before {
-          margin-right: 0.65rem;
-          content: "·";
-        }
-        .no-js-intro,
-        .no-js-formula,
-        .no-js-routine,
-        .no-js-label,
-        .no-js-faq,
-        .no-js-brand-section {
-          padding: clamp(4rem, 9vw, 7rem) 0;
-        }
-        .no-js-formula {
-          background: #f8f4ef;
-        }
-        .no-js-routine {
-          border-top: 1px solid #d4c7cf;
-          background: #fffaf7;
-        }
-        .no-js-facts {
-          padding: 0;
-          margin: 2rem 0 0;
-          border-top: 1px solid #173d30;
-        }
-        .no-js-facts div {
-          display: flex;
-          padding: 1rem 0;
-          border-bottom: 1px solid #d4c7cf;
-          justify-content: space-between;
-          gap: 1rem;
-        }
-        .no-js-facts dt {
-          font-weight: 700;
-        }
-        .no-js-facts dd {
-          margin: 0;
-          color: #173d30;
-          font-weight: 700;
-          text-align: right;
-        }
-        .no-js-validation,
-        .no-js-guidance {
-          max-width: 42rem;
-          margin-top: 1.5rem;
-          padding-left: 1rem;
-          border-left: 2px solid #c8a2ad;
-          color: #665d68;
-          line-height: 1.65;
-        }
-        .no-js-pillars {
-          padding: 0;
-          margin-top: 2.5rem;
-          border-top: 1px solid #d4c7cf;
-          list-style: none;
-        }
-        .no-js-pillars li {
-          padding: 1.25rem 0;
-          border-bottom: 1px solid #d4c7cf;
-        }
-        .no-js-pillars h3 {
-          margin: 0;
-          color: #173d30;
-        }
-        .no-js-label {
-          background: #eee4e9;
-        }
-        .no-js-label img {
-          display: block;
-          width: 100%;
-          height: auto;
-          margin: 2rem 0;
-          border-radius: 0.65rem;
-        }
-        .no-js-faq {
-          background: #fffaf7;
-        }
-        .no-js-faq-list {
-          margin-top: 2.5rem;
-          border-top: 1px solid #173d30;
-        }
-        .no-js-faq-list article {
-          padding: 1.25rem 0;
-          border-bottom: 1px solid #d4c7cf;
-        }
-        .no-js-faq-list h3,
-        .no-js-faq-list p {
-          margin: 0;
-        }
-        .no-js-faq-list p {
-          max-width: 42rem;
-          margin-top: 0.75rem;
-          color: #665d68;
-          line-height: 1.65;
-        }
-        .no-js-faq-links {
-          display: flex;
-          gap: 1rem;
-          flex-wrap: wrap;
-          margin-top: 0.75rem;
-        }
-        .no-js-brand-section {
-          background: #173d30;
-          color: #fffaf7;
-        }
-        .no-js-brand-section h2,
-        .no-js-brand-section h3 {
-          color: inherit;
-        }
-        .no-js-brand-section .no-js-copy {
-          color: rgb(255 250 247 / 76%);
-        }
-        .no-js-brand-section .no-js-pillars {
-          border-color: rgb(255 250 247 / 34%);
-        }
-        .no-js-brand-section .no-js-pillars li {
-          border-color: rgb(255 250 247 / 24%);
-        }
-        .no-js-footer {
-          padding: 3.5rem 0 1.5rem;
-          background: #271d2d;
-          color: #fffaf7;
-        }
-        .no-js-footer-grid {
-          display: grid;
-          gap: 2rem;
-        }
-        .no-js-footer a {
-          color: inherit;
-        }
-        .no-js-footer nav {
-          display: flex;
-          gap: 0.75rem 1rem;
-          flex-wrap: wrap;
-        }
-        .no-js-footer dl {
-          margin: 0;
-        }
-        .no-js-footer dl div {
-          margin-top: 0.75rem;
-        }
-        .no-js-footer dt {
-          color: #e6bdc8;
-          font-size: 0.72rem;
-          font-weight: 800;
-          text-transform: uppercase;
-        }
-        .no-js-footer dd {
-          margin: 0.25rem 0 0;
-        }
-        .no-js-footer small {
-          display: block;
-          padding-top: 1.5rem;
-          margin-top: 2rem;
-          border-top: 1px solid rgb(255 250 247 / 18%);
-          color: rgb(255 250 247 / 58%);
-        }
-        @media (max-width: 44rem) {
-          .no-js-header nav {
-            display: none;
-          }
-        }
-      </style>
-      <div class="no-js">
-        <header class="no-js-header">
-          <div>
-            <a class="no-js-brand" href="#inicio">Belvitale</a>
-            <nav aria-label="Navegação principal">
-              <a href="#celuclin">O CeluClin</a>
-              <a href="#composicao">Composição</a>
-              <a href="#rotulo">Rótulo</a>
-            </nav>
-          </div>
+    <div id="root">
+      <div class="bootstrap">
+        <header class="bootstrap__shell">
+          <a href="#inicio">belvitale</a>
+          <span>CeluClin</span>
         </header>
         <main>
-          <section class="no-js-hero" id="inicio">
-            <div class="no-js-section">
-              <p class="no-js-eyebrow">
-                Belvitale · autocuidado com transparência
+          <section class="bootstrap__hero bootstrap__shell" id="inicio">
+            <div>
+              <p class="bootstrap__eyebrow">
+                Belvitale · suplemento alimentar em cápsulas
               </p>
-              <h1>Cuidado que começa com informação clara.</h1>
-              <p class="no-js-copy">
-                CeluClin é um suplemento alimentar pensado para fazer parte de
-                uma rotina de autocuidado simples, consciente e possível de
-                manter.
+              <h1>
+                Vista o que você quiser.
+                <em>Sem negociar com o espelho.</em>
+              </h1>
+              <p class="bootstrap__copy">
+                Cuidar da pele pode caber na sua rotina sem transformar seu
+                corpo em problema. CeluClin é uma escolha de autocuidado com
+                composição e uso à vista.
               </p>
-              <div class="no-js-actions">
+              <div class="bootstrap__actions">
                 <a href="#celuclin">Conhecer o CeluClin</a>
-                <a href="#composicao">Ver composição</a>
+                <a href="#composicao">Abrir a fórmula</a>
               </div>
-              <p class="no-js-notice">
-                Suplemento alimentar. Experiências e resultados podem variar.
+              <p class="bootstrap__meta">
+                60 cápsulas · 2 ao dia · 30 dias
               </p>
-            </div>
-          </section>
-          <div class="no-js-bar">
-            <span>60 cápsulas</span><span>Suplemento alimentar</span
-            ><span>Rótulo disponível</span
-            ><span>Informações transparentes</span>
-          </div>
-          <section class="no-js-intro no-js-section" id="celuclin">
-            <p class="no-js-eyebrow">O que é o CeluClin</p>
-            <h2>
-              Uma rotina simples começa por saber o que você está escolhendo.
-            </h2>
-            <p class="no-js-copy">
-              CeluClin é um suplemento alimentar em cápsulas da Belvitale. A
-              proposta é oferecer uma experiência de autocuidado acompanhada de
-              informações claras sobre composição, uso e embalagem.
-            </p>
-            <ol class="no-js-pillars">
-              <li>
-                <h3>Transparência</h3>
-                <p>
-                  Composição e informações do rótulo disponíveis para consulta.
-                </p>
-              </li>
-              <li>
-                <h3>Simplicidade</h3>
-                <p>
-                  Uma proposta pensada para ser compreendida sem linguagem
-                  complicada.
-                </p>
-              </li>
-              <li>
-                <h3>Consciência</h3>
-                <p>Sem promessas milagrosas ou resultados garantidos.</p>
-              </li>
-            </ol>
-          </section>
-          <section class="no-js-formula" id="composicao">
-            <div class="no-js-section">
-              <p class="no-js-eyebrow">Composição</p>
-              <h2>Informação clara antes de qualquer escolha.</h2>
-              <p class="no-js-copy">
-                A composição deve ser consultada exatamente como aparece na
-                embalagem. Por isso, exibimos somente dados confirmados e
-                mantemos o rótulo original disponível para leitura.
+               <p>Suplemento alimentar. Não é medicamento.</p>
+             </div>
+             <div class="bootstrap__media" aria-hidden="true">
+               <img
+                 src="/label/celuclin-label-front-hero.webp"
+                 width="1310"
+                 height="621"
+                 alt=""
+                 fetchpriority="high"
+                 decoding="sync"
+               />
+             </div>
+           </section>
+          <section class="bootstrap__facts" id="celuclin">
+            <div class="bootstrap__shell" id="composicao">
+              <p class="bootstrap__eyebrow">Composição confirmada</p>
+              <h2>Uma rotina. Não uma promessa de perfeição.</h2>
+              <p class="bootstrap__copy">
+                A porção informada corresponde a duas cápsulas. Um ingrediente
+                permanece fora da lista enquanto houver conflito documental.
               </p>
-              <p><strong>Quantidade por porção: 2 cápsulas</strong></p>
-              <dl class="no-js-facts">
-                <div>
-                  <dt>Fibra da casca da maçã</dt>
-                  <dd>150 mg</dd>
-                </div>
-                <div>
-                  <dt>Fibra de aveia</dt>
-                  <dd>150 mg</dd>
-                </div>
-                <div>
-                  <dt>Quercetina</dt>
-                  <dd>100 mg</dd>
-                </div>
-                <div>
-                  <dt>Vitamina C</dt>
-                  <dd>100 mg</dd>
-                </div>
-                <div>
-                  <dt>Zinco</dt>
-                  <dd>11 mg</dd>
-                </div>
-                <div>
-                  <dt>Chlorella</dt>
-                  <dd>100 mg</dd>
-                </div>
-                <div>
-                  <dt>Spirulina</dt>
-                  <dd>100 mg</dd>
-                </div>
+              <dl>
+                <div><dt>Fibra da casca da maçã</dt><dd>150 mg</dd></div>
+                <div><dt>Fibra de aveia</dt><dd>150 mg</dd></div>
+                <div><dt>Quercetina</dt><dd>100 mg</dd></div>
+                <div><dt>Vitamina C</dt><dd>100 mg</dd></div>
+                <div><dt>Zinco</dt><dd>11 mg</dd></div>
+                <div><dt>Chlorella</dt><dd>100 mg</dd></div>
+                <div><dt>Spirulina</dt><dd>100 mg</dd></div>
               </dl>
-              <p class="no-js-validation">
-                Algumas informações estão em processo de validação documental.
-                Consulte o rótulo original disponível nesta página.
-              </p>
-              <a href="#rotulo">Consultar rótulo original</a>
             </div>
           </section>
-          <section class="no-js-routine" id="rotina">
-            <div class="no-js-section">
-              <p class="no-js-eyebrow">Rotina de uso</p>
-              <h2>
-                Uma orientação simples, exatamente como informada na embalagem.
-              </h2>
-              <dl class="no-js-facts">
-                <div>
-                  <dt>Sugestão de uso</dt>
-                  <dd>2 cápsulas ao dia</dd>
-                </div>
-                <div>
-                  <dt>Conteúdo do frasco</dt>
-                  <dd>60 cápsulas</dd>
-                </div>
-                <div>
-                  <dt>Duração calculada</dt>
-                  <dd>30 dias</dd>
-                </div>
-                <div>
-                  <dt>Público informado</dt>
-                  <dd>Maiores de 19 anos</dd>
-                </div>
-              </dl>
-              <p class="no-js-copy">
-                A duração de 30 dias resulta do cálculo exato de 60 cápsulas
-                dividido por 2 cápsulas ao dia.
-              </p>
-              <div class="no-js-guidance">
-                <p>CeluClin é um suplemento alimentar e não é medicamento.</p>
-                <p>
-                  O rótulo informa que o produto não deve ser consumido por
-                  gestantes, lactantes e crianças.
-                </p>
-                <p>
-                  Siga as orientações da embalagem e procure orientação
-                  profissional quando necessário.
-                </p>
-              </div>
-            </div>
-          </section>
-          <section class="no-js-label">
-            <div class="no-js-section" id="rotulo">
-              <h2>Nada escondido. Leia exatamente o que você está levando.</h2>
-              <p class="no-js-copy">
-                Veja o rótulo original e confira as informações da embalagem com
-                calma.
-              </p>
-              <img
-                src="/label/celuclin-label-front.webp"
-                width="1310"
-                height="621"
-                alt="Arte plana do rótulo do suplemento alimentar CeluClin"
-              />
-              <a href="/label/celuclin-label-complete.pdf" download
-                >Baixar rótulo completo</a
-              >
-            </div>
-          </section>
-          <section class="no-js-faq" id="faq">
-            <div class="no-js-section">
-              <p class="no-js-eyebrow">Dúvidas</p>
-              <h2>Dúvidas comuns, respostas sem rodeios.</h2>
-              <p class="no-js-copy">
-                As respostas abaixo usam apenas informações confirmadas na
-                embalagem e na documentação disponível.
-              </p>
-              <div class="no-js-faq-list">
-                <article id="faq-o-que-e">
-                  <h3>O que é o CeluClin?</h3>
-                  <p>
-                    CeluClin é um suplemento alimentar em cápsulas da Belvitale,
-                    apresentado como parte de uma rotina de autocuidado.
-                  </p>
-                </article>
-                <article id="faq-medicamento">
-                  <h3>CeluClin é medicamento?</h3>
-                  <p>
-                    Não. CeluClin é um suplemento alimentar e não é medicamento.
-                  </p>
-                </article>
-                <article id="faq-conteudo">
-                  <h3>Quantas cápsulas vêm no frasco?</h3>
-                  <p>O frasco contém 60 cápsulas.</p>
-                </article>
-                <article id="faq-porcao">
-                  <h3>Qual é a porção informada?</h3>
-                  <p>A porção informada é de 2 cápsulas.</p>
-                </article>
-                <article id="faq-duracao">
-                  <h3>Quanto tempo dura um frasco?</h3>
-                  <p>
-                    Considerando o consumo informado de 2 cápsulas ao dia, um
-                    frasco com 60 cápsulas corresponde a 30 dias de uso.
-                  </p>
-                </article>
-                <article id="faq-publico">
-                  <h3>Quem pode consumir?</h3>
-                  <p>
-                    O público mínimo informado na documentação disponível é de
-                    adultos a partir de 19 anos.
-                  </p>
-                </article>
-                <article id="faq-composicao">
-                  <h3>Onde vejo a composição?</h3>
-                  <p>
-                    A composição auditada e a arte original da embalagem estão
-                    disponíveis nesta página.
-                  </p>
-                  <div class="no-js-faq-links">
-                    <a href="#composicao">Consultar composição</a>
-                    <a href="#rotulo">Consultar rótulo original</a>
-                  </div>
-                </article>
-                <article id="faq-gluten-lactose">
-                  <h3>Possui glúten ou lactose?</h3>
-                  <p>
-                    O rótulo informa que o produto não contém glúten e não
-                    contém lactose.
-                  </p>
-                </article>
-              </div>
-            </div>
-          </section>
-          <section class="no-js-brand-section" id="belvitale">
-            <div class="no-js-section">
-              <p class="no-js-eyebrow">Sobre a Belvitale</p>
-              <h2>
-                Uma marca construída para tornar o autocuidado mais claro.
-              </h2>
-              <p class="no-js-copy">
-                A Belvitale apresenta o CeluClin com foco em informação
-                acessível, transparência de composição e uma comunicação sem
-                promessas milagrosas.
-              </p>
-              <ol class="no-js-pillars">
-                <li>
-                  <h3>Clareza</h3>
-                  <p>
-                    Informações apresentadas de forma direta e compreensível.
-                  </p>
-                </li>
-                <li>
-                  <h3>Transparência</h3>
-                  <p>Composição e embalagem disponíveis para consulta.</p>
-                </li>
-                <li>
-                  <h3>Responsabilidade</h3>
-                  <p>
-                    Sem promessas de resultado garantido ou linguagem de
-                    tratamento.
-                  </p>
-                </li>
-              </ol>
-              <div class="no-js-faq-links">
-                <a href="#composicao">Ver composição</a>
-                <a href="#rotulo">Consultar rótulo</a>
-                <a href="#faq">Ler dúvidas comuns</a>
-              </div>
-            </div>
+          <section class="bootstrap__label bootstrap__shell" id="rotulo">
+            <p class="bootstrap__eyebrow">Rótulo original</p>
+            <h2>Leia antes de escolher.</h2>
+            <a href="/label/celuclin-label-complete.pdf">
+              Abrir o rótulo completo em PDF
+            </a>
           </section>
         </main>
-        <footer class="no-js-footer">
-          <div class="no-js-section no-js-footer-grid">
-            <div>
-              <a class="no-js-brand" href="#inicio">Belvitale</a>
-              <p class="no-js-copy">
-                CeluClin é um suplemento alimentar e não é medicamento.
-                Experiências individuais podem variar.
-              </p>
-            </div>
-            <nav aria-label="Rodapé">
-              <a href="#celuclin">O CeluClin</a>
-              <a href="#composicao">Composição</a>
-              <a href="#rotulo">Rótulo</a>
-              <a href="#faq">Dúvidas</a>
-            </nav>
-            <dl>
-              <div>
-                <dt>SAC</dt>
-                <dd><a href="tel:+5563991081785">(63) 99108-1785</a></dd>
-              </div>
-              <div>
-                <dt>CNPJ</dt>
-                <dd>61.493.515/0001-65</dd>
-              </div>
-            </dl>
-            <small>© 2026 Belvitale.</small>
-          </div>
-        </footer>
       </div>
-    </noscript>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,9 +1,21 @@
 export const navigationItems = [
-  { label: "O CeluClin", href: "#celuclin" },
-  { label: "Composição", href: "#composicao" },
+  { label: "CeluClin", href: "#celuclin" },
+  { label: "Fórmula", href: "#composicao" },
   { label: "Rótulo", href: "#rotulo" },
-  { label: "Dúvidas", href: "#duvidas" },
+  { label: "Dúvidas", href: "#faq" },
 ] as const;
+
+function isReservedHostname(hostname: string): boolean {
+  const normalized = hostname.toLowerCase();
+  return (
+    normalized === "localhost" ||
+    normalized === "127.0.0.1" ||
+    normalized === "::1" ||
+    normalized.endsWith(".test") ||
+    normalized.endsWith(".invalid") ||
+    normalized.endsWith(".example")
+  );
+}
 
 function getCanonicalUrl() {
   const configuredUrl = import.meta.env.VITE_CANONICAL_URL?.trim();
@@ -11,7 +23,7 @@ function getCanonicalUrl() {
 
   try {
     const url = new URL(configuredUrl);
-    return url.protocol === "https:" || url.protocol === "http:"
+    return url.protocol === "https:" && !isReservedHostname(url.hostname)
       ? url.toString()
       : null;
   } catch {

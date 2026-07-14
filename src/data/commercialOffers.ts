@@ -2,6 +2,8 @@ import {
   legalDocuments,
   type LegalDocumentStatus,
 } from "./legalDocuments";
+import { commercialSurfaceReady } from "./commercialPublicationGate";
+import { regulatoryPublicationReady } from "./regulatoryFacts";
 
 export type CommercialStatus =
   | "confirmed"
@@ -279,4 +281,6 @@ export const commercialPublicationReady =
   offersReady &&
   refundPolicyStatus === "approved" &&
   commercialPublicationDependencies.institutionalIdentificationStatus ===
-    "confirmed";
+    "confirmed" &&
+  regulatoryPublicationReady &&
+  commercialSurfaceReady;

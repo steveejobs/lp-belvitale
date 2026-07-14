@@ -1,22 +1,33 @@
+import { homeContent } from "../content/homeContent";
 import { institutionalAssets, isApprovedAsset } from "../data/siteAssets";
 
-function AbstractProductStage() {
+function LabelSculpture() {
+  const label = institutionalAssets.labelArtwork;
+
   return (
-    <div className="hero-art" aria-hidden="true" data-testid="hero-fallback">
-      <span className="hero-art__rail hero-art__rail--top" />
-      <span className="hero-art__rail hero-art__rail--bottom" />
-      <div className="hero-art__seal">
-        <span>Belvitale</span>
-        <strong>CeluClin</strong>
-        <small>suplemento alimentar</small>
-      </div>
-      <span className="hero-art__orbit" />
+    <div className="hero-sculpture" aria-hidden="true">
+      <span className="hero-sculpture__band hero-sculpture__band--one" />
+      <span className="hero-sculpture__band hero-sculpture__band--two" />
+      <span className="hero-sculpture__transparency" />
+      {isApprovedAsset(label) ? (
+        <div className="hero-sculpture__label">
+          <img
+            src="/label/celuclin-label-front-hero.webp"
+            width={label.width}
+            height={label.height}
+            alt=""
+            fetchPriority="high"
+            decoding="sync"
+          />
+        </div>
+      ) : null}
+      <span className="hero-sculpture__word">escolha</span>
     </div>
   );
 }
 
 export function InstitutionalHero() {
-  const productAsset = institutionalAssets.productPackshot;
+  const { hero } = homeContent;
 
   return (
     <section
@@ -24,48 +35,41 @@ export function InstitutionalHero() {
       id="inicio"
       aria-labelledby="hero-title"
     >
-      <div className="institutional-hero__inner section-shell">
+      <div className="institutional-hero__grid section-shell">
         <div className="institutional-hero__copy">
-          <p className="institutional-eyebrow">
-            Belvitale <span aria-hidden="true">·</span> autocuidado com
-            transparência
-          </p>
-          <h1 id="hero-title">Cuidado que começa com informação clara.</h1>
-          <p className="institutional-hero__lead">
-            CeluClin é um suplemento alimentar pensado para fazer parte de uma
-            rotina de autocuidado simples, consciente e possível de manter.
-          </p>
+          <p className="eyebrow">{hero.eyebrow}</p>
+          <h1 id="hero-title">
+            <span>{hero.titleLead}</span>
+            <em>
+              {hero.titleAccent.map((line) => (
+                <span key={line}>{line}</span>
+              ))}
+            </em>
+          </h1>
+          <p className="institutional-hero__lead">{hero.lead}</p>
           <div className="institutional-hero__actions">
-            <a
-              className="institutional-button institutional-button--primary"
-              href="#celuclin"
-            >
-              Conhecer o CeluClin
+            <a className="button button--primary" href="#celuclin">
+              {hero.primaryAction}
             </a>
-            <a
-              className="institutional-button institutional-button--secondary"
-              href="#composicao"
-            >
-              Ver composição
+            <a className="text-link" href="#composicao">
+              {hero.secondaryAction}
+              <span aria-hidden="true">↘</span>
             </a>
           </div>
-          <p className="institutional-hero__notice">
-            Suplemento alimentar. Experiências e resultados podem variar.
-          </p>
         </div>
 
         <div className="institutional-hero__visual">
-          {isApprovedAsset(productAsset) ? (
-            <img
-              src={productAsset.src}
-              width={productAsset.width}
-              height={productAsset.height}
-              alt={productAsset.alt}
-              sizes="(min-width: 56rem) 42vw, 100vw"
-            />
-          ) : (
-            <AbstractProductStage />
-          )}
+          <LabelSculpture />
+          {import.meta.env.DEV ? (
+            <p className="asset-gate-note">
+              Direção de produto · packshot oficial pendente
+            </p>
+          ) : null}
+        </div>
+
+        <div className="institutional-hero__facts">
+          <strong>{hero.meta}</strong>
+          <span>{hero.notice}</span>
         </div>
       </div>
     </section>

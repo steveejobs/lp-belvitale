@@ -1,150 +1,190 @@
 import type { QuizProfile } from "./quizProfiles";
 
+export type QuizPresentation = "cards" | "scale" | "split" | "sentence";
+
 export interface QuizOption {
   readonly id: string;
   readonly label: string;
+  readonly detail?: string;
   readonly profileWeights: Readonly<Record<QuizProfile, number>>;
 }
 
 export interface QuizQuestion {
   readonly id: string;
+  readonly eyebrow: string;
   readonly title: string;
+  readonly hint: string;
+  readonly presentation: QuizPresentation;
   readonly options: readonly QuizOption[];
 }
 
-function weights(profile: QuizProfile): Record<QuizProfile, number> {
+function weights(
+  simpleStart: number,
+  gradualConsistency: number,
+  consciousContinuity: number,
+): Record<QuizProfile, number> {
   return {
-    "simple-start": profile === "simple-start" ? 2 : 0,
-    "gradual-consistency": profile === "gradual-consistency" ? 2 : 0,
-    "conscious-continuity": profile === "conscious-continuity" ? 2 : 0,
+    "simple-start": simpleStart,
+    "gradual-consistency": gradualConsistency,
+    "conscious-continuity": consciousContinuity,
   };
 }
 
 export const quizQuestions: readonly QuizQuestion[] = [
   {
-    id: "routine-approach",
-    title: "Como você costuma lidar com novas rotinas de autocuidado?",
+    id: "how-it-begins",
+    eyebrow: "Começo",
+    title: "Quando uma rotina nova chama sua atenção, como ela entra na sua vida?",
+    hint: "Escolha a cena mais parecida com o seu jeito — não a ideal.",
+    presentation: "cards",
     options: [
       {
-        id: "routine-few-steps",
-        label: "Prefiro começar com poucos passos.",
-        profileWeights: weights("simple-start"),
+        id: "begin-small",
+        label: "Eu testo um gesto pequeno e vejo se cabe.",
+        detail: "Pouca fricção antes de criar estrutura.",
+        profileWeights: weights(3, 1, 0),
       },
       {
-        id: "routine-clear-plan",
-        label: "Consigo manter quando tenho um plano claro.",
-        profileWeights: weights("gradual-consistency"),
+        id: "begin-with-time",
+        label: "Eu escolho um momento do dia e preparo o caminho.",
+        detail: "Um plano curto ajuda o começo.",
+        profileWeights: weights(1, 3, 1),
       },
       {
-        id: "routine-organized",
-        label: "Já tenho uma rotina bem organizada.",
-        profileWeights: weights("conscious-continuity"),
+        id: "begin-inside-routine",
+        label: "Eu encaixo no que já faço e protejo esse horário.",
+        detail: "O novo entra numa estrutura existente.",
+        profileWeights: weights(0, 1, 3),
       },
     ],
   },
   {
-    id: "trial-period",
-    title:
-      "Por quanto tempo você costuma testar uma nova rotina antes de decidir continuar?",
+    id: "what-breaks-the-rhythm",
+    eyebrow: "Vida real",
+    title: "O que costuma tirar uma rotina do lugar?",
+    hint: "Pode ser a situação que mais se repete, mesmo que não aconteça sempre.",
+    presentation: "scale",
     options: [
       {
-        id: "trial-weeks",
-        label: "Algumas semanas.",
-        profileWeights: weights("simple-start"),
+        id: "week-changes",
+        label: "A semana muda de forma.",
+        profileWeights: weights(2, 2, 0),
       },
       {
-        id: "trial-three-months",
-        label: "Cerca de três meses.",
-        profileWeights: weights("gradual-consistency"),
+        id: "replacement-late",
+        label: "Eu percebo tarde que algo acabou.",
+        profileWeights: weights(0, 1, 3),
       },
       {
-        id: "trial-longer",
-        label: "Prefiro planejar períodos mais longos.",
-        profileWeights: weights("conscious-continuity"),
+        id: "perfect-start",
+        label: "Quero fazer tudo certo e o começo fica grande demais.",
+        profileWeights: weights(3, 1, 0),
+      },
+      {
+        id: "one-day-break",
+        label: "Um dia fora do plano faz o fio se perder.",
+        profileWeights: weights(1, 3, 1),
       },
     ],
   },
   {
-    id: "consistency-barrier",
-    title: "O que mais dificulta sua constância?",
+    id: "after-a-missed-day",
+    eyebrow: "Retomada",
+    title: "Um dia ficou pelo caminho. No seguinte, você…",
+    hint: "Não existe resposta certa. Existe o jeito que realmente acontece.",
+    presentation: "split",
     options: [
       {
-        id: "barrier-forgetting",
-        label: "Esquecer no dia a dia.",
-        profileWeights: weights("simple-start"),
+        id: "resume-without-compensating",
+        label: "Retoma de onde parou, sem compensar.",
+        profileWeights: weights(1, 3, 2),
       },
       {
-        id: "barrier-motivation",
-        label: "Perder a motivação com o tempo.",
-        profileWeights: weights("gradual-consistency"),
+        id: "make-it-smaller",
+        label: "Precisa simplificar para conseguir voltar.",
+        profileWeights: weights(3, 1, 0),
       },
       {
-        id: "barrier-planning",
-        label: "Falta de planejamento e reposição.",
-        profileWeights: weights("conscious-continuity"),
+        id: "reorganize-week",
+        label: "Reorganiza o restante da semana.",
+        profileWeights: weights(0, 1, 3),
       },
     ],
   },
   {
-    id: "purchase-organization",
-    title: "Como você prefere organizar suas compras de autocuidado?",
+    id: "information-style",
+    eyebrow: "Clareza",
+    title: "Para confiar em uma rotina, a informação precisa…",
+    hint: "Complete a frase com o que mais ajuda você a decidir.",
+    presentation: "sentence",
     options: [
       {
-        id: "purchase-one-unit",
-        label: "Compro uma unidade por vez.",
-        profileWeights: weights("simple-start"),
+        id: "direct-to-essential",
+        label: "ir direto ao essencial.",
+        profileWeights: weights(3, 1, 0),
       },
       {
-        id: "purchase-few-months",
-        label: "Prefiro me organizar para alguns meses.",
-        profileWeights: weights("gradual-consistency"),
+        id: "show-next-days",
+        label: "mostrar como ela cabe nos próximos dias.",
+        profileWeights: weights(1, 3, 1),
       },
       {
-        id: "purchase-fewer-replacements",
-        label: "Gosto de evitar reposições frequentes.",
-        profileWeights: weights("conscious-continuity"),
+        id: "support-planning",
+        label: "deixar tudo à mão para eu planejar.",
+        profileWeights: weights(0, 1, 3),
       },
     ],
   },
   {
-    id: "current-moment",
-    title: "Qual dessas frases representa melhor o seu momento?",
+    id: "replacement-pattern",
+    eyebrow: "Continuidade",
+    title: "Quando algo da rotina está perto de acabar, o que costuma acontecer?",
+    hint: "Pense no seu cotidiano, não apenas em suplementos.",
+    presentation: "scale",
     options: [
       {
-        id: "moment-simple",
-        label: "Quero começar sem complicar.",
-        profileWeights: weights("simple-start"),
+        id: "notice-last-minute",
+        label: "Eu percebo no último momento.",
+        profileWeights: weights(2, 1, 0),
       },
       {
-        id: "moment-consistency",
-        label: "Quero construir mais consistência.",
-        profileWeights: weights("gradual-consistency"),
+        id: "note-but-miss",
+        label: "Eu anoto, mas às vezes passa.",
+        profileWeights: weights(1, 3, 1),
       },
       {
-        id: "moment-established",
-        label: "Quero manter uma rotina já estabelecida.",
-        profileWeights: weights("conscious-continuity"),
+        id: "next-step-ready",
+        label: "Eu já deixo a próxima etapa encaminhada.",
+        profileWeights: weights(0, 1, 3),
+      },
+      {
+        id: "depends-on-week",
+        label: "Depende totalmente da semana.",
+        profileWeights: weights(2, 2, 1),
       },
     ],
   },
   {
-    id: "supplement-priority",
-    title: "O que mais importa para você ao conhecer um suplemento?",
+    id: "realistic-commitment",
+    eyebrow: "O que permanece",
+    title: "Uma rotina possível para mim é aquela que…",
+    hint: "Escolha a frase que você gostaria de reconhecer no seu dia.",
+    presentation: "sentence",
     options: [
       {
-        id: "priority-basics",
-        label: "Entender o básico antes de começar.",
-        profileWeights: weights("simple-start"),
+        id: "organized-through-change",
+        label: "continua organizada mesmo quando a agenda muda.",
+        profileWeights: weights(1, 2, 3),
       },
       {
-        id: "priority-clear-information",
-        label: "Ter informações claras para manter a rotina.",
-        profileWeights: weights("gradual-consistency"),
+        id: "light-enough-to-return",
+        label: "começa leve o bastante para eu querer voltar.",
+        profileWeights: weights(3, 1, 0),
       },
       {
-        id: "priority-continuity",
-        label: "Planejar a continuidade com antecedência.",
-        profileWeights: weights("conscious-continuity"),
+        id: "return-without-failure",
+        label: "me ajuda a retomar sem transformar um dia em fracasso.",
+        profileWeights: weights(1, 3, 2),
       },
     ],
   },

@@ -4,16 +4,17 @@ import {
   isConfirmedInstitutionalFact,
 } from "../data/institutionalFacts";
 import { getPublicLegalDocuments } from "../data/legalDocuments";
+import { regulatoryFacts } from "../data/regulatoryFacts";
 
 const footerNavigation = [
-  { label: "O CeluClin", href: "#celuclin" },
-  { label: "Composição", href: "#composicao" },
+  { label: "CeluClin", href: "#celuclin" },
+  { label: "Fórmula", href: "#composicao" },
   { label: "Rótulo", href: "#rotulo" },
   { label: "Dúvidas", href: "#faq" },
 ] as const;
 
 export function SiteFooter() {
-  const publicLegalDocuments = getPublicLegalDocuments();
+  const documents = getPublicLegalDocuments();
   const telephoneHref = getTelephoneHref(institutionalFacts.phone);
   const hasCnpj = isConfirmedInstitutionalFact(institutionalFacts.cnpj);
   const hasPhone =
@@ -24,36 +25,30 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="section-shell site-footer__layout">
         <div className="site-footer__brand">
-          <a href="/#inicio" aria-label="Belvitale — início">
-            Belvitale
-          </a>
+          <a href="/#inicio" aria-label="Belvitale — início">belvitale</a>
           <p>
-            CeluClin é um suplemento alimentar e não é medicamento. Experiências
-            individuais podem variar.
+            CeluClin é um suplemento alimentar e não é medicamento.
+            Experiências individuais podem variar.
           </p>
         </div>
 
-        <nav className="site-footer__navigation" aria-label="Rodapé">
-          <h2>Navegação</h2>
+        <nav aria-label="Rodapé">
+          <h2>Explore</h2>
           <ul>
             {footerNavigation.map((link) => (
-              <li key={link.href}>
-                <a href={link.href}>{link.label}</a>
-              </li>
+              <li key={link.href}><a href={link.href}>{link.label}</a></li>
             ))}
           </ul>
         </nav>
 
         {hasPhone || hasCnpj ? (
           <div className="site-footer__contact">
-            <h2>Contato e identificação</h2>
+            <h2>Marca e suporte</h2>
             <dl>
               {hasPhone ? (
                 <div>
                   <dt>SAC</dt>
-                  <dd>
-                    <a href={telephoneHref}>{institutionalFacts.phone.value}</a>
-                  </dd>
+                  <dd><a href={telephoneHref}>{institutionalFacts.phone.value}</a></dd>
                 </div>
               ) : null}
               {hasCnpj ? (
@@ -66,21 +61,27 @@ export function SiteFooter() {
           </div>
         ) : null}
 
-        {publicLegalDocuments.length === 0 ? null : (
-          <nav className="site-footer__legal" aria-label="Informações legais">
-            <h2>Informações legais</h2>
+        {documents.length > 0 ? (
+          <nav aria-label="Informações legais">
+            <h2>Legal</h2>
             <ul>
-              {publicLegalDocuments.map((document) => (
+              {documents.map((document) => (
                 <li key={document.path}>
                   <a href={document.path}>{document.navigationLabel}</a>
                 </li>
               ))}
             </ul>
           </nav>
-        )}
+        ) : null}
       </div>
+
       <div className="section-shell site-footer__bottom">
         <p>© {new Date().getFullYear()} Belvitale.</p>
+        {import.meta.env.DEV ? (
+          <p data-regulatory-status={regulatoryFacts.sanitaryStatus}>
+            Ambiente interno · gate sanitário {regulatoryFacts.sanitaryStatus}
+          </p>
+        ) : null}
       </div>
     </footer>
   );

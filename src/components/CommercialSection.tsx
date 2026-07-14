@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { recordCommerceEvent } from "../commerce/commerceEvents";
+import { homeContent } from "../content/homeContent";
 import {
   calculatePricePerBottle,
   canPublishCommercialSection,
@@ -10,6 +11,8 @@ import {
   type CommercialOffer,
   type CommercialPublicationDependencies,
 } from "../data/commercialOffers";
+import { commercialSurfaceReady } from "../data/commercialPublicationGate";
+import { regulatoryPublicationReady } from "../data/regulatoryFacts";
 
 interface CommercialDevelopmentFixture {
   readonly name: "commercial-ready";
@@ -26,108 +29,92 @@ function getDevelopmentFixture(): CommercialDevelopmentFixture | null {
   return (window as FixtureWindow).__BELVITALE_COMMERCIAL_FIXTURE__ ?? null;
 }
 
-function describeBottleContents(offer: CommercialOffer): string {
+function describeContents(offer: CommercialOffer): string {
+  const total = getOfferTotalBottles(offer);
   if (offer.additionalBottles === undefined) {
-    return `${String(offer.bottles)} ${offer.bottles === 1 ? "pote" : "potes"}`;
+    return `${String(total)} ${total === 1 ? "frasco" : "frascos"}`;
   }
-
-  return `${String(offer.bottles)} potes + ${String(offer.additionalBottles)} adicionais`;
+  return `${String(offer.bottles)} frascos + ${String(offer.additionalBottles)} adicionais`;
 }
 
-interface OfferCardProps {
+interface OfferRowProps {
+  readonly index: number;
   readonly offer: CommercialOffer;
-  readonly displayOfferImage: boolean;
-  readonly isReadyFixture: boolean;
-  readonly isSelected: boolean;
+  readonly interactive: boolean;
+  readonly fixture: boolean;
+  readonly selected: boolean;
   readonly onSelect: (offer: CommercialOffer) => void;
 }
 
-function OfferCard({
+function OfferRow({
+  index,
   offer,
-  displayOfferImage,
-  isReadyFixture,
-  isSelected,
+  interactive,
+  fixture,
+  selected,
   onSelect,
-}: OfferCardProps) {
+}: OfferRowProps) {
   const totalBottles = getOfferTotalBottles(offer);
-  const pricePerBottle = calculatePricePerBottle(
-    offer.price.cash,
-    totalBottles,
-  );
+  const perBottle = calculatePricePerBottle(offer.price.cash, totalBottles);
+  const label = homeContent.commercial.labels[offer.id];
+  const days = offer.approximateDurationMonths * 30;
 
   return (
     <article
       className="commercial-offer"
       data-offer-id={offer.id}
-      data-selected={isSelected}
+      data-selected={selected}
+      style={{ "--offer-index": index } as React.CSSProperties}
     >
-      <div className="commercial-offer__visual">
-        {displayOfferImage && offer.image.src !== undefined ? (
-          <img
-            src={offer.image.src}
-            alt={`Opção CeluClin para ${offer.title}`}
-            width={offer.image.width}
-            height={offer.image.height}
-            loading="lazy"
-            decoding="async"
-            sizes="(min-width: 56rem) 30vw, calc(100vw - 2rem)"
-          />
-        ) : import.meta.env.DEV ? (
-          <span aria-hidden="true">
-            {isReadyFixture ? "fixture" : "mídia bloqueada"}
-          </span>
-        ) : null}
+      <div className="commercial-offer__identity">
+        <p>{label}</p>
+        <h3>{days} dias</h3>
       </div>
 
-      <div className="commercial-offer__body">
-        <p className="commercial-offer__position">
-          {offer.approximateDurationMonths === 1 ? "Rotina de" : "Rotina por"}
+      <div className="commercial-offer__facts">
+        <p>
+          <span>Duração de rotina</span>
+          <strong>{days} dias</strong>
         </p>
-        <h3>{offer.title}</h3>
+        {interactive ? (
+          <>
+            <p>
+              <span>Conteúdo</span>
+              <strong>{describeContents(offer)}</strong>
+            </p>
+            <p>
+              <span>Cápsulas</span>
+              <strong>{offer.totalCapsules}</strong>
+            </p>
+          </>
+        ) : (
+          <p className="commercial-offer__pending">
+            Condições e composição da oferta aguardam aprovação.
+          </p>
+        )}
+      </div>
 
-        <dl className="commercial-offer__facts">
-          <div>
-            <dt>Conteúdo</dt>
-            <dd>{describeBottleContents(offer)}</dd>
-          </div>
-          <div>
-            <dt>Duração aproximada</dt>
-            <dd>{String(offer.approximateDurationMonths * 30)} dias</dd>
-          </div>
-          <div>
-            <dt>Cápsulas</dt>
-            <dd>{String(offer.totalCapsules)}</dd>
-          </div>
-        </dl>
-
-        {isReadyFixture && offer.price.cash !== undefined ? (
-          <div className="commercial-offer__price" aria-label="Preço total">
-            <span>Preço total</span>
+      {interactive && offer.price.cash !== undefined ? (
+        <div className="commercial-offer__decision">
+          <div className="commercial-offer__price">
+            <span>Valor total</span>
             <strong>{formatBRL(offer.price.cash)}</strong>
-            {offer.price.installments !== undefined &&
-            offer.price.installmentValue !== undefined ? (
-              <small>
-                {String(offer.price.installments)} parcelas de {" "}
-                {formatBRL(offer.price.installmentValue)} {" "}
-                {offer.price.hasInterest === false ? "sem juros" : "com juros"}
-              </small>
-            ) : null}
-            {pricePerBottle !== null ? (
-              <small>{formatBRL(pricePerBottle)} por pote</small>
-            ) : null}
+            {fixture ? <small>fixture interna · valor fictício</small> : null}
+            {perBottle === null ? null : (
+              <small>{formatBRL(perBottle)} por frasco</small>
+            )}
           </div>
-        ) : null}
-
-        {isReadyFixture ? (
           <a
             className="commercial-offer__cta"
             href={offer.checkoutUrl}
             onClick={() => onSelect(offer)}
           >
-            Escolher {offer.title}
+            Escolher {label.toLowerCase()}
           </a>
-        ) : null}
-      </div>
+        </div>
+      ) : (
+        <span className="commercial-offer__gate">Oferta não publicada</span>
+      )}
     </article>
   );
 }
@@ -137,13 +124,17 @@ export function CommercialSection() {
   const offers = fixture?.offers ?? commercialOffers;
   const dependencies =
     fixture?.dependencies ?? commercialPublicationDependencies;
-  const isReady = canPublishCommercialSection(offers, dependencies);
-  const isReadyFixture = fixture?.name === "commercial-ready" && isReady;
+  const offerDataReady = canPublishCommercialSection(offers, dependencies);
+  const fixtureReady =
+    fixture?.name === "commercial-ready" && offerDataReady;
+  const publicReady =
+    offerDataReady && regulatoryPublicationReady && commercialSurfaceReady;
+  const interactive = publicReady || fixtureReady;
   const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
   const viewsRecorded = useRef(false);
 
   useEffect(() => {
-    if (!isReady || viewsRecorded.current) return;
+    if (!interactive || viewsRecorded.current) return;
     viewsRecorded.current = true;
     offers.forEach((offer) => {
       recordCommerceEvent("offer_view", {
@@ -151,7 +142,7 @@ export function CommercialSection() {
         source: "homepage",
       });
     });
-  }, [isReady, offers]);
+  }, [interactive, offers]);
 
   function selectOffer(offer: CommercialOffer) {
     setSelectedOfferId(offer.id);
@@ -165,52 +156,52 @@ export function CommercialSection() {
     });
   }
 
-  if (!import.meta.env.DEV && !isReady) return null;
+  if (!import.meta.env.DEV && !publicReady) return null;
+
+  const { commercial } = homeContent;
 
   return (
     <section
       className="commercial-section"
       id="kits"
       aria-labelledby="commercial-title"
-      data-publication-ready={isReady}
-      data-ready-fixture={isReadyFixture}
+      data-publication-ready={publicReady}
+      data-ready-fixture={fixtureReady}
     >
-      <div className="section-shell commercial-section__layout">
-        <div className="section-heading commercial-section__heading">
-          <p className="eyebrow">Escolha sua rotina</p>
-          <h2 id="commercial-title">
-            Uma opção para cada momento da sua rotina.
-          </h2>
-          <p>
-            Compare as opções disponíveis e escolha a que faz sentido para você.
-          </p>
-        </div>
-
+      <div className="section-shell commercial-section__heading">
+        <p className="eyebrow">{commercial.eyebrow}</p>
+        <h2 id="commercial-title">{commercial.title}</h2>
+        <p className="commercial-section__body">{commercial.body}</p>
         {import.meta.env.DEV ? (
-          isReadyFixture ? (
-            <p className="commercial-internal-state" role="status">
-              Fixture de desenvolvimento — dados fictícios
-            </p>
-          ) : !isReady ? (
-            <p className="commercial-internal-state" role="status">
-              Oferta bloqueada — dados comerciais pendentes
-            </p>
-          ) : null
+          <p className="commercial-internal-state" role="status">
+            {fixtureReady
+              ? "Fixture de desenvolvimento — dados fictícios identificados"
+              : "Gate ativo — ofertas, preços e checkout não estão publicados"}
+          </p>
         ) : null}
-
-        <div className="commercial-offers" aria-label="Comparação das opções">
-          {offers.map((offer) => (
-            <OfferCard
-              offer={offer}
-              displayOfferImage={isReady && !isReadyFixture}
-              isReadyFixture={isReadyFixture}
-              isSelected={offer.id === selectedOfferId}
-              key={offer.id}
-              onSelect={selectOffer}
-            />
-          ))}
-        </div>
       </div>
+
+      <div className="section-shell commercial-offers">
+        {offers.map((offer, index) => (
+          <OfferRow
+            index={index}
+            offer={offer}
+            interactive={interactive}
+            fixture={fixtureReady}
+            selected={selectedOfferId === offer.id}
+            key={offer.id}
+            onSelect={selectOffer}
+          />
+        ))}
+      </div>
+
+      {interactive ? (
+        <div className="section-shell purchase-steps" aria-label="Como comprar">
+          <p><span>Escolha</span> a opção que faz sentido para a sua organização.</p>
+          <p><span>Pagamento</span> feito no ambiente Yampi.</p>
+          <p><span>Acompanhamento</span> pelos canais informados após a compra.</p>
+        </div>
+      ) : null}
     </section>
   );
 }

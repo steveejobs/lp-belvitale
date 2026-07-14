@@ -11,12 +11,11 @@
     "preview": "vite preview",
     "test:e2e": "playwright test",
     "test:production": "node scripts/verify-production-assets.mjs",
-    "capture": "node scripts/capture-artifacts.mjs",
-    "capture:commercial": "node scripts/capture-commercial-artifacts.mjs",
-    "capture:quiz": "node scripts/capture-quiz-artifacts.mjs",
-    "capture:quiz-publication": "node scripts/capture-quiz-publication-artifacts.mjs"
+    "capture": "node scripts/capture-artifacts.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/figtree": "^5.2.10",
+    "@fontsource-variable/newsreader": "^5.2.10",
     "react": "19.2.7",
     "react-dom": "19.2.7"
   },

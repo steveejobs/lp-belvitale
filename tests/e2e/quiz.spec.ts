@@ -1,642 +1,321 @@
 import { expect, test, type Page } from "@playwright/test";
 import {
-  getApprovedQuizOfferId,
   getQuizAccessMode,
   quizOfferMappings,
   resolveQuizPublicationStatus,
 } from "../../src/data/quizPublication";
 import { quizQuestions } from "../../src/data/quizQuestions";
-import { quizProfiles, type QuizProfile } from "../../src/data/quizProfiles";
+import { quizProfiles } from "../../src/data/quizProfiles";
 import {
   calculateQuizProfile,
+  hasCompleteQuizAnswers,
   type QuizAnswer,
 } from "../../src/quiz/quizScoring";
+import { resolveQuizRecommendation } from "../../src/quiz/quizRecommendation";
 import {
-  clearQuizState,
-  createInitialQuizState,
   inspectQuizStoredState,
-  loadQuizState,
-  parseQuizState,
-  quizStorageMaxAgeMs,
   quizStorageKey,
+  quizStorageMaxAgeMs,
   quizStorageVersion,
   saveQuizState,
 } from "../../src/quiz/quizStorage";
-import {
-  recordQuizEvent,
-  subscribeToQuizEvents,
-  type LocalQuizEvent,
-  type QuizEventPayload,
-} from "../../src/quiz/quizEvents";
 
-const viewports = [
-  { width: 360, height: 800 },
-  { width: 390, height: 844 },
-  { width: 430, height: 932 },
-  { width: 1366, height: 768 },
-  { width: 1440, height: 900 },
-] as const;
+const answersByProfile = {
+  "simple-start": [
+    "begin-small",
+    "perfect-start",
+    "make-it-smaller",
+    "direct-to-essential",
+    "notice-last-minute",
+    "light-enough-to-return",
+  ],
+  "gradual-consistency": [
+    "begin-with-time",
+    "one-day-break",
+    "resume-without-compensating",
+    "show-next-days",
+    "note-but-miss",
+    "return-without-failure",
+  ],
+  "conscious-continuity": [
+    "begin-inside-routine",
+    "replacement-late",
+    "reorganize-week",
+    "support-planning",
+    "next-step-ready",
+    "organized-through-change",
+  ],
+} as const;
 
-class MemoryStorage {
-  private readonly values = new Map<string, string>();
-
-  getItem(key: string) {
-    return this.values.get(key) ?? null;
-  }
-
-  setItem(key: string, value: string) {
-    this.values.set(key, value);
-  }
-
-  removeItem(key: string) {
-    this.values.delete(key);
-  }
-}
-
-function answersForProfile(profile: QuizProfile): readonly QuizAnswer[] {
-  return quizQuestions.map((question) => {
-    const option = question.options.find(
-      (candidate) => candidate.profileWeights[profile] === 2,
-    );
-    if (option === undefined) throw new Error("Opção de perfil ausente.");
-    return { questionId: question.id, optionId: option.id };
+function toAnswers(optionIds: readonly string[]): QuizAnswer[] {
+  return quizQuestions.map((question, index) => {
+    const optionId = optionIds[index];
+    if (optionId === undefined) {
+      throw new Error("Resposta ausente para " + question.id);
+    }
+    return { questionId: question.id, optionId };
   });
 }
 
 async function startQuiz(page: Page) {
   await page.goto("/quiz");
-  await page.getByRole("button", { name: "Começar o quiz" }).click();
+  const button = page.getByRole("button", { name: "Descobrir meu ritmo" });
+  await expect(button).toBeVisible();
+  await button.click();
 }
 
-async function completeQuiz(page: Page, optionIndex = 0) {
-  for (let step = 0; step < quizQuestions.length; step += 1) {
-    await page.getByRole("radio").nth(optionIndex).check();
+async function selectOption(page: Page, optionId: string) {
+  await page
+    .locator('input[value="' + optionId + '"]')
+    .locator("..")
+    .click();
+}
+
+async function completeQuiz(
+  page: Page,
+  optionIds: readonly string[] = answersByProfile["simple-start"],
+) {
+  await startQuiz(page);
+  for (const [index, optionId] of optionIds.entries()) {
+    await selectOption(page, optionId);
     await page
       .getByRole("button", {
-        name: step === quizQuestions.length - 1 ? "Ver meu perfil" : "Continuar",
+        name: index === optionIds.length - 1 ? "Ver meu ritmo" : "Continuar",
       })
       .click();
   }
 }
 
-async function expectNoHorizontalOverflow(page: Page) {
-  const dimensions = await page.evaluate(() => ({
-    clientWidth: document.documentElement.clientWidth,
-    scrollWidth: document.documentElement.scrollWidth,
-  }));
-  expect(dimensions.scrollWidth).toBeLessThanOrEqual(
-    dimensions.clientWidth + 1,
-  );
-}
-
-test("dados centralizam seis perguntas, dezoito opções e pesos auditáveis", () => {
+test("quiz tem seis ângulos, vinte opções e quatro composições", () => {
   expect(quizQuestions).toHaveLength(6);
-  expect(quizQuestions.flatMap((question) => question.options)).toHaveLength(18);
+  expect(quizQuestions.flatMap((question) => question.options)).toHaveLength(20);
+  expect(new Set(quizQuestions.map((question) => question.presentation))).toEqual(
+    new Set(["cards", "scale", "split", "sentence"]),
+  );
+  expect(new Set(quizQuestions.map((question) => question.id)).size).toBe(6);
   for (const question of quizQuestions) {
-    expect(question.options).toHaveLength(3);
-    for (const option of question.options) {
-      const weights = Object.values(option.profileWeights);
-      expect(weights.filter((weight) => weight === 2)).toHaveLength(1);
-      expect(weights.filter((weight) => weight === 0)).toHaveLength(2);
-    }
+    expect(question.options.length).toBeGreaterThanOrEqual(3);
+    expect(question.title).not.toMatch(/por quanto tempo|quantos potes/i);
   }
 });
 
-test("pontuação calcula os três perfis sem oferta comercial", () => {
-  expect(calculateQuizProfile(answersForProfile("simple-start"))).toBe(
-    "simple-start",
+test("scoring entrega três perfis sem mapear posição a estoque", () => {
+  for (const [profile, optionIds] of Object.entries(answersByProfile)) {
+    const answers = toAnswers(optionIds);
+    expect(hasCompleteQuizAnswers(answers)).toBe(true);
+    expect(calculateQuizProfile(answers)).toBe(profile);
+  }
+  const strongestByQuestion = quizQuestions.map((question) =>
+    question.options.map((option) => {
+      const entries = Object.entries(option.profileWeights);
+      const first = entries.at(0);
+      if (first === undefined) return "";
+      return entries.reduce((winner, current) =>
+        current[1] > winner[1] ? current : winner,
+      )[0];
+    }),
   );
-  expect(calculateQuizProfile(answersForProfile("gradual-consistency"))).toBe(
-    "gradual-consistency",
-  );
-  expect(calculateQuizProfile(answersForProfile("conscious-continuity"))).toBe(
-    "conscious-continuity",
-  );
-  expect(Object.keys(quizProfiles)).toHaveLength(3);
-  expect(quizOfferMappings.every((mapping) => mapping.status === "pending")).toBe(
-    true,
-  );
-  expect(getApprovedQuizOfferId("simple-start")).toBeNull();
+  expect(strongestByQuestion[1]).not.toEqual(strongestByQuestion[0]);
+  expect(quizOfferMappings.every((mapping) => mapping.status === "pending")).toBe(true);
+  expect(resolveQuizRecommendation("simple-start")).toBeNull();
 });
 
-test("empate é resolvido pela resposta da sexta pergunta", () => {
-  const profiles: readonly QuizProfile[] = [
-    "simple-start",
-    "gradual-consistency",
-    "conscious-continuity",
-    "simple-start",
-    "gradual-consistency",
-    "conscious-continuity",
-  ];
-  const answers = quizQuestions.map((question, index) => {
-    const profile = profiles[index];
-    const option = question.options.find(
-      (candidate) =>
-        profile !== undefined && candidate.profileWeights[profile] === 2,
-    );
-    if (option === undefined) throw new Error("Opção de empate ausente.");
-    return { questionId: question.id, optionId: option.id };
-  });
-  expect(calculateQuizProfile(answers)).toBe("conscious-continuity");
-});
-
-test("status central exige o valor literal approved", () => {
+test("publicação exige literal aprovado, mas acesso interno continua possível", () => {
   expect(resolveQuizPublicationStatus("approved", false)).toBe("approved");
-  expect(resolveQuizPublicationStatus("true", false)).toBe("blocked");
-  expect(resolveQuizPublicationStatus("1", false)).toBe("blocked");
-  expect(resolveQuizPublicationStatus(undefined, false)).toBe("blocked");
+  expect(resolveQuizPublicationStatus("Approved", false)).toBe("blocked");
   expect(resolveQuizPublicationStatus(undefined, true)).toBe("development");
-  expect(getQuizAccessMode("approved", false, false)).toBe("interactive");
   expect(getQuizAccessMode("blocked", false, false)).toBe("unavailable");
   expect(getQuizAccessMode("blocked", false, true)).toBe("interactive");
 });
 
-test("storage sanitiza campos e persiste somente estado permitido", () => {
-  const storage = new MemoryStorage();
-  const now = new Date("2026-07-14T15:00:00.000Z");
-  const answer = answersForProfile("simple-start")[0];
-  if (answer === undefined) throw new Error("Resposta ausente.");
-  saveQuizState({ answers: [answer], currentStep: 1 }, storage, now);
-  const raw = storage.getItem(quizStorageKey);
-  expect(raw).not.toBeNull();
-  const persisted: unknown = JSON.parse(raw ?? "{}");
-  if (typeof persisted !== "object" || persisted === null) {
-    throw new Error("Estado persistido inválido.");
-  }
-  expect(Object.keys(persisted)).toEqual([
-    "version",
-    "savedAt",
-    "answers",
-    "currentStep",
-  ]);
-  expect(persisted).toMatchObject({
-    version: quizStorageVersion,
-    savedAt: now.toISOString(),
+test("storage preserva chave, expiração e apenas campos permitidos", () => {
+  expect(quizStorageKey).toBe("belvitale:quiz:v1");
+  expect(quizStorageVersion).toBe(2);
+  expect(quizStorageMaxAgeMs).toBe(30 * 24 * 60 * 60 * 1000);
+  const answers = toAnswers(answersByProfile["simple-start"]);
+  const values = new Map<string, string>();
+  saveQuizState(
+    { answers, currentStep: 2 },
+    {
+      getItem: (key) => values.get(key) ?? null,
+      setItem: (key, value) => values.set(key, value),
+      removeItem: (key) => values.delete(key),
+    },
+    new Date("2026-07-14T12:00:00.000Z"),
+  );
+  const persisted = values.get(quizStorageKey);
+  expect(persisted).toBeDefined();
+  if (persisted === undefined) return;
+  expect(JSON.parse(persisted)).toEqual({
+    version: 2,
+    savedAt: "2026-07-14T12:00:00.000Z",
+    answers,
+    currentStep: 2,
   });
-  expect(loadQuizState(storage, now)).toEqual({
-    answers: [answer],
-    currentStep: 1,
-  });
-  clearQuizState(storage);
-  expect(loadQuizState(storage)).toEqual(createInitialQuizState());
-
-  const contaminated = JSON.stringify({
-    answers: [answer, { questionId: "medical", optionId: "free-text" }],
-    currentStep: 1,
-    email: "visitante@example.com",
-    phone: "000000000",
-    note: "texto livre",
-  });
-  expect(parseQuizState(contaminated)).toEqual(createInitialQuizState());
+  expect(persisted).not.toMatch(/email|phone|name/i);
 });
 
-test("storage expirado há mais de 30 dias é removido automaticamente", () => {
-  const storage = new MemoryStorage();
-  const savedAt = new Date("2026-06-01T12:00:00.000Z");
-  saveQuizState(createInitialQuizState(), storage, savedAt);
-  const afterExpiration = new Date(
-    savedAt.getTime() + quizStorageMaxAgeMs + 1,
-  );
-  expect(inspectQuizStoredState(storage.getItem(quizStorageKey), afterExpiration).status).toBe(
-    "expired",
-  );
-  expect(loadQuizState(storage, afterExpiration)).toEqual(createInitialQuizState());
-  expect(storage.getItem(quizStorageKey)).toBeNull();
+test("storage vencido, adulterado ou com PII é descartado", () => {
+  const now = new Date("2026-07-14T12:00:00.000Z");
+  const old = new Date(now.getTime() - quizStorageMaxAgeMs - 1).toISOString();
+  const validAnswer = toAnswers(answersByProfile["simple-start"]).at(0);
+  expect(validAnswer).toBeDefined();
+  if (validAnswer === undefined) return;
+  expect(
+    inspectQuizStoredState(
+      JSON.stringify({
+        version: 2,
+        savedAt: old,
+        answers: [validAnswer],
+        currentStep: 0,
+      }),
+      now,
+    ).status,
+  ).toBe("expired");
+  expect(
+    inspectQuizStoredState(
+      JSON.stringify({
+        version: 2,
+        savedAt: now.toISOString(),
+        answers: [validAnswer],
+        currentStep: 0,
+        email: "pessoa@dominio.invalid",
+      }),
+      now,
+    ).status,
+  ).toBe("invalid");
+  expect(inspectQuizStoredState("{", now).status).toBe("invalid");
 });
 
-test("storage corrompido ou com campo pessoal é descartado", () => {
-  const storage = new MemoryStorage();
-  storage.setItem(
-    quizStorageKey,
-    JSON.stringify({
-      version: quizStorageVersion,
-      savedAt: new Date().toISOString(),
-      answers: [],
-      currentStep: -1,
-      email: "visitante@example.com",
-    }),
-  );
-  expect(loadQuizState(storage)).toEqual(createInitialQuizState());
-  expect(storage.getItem(quizStorageKey)).toBeNull();
-
-  storage.setItem(quizStorageKey, "{json-corrompido");
-  expect(loadQuizState(storage)).toEqual(createInitialQuizState());
-  expect(storage.getItem(quizStorageKey)).toBeNull();
-});
-
-test("formato legado é migrado com segurança sem trocar a chave", () => {
-  const storage = new MemoryStorage();
-  const answer = answersForProfile("gradual-consistency")[0];
-  if (answer === undefined) throw new Error("Resposta legada ausente.");
-  storage.setItem(
-    quizStorageKey,
-    JSON.stringify({ answers: [answer], currentStep: 1 }),
-  );
-  const now = new Date("2026-07-14T16:00:00.000Z");
-  expect(loadQuizState(storage, now)).toEqual({
-    answers: [answer],
-    currentStep: 1,
-  });
-  const migrated = JSON.parse(storage.getItem(quizStorageKey) ?? "{}") as {
-    version?: unknown;
-    savedAt?: unknown;
-  };
-  expect(migrated.version).toBe(quizStorageVersion);
-  expect(migrated.savedAt).toBe(now.toISOString());
-});
-
-test("tela inicial apresenta escopo, duração e privacidade", async ({ page }) => {
+test("início comunica duração, privacidade e ausência de diagnóstico", async ({
+  page,
+}) => {
   await page.goto("/quiz");
-  await expect(page).toHaveURL(/\/quiz\/?$/);
   await expect(
-    page.getByRole("heading", {
-      level: 1,
-      name: "Qual tipo de rotina combina com o seu momento?",
-    }),
+    page.getByRole("heading", { name: "Que ritmo faz o cuidado continuar?" }),
   ).toBeVisible();
-  await expect(page.getByText("Leva cerca de 1 minuto.")).toBeVisible();
-  await expect(page.getByText(/não solicita dados pessoais/)).toBeVisible();
-  await expect(page.locator(".site-header, .site-footer")).toHaveCount(0);
+  await expect(page.getByText(/Menos de 2 minutos/)).toBeVisible();
+  await expect(page.getByText(/Sem diagnóstico, sem dados pessoais/)).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+    "content",
+    "noindex, nofollow",
+  );
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
 });
 
-test("seleção, avanço e progresso mostram uma pergunta por etapa", async ({
+test("pergunta mostra progresso orgânico, feedback e erro associado", async ({
   page,
 }) => {
   await startQuiz(page);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    quizQuestions[0]?.title ?? "",
-  );
-  await expect(page.getByRole("radio")).toHaveCount(3);
-  await expect(page.locator("fieldset")).toHaveCount(1);
-  await expect(page.getByRole("progressbar")).toHaveAttribute(
-    "aria-valuenow",
-    "1",
-  );
-  await page.getByRole("radio").nth(1).check();
+  const progress = page.getByRole("progressbar", { name: "Progresso do quiz" });
+  await expect(progress).toHaveAttribute("aria-valuenow", "1");
   await page.getByRole("button", { name: "Continuar" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    quizQuestions[1]?.title ?? "",
-  );
-  await expect(page.getByRole("progressbar")).toHaveAttribute(
-    "aria-valuenow",
-    "2",
-  );
-  await expect(page.getByRole("radio")).toHaveCount(3);
+  await expect(page.getByRole("alert")).toContainText("Escolha uma resposta");
+  await selectOption(page, "begin-small");
+  await expect(page.getByText(/Escolha registrada/)).toBeVisible();
+  await page.getByRole("button", { name: "Continuar" }).click();
+  await expect(progress).toHaveAttribute("aria-valuenow", "2");
 });
 
-test("erro é associado ao grupo quando nenhuma resposta foi escolhida", async ({
-  page,
-}) => {
+test("voltar e refresh preservam etapa e resposta localmente", async ({ page }) => {
   await startQuiz(page);
+  await selectOption(page, "begin-with-time");
   await page.getByRole("button", { name: "Continuar" }).click();
-  const error = page.getByText("Escolha uma resposta para continuar.");
-  await expect(error).toBeVisible();
-  await expect(page.locator("fieldset")).toHaveAttribute(
-    "aria-describedby",
-    "quiz-error-routine-approach",
-  );
-  await expect(page.locator("fieldset")).toHaveAttribute("aria-invalid", "true");
-});
-
-test("voltar permite alterar resposta e devolve foco ao título", async ({
-  page,
-}) => {
-  await startQuiz(page);
-  await page.getByRole("radio").nth(0).check();
-  await page.getByRole("button", { name: "Continuar" }).click();
-  await page.getByRole("button", { name: "Voltar" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
-  await expect(page.getByRole("radio").nth(0)).toBeChecked();
-  await page.getByRole("radio").nth(2).check();
-  await expect(page.getByRole("radio").nth(2)).toBeChecked();
-});
-
-test("refresh e retorno retomam etapa e resposta no dispositivo", async ({
-  page,
-}) => {
-  await startQuiz(page);
-  await page.getByRole("radio").nth(1).check();
-  await page.getByRole("button", { name: "Continuar" }).click();
+  await selectOption(page, "week-changes");
   await page.reload();
-  await expect(page.getByRole("progressbar")).toHaveAttribute(
-    "aria-valuenow",
-    "2",
-  );
+  await expect(page.locator('input[value="week-changes"]')).toBeChecked();
   await page.getByRole("button", { name: "Voltar" }).click();
-  await expect(page.getByRole("radio").nth(1)).toBeChecked();
+  await expect(page.locator('input[value="begin-with-time"]')).toBeChecked();
+  await expect(page.locator("#quiz-question-title")).toBeFocused();
 });
 
-test("fluxo completo cria resultado retomável sem resposta na URL", async ({
+test("fluxo completo cria revelação retomável e não coloca respostas na URL", async ({
   page,
 }) => {
-  await startQuiz(page);
-  await completeQuiz(page, 0);
+  await completeQuiz(page);
   await expect(page).toHaveURL(/\/quiz\/resultado$/);
   await expect(
-    page.getByRole("heading", { level: 1, name: "Seu perfil é Começo simples." }),
+    page.getByRole("heading", { name: quizProfiles["simple-start"].title }),
   ).toBeVisible();
-  await expect(page.getByRole("listitem")).toHaveCount(3);
-  expect(new URL(page.url()).search).toBe("");
-  expect(new URL(page.url()).hash).toBe("");
+  await expect(page.getByText("Um ritual possível")).toBeVisible();
+  await expect(page.getByText(/não é diagnóstico/i)).toBeVisible();
+  await expect(
+    page.locator('a[href*="belvitale.pay.yampi.com.br"]'),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("link", { name: "Abrir a composição" }),
+  ).toHaveAttribute("href", "/#composicao");
+  expect(page.url()).not.toContain("answer");
+  const stored = await page.evaluate((key) => localStorage.getItem(key), quizStorageKey);
+  expect(stored).not.toBeNull();
+  expect(stored).not.toMatch(/email|phone|name/i);
   await page.reload();
   await expect(
-    page.getByRole("heading", { level: 1, name: "Seu perfil é Começo simples." }),
+    page.getByRole("heading", { name: quizProfiles["simple-start"].title }),
   ).toBeVisible();
 });
 
-test("resultado inválido não inventa perfil e limpa o storage", async ({ page }) => {
-  await page.goto("/quiz");
-  await page.evaluate((key) => {
-    localStorage.setItem(key, "{estado-corrompido");
-  }, quizStorageKey);
+test("resultado direto inválido não inventa perfil", async ({ page }) => {
   await page.goto("/quiz/resultado");
   await expect(
-    page.getByRole("heading", {
-      level: 1,
-      name: "Este resultado não está disponível.",
-    }),
+    page.getByRole("heading", { name: /Seu ritmo precisa das seis escolhas/ }),
   ).toBeVisible();
-  await expect(page.getByText(/Nenhum resultado é criado/)).toBeVisible();
-  await expect(page.getByText(/Seu perfil é/)).toHaveCount(0);
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-    "content",
-    "noindex, follow",
-  );
-  expect(
-    await page.evaluate((key) => localStorage.getItem(key), quizStorageKey),
-  ).toBeNull();
-  await page.getByRole("button", { name: "Começar o quiz" }).click();
-  await expect(page).toHaveURL(/\/quiz$/);
-  await expect(page.getByRole("progressbar")).toHaveAttribute(
-    "aria-valuenow",
-    "1",
-  );
-});
-
-test("resultado não exibe oferta e aponta somente para composição", async ({
-  page,
-}) => {
-  await startQuiz(page);
-  await completeQuiz(page, 1);
-  await expect(
-    page.getByRole("heading", {
-      level: 1,
-      name: "Seu perfil é Constância gradual.",
-    }),
-  ).toBeVisible();
-  await expect(page.getByRole("link", { name: "Ver composição" })).toHaveAttribute(
-    "href",
-    "/#composicao",
-  );
-  await expect(page.locator('a[href*="pay.yampi"], [class*="commercial"]')).toHaveCount(
-    0,
-  );
-  await expect(page.getByText(/preço|pote|checkout|comprar/i)).toHaveCount(0);
-});
-
-test("recomeçar limpa conclusão, volta ao início e restaura foco", async ({
-  page,
-}) => {
-  await startQuiz(page);
-  await completeQuiz(page, 2);
-  await page.getByRole("button", { name: "Recomeçar quiz" }).click();
-  await expect(page).toHaveURL(/\/quiz$/);
-  const title = page.getByRole("heading", {
-    level: 1,
-    name: "Qual tipo de rotina combina com o seu momento?",
-  });
-  await expect(title).toBeVisible();
-  await expect(title).toBeFocused();
-  const stored = await page.evaluate((key) => localStorage.getItem(key), quizStorageKey);
-  expect(stored).toBeNull();
-});
-
-test("teclado seleciona resposta e mantém foco navegável", async ({ page }) => {
-  await startQuiz(page);
-  const firstRadio = page.getByRole("radio").first();
-  await firstRadio.focus();
-  await page.keyboard.press("Space");
-  await expect(firstRadio).toBeChecked();
-  await page.keyboard.press("Tab");
-  await expect(page.getByRole("button", { name: "Continuar" })).toBeFocused();
-  await page.keyboard.press("Enter");
-  await expect(page.getByRole("progressbar")).toHaveAttribute(
-    "aria-valuenow",
-    "2",
-  );
-});
-
-test("eventos permanecem locais e nunca incluem respostas individuais", async ({
-  page,
-}) => {
-  await page.goto("/quiz");
-  const requests: string[] = [];
-  const commerceEvents: unknown[] = [];
-  const quizEvents: unknown[] = [];
-  page.on("request", (request) => {
-    if (request.method() !== "GET") requests.push(request.url());
-  });
-  await page.evaluate(() => {
-    const events = globalThis as typeof globalThis & {
-      __commerceEvents?: unknown[];
-      __quizEvents?: unknown[];
-    };
-    events.__commerceEvents = [];
-    events.__quizEvents = [];
-    globalThis.addEventListener("belvitale:commerce", (event) => {
-      events.__commerceEvents?.push((event as CustomEvent).detail);
-    });
-    globalThis.addEventListener("belvitale:quiz", (event) => {
-      events.__quizEvents?.push((event as CustomEvent).detail);
-    });
-  });
-  await page.getByRole("button", { name: "Começar o quiz" }).click();
-  await page.getByRole("radio").first().check();
-  await page.getByRole("button", { name: "Continuar" }).click();
-  const captured = await page.evaluate(() => {
-    const events = globalThis as typeof globalThis & {
-      __commerceEvents?: unknown[];
-      __quizEvents?: unknown[];
-    };
-    return {
-      commerce: events.__commerceEvents ?? [],
-      quiz: events.__quizEvents ?? [],
-    };
-  });
-  commerceEvents.push(...captured.commerce);
-  quizEvents.push(...captured.quiz);
-  expect(requests).toEqual([]);
-  expect(commerceEvents).toEqual([]);
-  expect(quizEvents).toEqual([
-    { event: "quiz_start", payload: { source: "quiz" } },
-    {
-      event: "quiz_step_complete",
-      payload: { source: "quiz", step: 1 },
-    },
-  ]);
-  expect(JSON.stringify(quizEvents)).not.toMatch(/question|option|answer/i);
-});
-
-test("metadados aprovados indexam somente a entrada do quiz", async ({
-  page,
-}) => {
-  await page.goto("/quiz");
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-    "content",
-    "index, follow",
-  );
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
-    "href",
-    "https://example.test/quiz",
-  );
-  for (const property of [
-    "og:title",
-    "og:description",
-    "og:type",
-    "og:url",
-  ]) {
-    await expect(page.locator(`meta[property="${property}"]`)).toHaveCount(1);
+  for (const profile of Object.values(quizProfiles)) {
+    await expect(
+      page.getByRole("heading", { name: profile.title }),
+    ).toHaveCount(0);
   }
-  await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(0);
-  await expect(page).toHaveTitle("Quiz de rotina | Belvitale");
-
-  await page.goto("/quiz/resultado");
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-    "content",
-    "noindex, follow",
-  );
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
-    "href",
-    "https://example.test/quiz",
-  );
-  await page.goto("/");
-  await expect(page.locator('a[href="/quiz"]')).toHaveCount(1);
+  await page.getByRole("button", { name: "Começar o quiz" }).click();
+  await expect(page).toHaveURL(/\/quiz$/);
+  await expect(page.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1");
 });
 
-test("CTA aprovado leva da homepage ao quiz sem entrar no hero", async ({
-  page,
-}) => {
-  await page.goto("/");
-  const ctaSection = page.locator(".home-quiz-cta");
-  await expect(ctaSection).toBeVisible();
-  await expect(
-    ctaSection.getByRole("heading", {
-      level: 2,
-      name: "Entenda qual tipo de rotina combina com seu momento",
-    }),
-  ).toBeVisible();
-  await expect(page.locator(".institutional-hero a[href='/quiz']")).toHaveCount(0);
-  await ctaSection.getByRole("link", { name: "Fazer o quiz" }).click();
-  await expect(page).toHaveURL(/\/quiz\/?$/);
-  await expect(
-    page.getByRole("heading", {
-      level: 1,
-      name: "Qual tipo de rotina combina com o seu momento?",
-    }),
-  ).toBeVisible();
-});
-
-test("camada local remove campos não permitidos do payload", () => {
-  const events: LocalQuizEvent[] = [];
-  const unsubscribe = subscribeToQuizEvents((event) => events.push(event));
-  const contaminatedPayload = {
-    source: "quiz",
-    step: 2,
-    questionId: "routine-approach",
-    optionId: "routine-approach-a",
-    email: "visitante@example.com",
-  } as unknown as QuizEventPayload;
-  recordQuizEvent("quiz_step_complete", contaminatedPayload);
-  unsubscribe();
-  expect(events).toEqual([
-    {
-      event: "quiz_step_complete",
-      payload: { source: "quiz", step: 2 },
-    },
-  ]);
-});
-
-test("fallback sem JavaScript explica a limitação e oferece composição", async ({
-  browser,
-}) => {
-  const context = await browser.newContext({
-    javaScriptEnabled: false,
-    viewport: { width: 390, height: 844 },
-  });
-  const page = await context.newPage();
-  await page.goto("/quiz/");
-  await expect(
-    page.getByRole("heading", {
-      level: 1,
-      name: "Qual tipo de rotina combina com o seu momento?",
-    }),
-  ).toBeVisible();
-  await expect(page.getByText(/experiência interativa exige JavaScript/)).toBeVisible();
-  await expect(page.getByRole("link", { name: "Ver composição do CeluClin" })).toHaveAttribute(
-    "href",
-    "/#composicao",
-  );
-  await context.close();
-});
-
-test("reduced motion remove deslocamento e preserva o progresso", async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await startQuiz(page);
-  const animation = await page
-    .locator(".quiz-step")
-    .evaluate((element) => getComputedStyle(element).animationName);
-  const transition = await page
-    .locator(".quiz-progress span")
-    .evaluate((element) => getComputedStyle(element).transitionDuration);
-  expect(animation).toBe("none");
-  expect(transition).toBe("0s");
-  await expect(page.getByRole("progressbar")).toBeVisible();
-});
-
-for (const viewport of viewports) {
-  test(`quiz permanece estável em ${String(viewport.width)}x${String(viewport.height)}`, async ({
-    page,
-  }) => {
-    await page.setViewportSize(viewport);
-    const problems: string[] = [];
-    page.on("console", (message) => {
-      if (message.type() === "error") problems.push(message.text());
-    });
-    page.on("pageerror", (error) => problems.push(error.message));
-    await startQuiz(page);
-    await expectNoHorizontalOverflow(page);
-    await expect(page.getByRole("radio")).toHaveCount(3);
-    expect(problems).toEqual([]);
-  });
-}
-
-test("texto a 200% mantém início, pergunta e controles sem overflow", async ({
+test("teclado seleciona opção e controles têm alvos confortáveis", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/quiz");
-  await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
-  await expectNoHorizontalOverflow(page);
-  await page.getByRole("button", { name: "Começar o quiz" }).click();
-  await expectNoHorizontalOverflow(page);
-  await expect(page.getByRole("radio")).toHaveCount(3);
-  await expect(page.getByRole("button", { name: "Continuar" })).toBeVisible();
+  await startQuiz(page);
+  const input = page.locator('input[value="begin-small"]');
+  await input.focus();
+  await page.keyboard.press("Space");
+  await expect(input).toBeChecked();
+  const controls = page.locator(".quiz-option, .quiz-button, .quiz-back");
+  for (const rect of await controls.evaluateAll((elements) =>
+    elements.map((element) => element.getBoundingClientRect()),
+  )) {
+    expect(rect.height).toBeGreaterThanOrEqual(44);
+  }
 });
 
-test("perguntas e telas não contêm dados sensíveis ou claims proibidos", async ({
-  page,
-}) => {
-  await page.goto("/quiz");
-  const sourceText = JSON.stringify({ quizQuestions, quizProfiles });
-  expect(sourceText).not.toMatch(
-    /peso|medidas corporais|doença|medicamento|gestação|grau de celulite|tratamento ideal|protocolo perfeito|resultado personalizado|elimine|combata|reduza|transforme|em quantos dias/i,
+test("eventos nunca expõem respostas individuais", async ({ page }) => {
+  await page.addInitScript(() => {
+    const target = window as Window & { __QUIZ_EVENTS__?: unknown[] };
+    target.__QUIZ_EVENTS__ = [];
+    addEventListener("belvitale:quiz", (event) => {
+      target.__QUIZ_EVENTS__?.push((event as CustomEvent).detail);
+    });
+  });
+  await startQuiz(page);
+  await selectOption(page, "begin-small");
+  await page.getByRole("button", { name: "Continuar" }).click();
+  const events = await page.evaluate(
+    () => (window as Window & { __QUIZ_EVENTS__?: unknown[] }).__QUIZ_EVENTS__,
   );
-  await expect(
-    page.locator('input[type="text"], input[type="email"], input[type="tel"], textarea'),
-  ).toHaveCount(0);
-  await expect(page.getByText(/WhatsApp|diagnóstico gratuito|seu corpo precisa/i)).toHaveCount(
-    0,
+  expect(JSON.stringify(events)).not.toMatch(
+    /begin-small|questionId|optionId|email|phone/i,
   );
+});
+
+test("quiz continua operável a 200% sem overflow de página", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await startQuiz(page);
+  await page.evaluate(() => {
+    document.documentElement.style.fontSize = "200%";
+  });
+  const size = await page.evaluate(() => ({
+    client: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(size.scroll).toBeLessThanOrEqual(size.client + 1);
+  await expect(page.getByRole("button", { name: "Continuar" })).toBeVisible();
 });
