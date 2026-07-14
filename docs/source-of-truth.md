@@ -1,0 +1,70 @@
+# Fonte da verdade
+
+Atualizado em 14/07/2026. O rótulo foi inspecionado visualmente nas duas páginas do PDF fornecido. Informações comerciais e relatos não são promovidos a fatos sem a confirmação indicada abaixo.
+
+## Fatos confirmados
+
+- Marca: Belvitale.
+- CNPJ informado diretamente pelo usuário: 61.493.515/0001-65; os dígitos verificadores são válidos.
+- SAC informado diretamente pelo usuário: (63) 99108-1785. O canal não será identificado como WhatsApp sem confirmação específica.
+- Produto: CeluClin.
+- Categoria: suplemento alimentar em cápsulas; não é medicamento.
+- Conteúdo: 60 cápsulas de 500 mg; peso líquido de 30 g indicado no rótulo.
+- Porção e sugestão de uso no rótulo: 2 cápsulas ao dia.
+- Duração aproximada calculada pela quantidade e uso informado: 30 dias por frasco.
+- Público mínimo indicado: maiores de 19 anos.
+- O rótulo informa que o produto não contém glúten e não contém lactose.
+- O rótulo informa que não deve ser consumido por gestantes, lactantes e crianças.
+- Composição por porção diária de 2 cápsulas: fibra da casca da maçã 150 mg; fibra de aveia 150 mg; quercetina 100 mg; vitamina C 100 mg; zinco 11 mg; extrato de cúrcuma 130 mg; chlorella 100 mg; spirulina 100 mg.
+- O PDF `154x73 - Celuclin Rotulo.pdf` é a arte plana do rótulo, não uma imagem de frasco. A página 2 é uma camada de acabamento.
+- Links de checkout recebidos do usuário, mas fora do escopo de implementação atual:
+  - 1 frasco / 1 mês informado: `https://belvitale.pay.yampi.com.br/r/PWJOI4I112`;
+  - 3 frascos / 3 meses informados: `https://belvitale.pay.yampi.com.br/r/1E8NNCGJW9`;
+  - 5 + 2 adicionais / 7 meses informados: `https://belvitale.pay.yampi.com.br/r/41CHX4MGPX`.
+- Os três checkouts foram revalidados em 14/07/2026 e confirmaram respectivamente as estruturas de 1 pote, 3 potes e 5 + 2 adicionais. O checkout usa “grátis” na terceira opção, mas essa condição promocional não está aprovada para a copy. Preços continuam fora da fonte de publicação porque não receberam confirmação humana.
+
+## Fatos ainda não confirmados
+
+- Origem, autoria, licenças e direitos das fotografias, renders, imagens lifestyle e logos.
+- Origem, autorização de uso, vínculo com clientes reais, consentimento, contexto, datas e ausência de manipulação enganosa das imagens chamadas “prova”.
+- Cronologia das imagens e identidade da pessoa em cada lado das montagens.
+- Atualidade dos dados de fabricante, distribuidora, responsável técnica e alergênicos impressos no arquivo de rótulo; eles não serão reutilizados em copy institucional sem validação empresarial.
+- Razão social, nome fantasia jurídico, e-mail, WhatsApp, endereço, cidade, estado, domínio institucional e prazo de resposta do SAC.
+- Conteúdo jurídico final e aprovação da Política de Privacidade, dos Termos de Uso e da Política de Trocas e Reembolso.
+- Status sanitário, número de registro/notificação e qualquer expressão “aprovado pela Anvisa”.
+- Preços, parcelamento, frete, prazo, estoque, garantia, troca e reembolso.
+- E-mail, redes sociais, laudos e recomendações profissionais.
+- Autenticidade, autoria, aprovação final, autorização e identificação dos rascunhos de depoimentos. O rascunho 6 está sem texto e não há rascunho 7 no material recebido.
+- Se as imagens de frasco/cápsulas são fotografias oficiais. O texto incoerente/ilegível observado impede seu uso como representação oficial nesta rodada.
+
+## Claims permitidos
+
+- “Suplemento alimentar em cápsulas.”
+- “60 cápsulas de 500 mg.”
+- “Porção diária informada: 2 cápsulas.”
+- “Duração aproximada de 30 dias por frasco”, deixando claro que decorre da quantidade e do uso informado.
+- “Para adultos a partir de 19 anos”, conforme o rótulo.
+- Listagem factual de ingredientes e quantidades, sem associar mecanismo ou promessa de resultado.
+- “Não contém glúten” e “não contém lactose”, porque constam no rótulo fornecido.
+- Mensagens sobre transparência, leitura do rótulo, constância, rotina e liberdade sem promessa corporal.
+- “Relato individual. A experiência pode variar de pessoa para pessoa.” somente após existir depoimento verdadeiro e autorizado.
+
+## Claims proibidos
+
+- Cura ou elimina celulite.
+- Queima gordura.
+- Reduz gordura localizada.
+- Reduz medidas.
+- Faz drenagem.
+- Melhora circulação.
+- Combate inflamação.
+- Desincha em determinado prazo.
+- Não possui contraindicações.
+- 100% natural.
+- Resultado garantido.
+- Cientificamente comprovado sem estudo específico.
+- Aprovado pela Anvisa sem documentação correspondente.
+- Médicos recomendam sem prova.
+- Atua onde cremes não chegam.
+- Antes e depois gerado por IA.
+- “Resultado real”, “transformação comprovada” ou atribuição das imagens pendentes ao CeluClin.

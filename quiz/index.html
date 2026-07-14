@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta
+      name="description"
+      content="Quiz de rotina da Belvitale, sem diagnóstico, oferta ou coleta de dados pessoais."
+    />
+    <title>Quiz de rotina | Belvitale</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <style>
+        body {
+          margin: 0;
+          background: #f8f4ef;
+          color: #271d2d;
+          font-family: Arial, sans-serif;
+        }
+        .quiz-no-js {
+          display: flex;
+          width: min(calc(100% - 2rem), 48rem);
+          min-height: 100vh;
+          margin: auto;
+          flex-direction: column;
+          justify-content: center;
+        }
+        .quiz-no-js strong {
+          color: #173d30;
+          font: 600 1.5rem Georgia, serif;
+        }
+        .quiz-no-js h1 {
+          max-width: 14ch;
+          margin: 3rem 0 0;
+          color: #173d30;
+          font: 500 clamp(2.5rem, 10vw, 5rem) / 1 Georgia, serif;
+        }
+        .quiz-no-js p {
+          max-width: 40rem;
+          color: #665d68;
+          line-height: 1.6;
+        }
+        .quiz-no-js a {
+          width: fit-content;
+          margin-top: 1rem;
+          padding: 0.9rem 1.25rem;
+          border-radius: 999px;
+          background: #173d30;
+          color: white;
+          font-weight: 700;
+          text-decoration: none;
+        }
+      </style>
+      <main class="quiz-no-js">
+        <strong>Belvitale</strong>
+        <h1>Qual tipo de rotina combina com o seu momento?</h1>
+        <p>
+          Este quiz não solicita dados pessoais e não realiza diagnóstico. A
+          experiência interativa exige JavaScript para salvar seu progresso apenas
+          neste dispositivo.
+        </p>
+        <a href="/#composicao">Ver composição do CeluClin</a>
+      </main>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
