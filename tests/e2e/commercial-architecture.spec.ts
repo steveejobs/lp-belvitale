@@ -170,24 +170,25 @@ test("eventos comerciais permanecem locais e sem PII", () => {
   expect(JSON.stringify(events)).not.toMatch(/email|phone|answer/i);
 });
 
-test("estado real mantém a direção comercial interna fora da home", async ({
+test("preview validado exibe as três opções sem linguagem interna ou preço inventado", async ({
   page,
 }) => {
   await page.goto("/");
-  const section = page.locator("#kits");
-  await expect(section).toHaveCount(0);
-  await expect(page.locator('a[href*="belvitale.pay.yampi.com.br"]')).toHaveCount(0);
-  await expect(page.locator("body")).not.toContainText("Direção interna");
+  const section = page.locator("#ofertas");
+  await expect(section).toHaveAttribute("data-preview-ready", "true");
+  await expect(section.locator("[data-offer-id]")).toHaveCount(3);
+  await expect(section.locator('a[href*="belvitale.pay.yampi.com.br"]')).toHaveCount(3);
+  await expect(section).not.toContainText(/gate|fixture|validação|direção interna/i);
+  await expect(section).not.toContainText(/R\$|parcelas|economia|desconto/i);
 });
 
-test("fixture interna preserva URLs e identifica valores fictícios", async ({
+test("fixture de integração preserva os três links exatos", async ({
   page,
 }) => {
   await installReadyFixture(page);
   await page.goto("/");
-  const section = page.locator("#kits");
-  await expect(section).toHaveAttribute("data-ready-fixture", "true");
-  await expect(section.getByText(/Direção interna/)).toBeVisible();
+  const section = page.locator("#ofertas");
+  await expect(section).toHaveAttribute("data-preview-ready", "true");
   const links = section.locator('a[href*="belvitale.pay.yampi.com.br"]');
   await expect(links).toHaveCount(3);
   await expect(links.nth(0)).toHaveAttribute(
@@ -202,20 +203,16 @@ test("fixture interna preserva URLs e identifica valores fictícios", async ({
     "href",
     "https://belvitale.pay.yampi.com.br/r/41CHX4MGPX",
   );
-  await expect(section.getByText("fixture interna · valor fictício")).toHaveCount(3);
+  await expect(section).not.toContainText(/fixture|valor fictício/i);
 });
 
-test("CTA da fixture funciona por teclado e registra somente IDs", async ({
+test("CTA da oferta funciona por teclado e registra somente IDs", async ({
   page,
 }) => {
   await installReadyFixture(page);
   await page.goto("/");
-  const firstOffer = page.locator('#kits [data-offer-id="one-month"]');
-  const selector = firstOffer.locator(".offer-lane__selector");
-  await selector.focus();
-  await page.keyboard.press("Enter");
-  await expect(firstOffer).toHaveAttribute("data-selected", "true");
-  const cta = firstOffer.locator(".offer-lane__cta");
+  const firstOffer = page.locator('#ofertas [data-offer-id="one-month"]');
+  const cta = firstOffer.locator(".offer-card__cta");
   await cta.focus();
   await page.keyboard.press("Enter");
   const events = await page.evaluate(
@@ -241,15 +238,52 @@ test("comércio mantém alvos e não cria overflow a 200%", async ({ page }) => 
   await page.evaluate(() => {
     document.documentElement.style.fontSize = "200%";
   });
-  await page.locator("#kits").scrollIntoViewIfNeeded();
+  await page.locator("#ofertas").scrollIntoViewIfNeeded();
   const dimensions = await page.evaluate(() => ({
     client: document.documentElement.clientWidth,
     scroll: document.documentElement.scrollWidth,
   }));
   expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client + 1);
-  for (const box of await page.locator("#kits a").evaluateAll((elements) =>
+  for (const box of await page.locator("#ofertas a").evaluateAll((elements) =>
     elements.map((element) => element.getBoundingClientRect()),
   )) {
     expect(box.height).toBeGreaterThanOrEqual(44);
   }
+});
+
+test("CTAs preservam somente UTMs permitidas", async ({ page }) => {
+  await page.goto(
+    "/?utm_source=instagram&utm_medium=social&utm_campaign=julho&utm_content=video&utm_term=celuclin&fbclid=remover&foo=bar",
+  );
+  const checkoutLinks = page.locator("#ofertas .offer-card__cta");
+  await expect(checkoutLinks).toHaveCount(3);
+  const hrefs = await checkoutLinks.evaluateAll((links) =>
+    links.map((link) => (link as HTMLAnchorElement).href),
+  );
+  expect(hrefs).toHaveLength(3);
+  for (const href of hrefs) {
+    const url = new URL(href);
+    expect(url.searchParams.get("utm_source")).toBe("instagram");
+    expect(url.searchParams.get("utm_medium")).toBe("social");
+    expect(url.searchParams.get("utm_campaign")).toBe("julho");
+    expect(url.searchParams.get("utm_content")).toBe("video");
+    expect(url.searchParams.get("utm_term")).toBe("celuclin");
+    expect(url.searchParams.has("fbclid")).toBe(false);
+    expect(url.searchParams.has("foo")).toBe(false);
+  }
+});
+
+test("CTA fixo mobile surge após o hero e some ao chegar nas ofertas", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const sticky = page.locator(".mobile-offer-cta");
+  await expect(sticky).toHaveAttribute("data-visible", "false");
+  await page.locator("#celuclin").scrollIntoViewIfNeeded();
+  await expect(sticky).toHaveAttribute("data-visible", "true");
+  const box = await sticky.boundingBox();
+  expect(box?.height).toBeGreaterThanOrEqual(48);
+  await page.locator("#ofertas").scrollIntoViewIfNeeded();
+  await expect(sticky).toHaveAttribute("data-visible", "false");
 });

@@ -217,7 +217,7 @@ const proofGalleryAssets: readonly GalleryAsset[] = proofAssets.map((asset) => (
       : asset.category === "laxity"
         ? "Flacidez"
         : "Gordura localizada",
-  src: asset.src ?? "",
+  src: asset.src,
   width: asset.width,
   height: asset.height,
   alt: asset.alt,

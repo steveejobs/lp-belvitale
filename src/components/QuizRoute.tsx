@@ -408,7 +408,7 @@ function QuizResult({
             </section>
           ) : null}
 
-          {evidence?.src === null || evidence === undefined ? null : (
+          {evidence === undefined ? null : (
             <section className="quiz-evidence" aria-labelledby="evidence-title">
               <div>
                 <p className="quiz-eyebrow">Prova geral da marca</p>

@@ -74,7 +74,7 @@ export const homeContent = {
       "A porção informada corresponde a duas cápsulas. Nomes e quantidades seguem a informação confirmada na embalagem.",
     source: "Quantidade por porção · rótulo + documentação",
     partial:
-      "A cúrcuma permanece fora desta seleção enquanto o nome divergir entre as fontes. O rótulo original continua disponível para leitura integral.",
+      "Para consultar todos os itens e avisos da embalagem, abra o rótulo original.",
   },
   proof: {
     eyebrow: "Resultados autorizados",
@@ -91,10 +91,10 @@ export const homeContent = {
       "Sessenta cápsulas divididas pelo uso informado de duas ao dia: 30 dias de rotina. Sem compensação, cronômetro ou espetáculo.",
   },
   commercial: {
-    eyebrow: "Organizar sem prometer mais",
-    title: "Escolha a duração pela conveniência, nunca pela promessa de eficácia.",
+    eyebrow: "Opções CeluClin",
+    title: "Escolha como começar.",
     body:
-      "As três estruturas estão desenhadas. Preço, parcelamento, imagens de kit, política, identidade empresarial e situação sanitária continuam protegidos pelo gate comercial.",
+      "Compare pela duração que cabe na sua rotina. A condição comercial atual aparece no checkout da Belvitale.",
     labels: {
       "one-month": "Começar",
       "three-months": "Continuar",

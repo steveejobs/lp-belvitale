@@ -1,22 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { recordCommerceEvent } from "../commerce/commerceEvents";
-import { homeContent } from "../content/homeContent";
+import { MobileOfferCta } from "./MobileOfferCta";
+import { campaignAssets, canRenderCampaignAsset } from "../data/campaignAssets";
 import {
-  campaignAssets,
-  canRenderCampaignAsset,
-  internalMediaPreview,
-} from "../data/campaignAssets";
-import { checkoutGalleryAssets } from "../data/galleryAssets";
-import {
-  calculatePricePerBottle,
   canPublishCommercialSection,
   commercialOffers,
   commercialPublicationDependencies,
-  formatBRL,
   getOfferTotalBottles,
   type CommercialOffer,
   type CommercialPublicationDependencies,
 } from "../data/commercialOffers";
+import {
+  commercialPreviewReady,
+  getCheckoutUrlWithUtms,
+} from "../data/commercialPreview";
 import { commercialSurfaceReady } from "../data/commercialPublicationGate";
 import { regulatoryPublicationReady } from "../data/regulatoryFacts";
 
@@ -35,91 +32,105 @@ function getDevelopmentFixture(): CommercialDevelopmentFixture | null {
   return (window as FixtureWindow).__BELVITALE_COMMERCIAL_FIXTURE__ ?? null;
 }
 
-function describeContents(offer: CommercialOffer): string {
-  const total = getOfferTotalBottles(offer);
-  if (offer.additionalBottles === undefined) return `${String(total)} ${total === 1 ? "frasco" : "frascos"}`;
-  return `${String(offer.bottles)} frascos + ${String(offer.additionalBottles)} adicionais`;
+function offerCopy(offer: CommercialOffer) {
+  if (offer.id === "one-month") {
+    return {
+      title: "CeluClin 1 Mês",
+      contents: "1 pote",
+      duration: "Aproximadamente 30 dias",
+      action: "Escolher 1 mês",
+    };
+  }
+  if (offer.id === "three-months") {
+    return {
+      title: "CeluClin 3 Meses",
+      contents: "3 potes",
+      duration: "Aproximadamente 90 dias",
+      action: "Escolher 3 meses",
+    };
+  }
+  return {
+    title: "CeluClin 7 Meses",
+    contents: "5 potes + 2 grátis",
+    duration: "Aproximadamente 210 dias",
+    action: "Escolher 7 meses",
+  };
 }
 
-interface OfferLaneProps {
+const offerVisuals = {
+  "one-month": { src: "/offers/celuclin-one.webp", width: 800, height: 700 },
+  "three-months": { src: "/offers/celuclin-three.webp", width: 1000, height: 700 },
+  "seven-months": { src: "/offers/celuclin-seven.webp", width: 1200, height: 760 },
+} as const;
+
+interface OfferCardProps {
   readonly offer: CommercialOffer;
   readonly index: number;
-  readonly selected: boolean;
   readonly checkoutReady: boolean;
-  readonly fixture: boolean;
-  readonly onSelect: (offer: CommercialOffer) => void;
 }
 
-function OfferLane({ offer, index, selected, checkoutReady, fixture, onSelect }: OfferLaneProps) {
-  const label = homeContent.commercial.labels[offer.id];
-  const totalBottles = getOfferTotalBottles(offer);
-  const days = offer.approximateDurationMonths * 30;
+function OfferCard({ offer, index, checkoutReady }: OfferCardProps) {
   const product = campaignAssets.productFrontPrimary;
+  const bottles = getOfferTotalBottles(offer);
+  const copy = offerCopy(offer);
   const showProduct = canRenderCampaignAsset(product);
-  const kit = checkoutGalleryAssets.find((asset) => {
-    if (offer.id === "one-month") return asset.id === "kit-one-month";
-    if (offer.id === "three-months") return asset.id === "kit-three-months";
-    return asset.id === "kit-seven-months";
-  });
-  const showKit = internalMediaPreview && kit !== undefined;
-  const perBottle = calculatePricePerBottle(offer.price.cash, totalBottles);
+  const visual = offerVisuals[offer.id];
 
   return (
-    <article className="offer-lane" data-offer-id={offer.id} data-selected={selected} style={{ "--offer-index": index } as React.CSSProperties}>
-      <button className="offer-lane__selector" type="button" aria-pressed={selected} onClick={() => onSelect(offer)}>
+    <article
+      className="offer-card"
+      data-offer-id={offer.id}
+      data-count={bottles}
+      style={{ "--offer-index": index } as React.CSSProperties}
+    >
+      <div className="offer-card__heading">
         <span>0{index + 1}</span>
-        <strong>{label}</strong>
-        <small>{days} dias</small>
-      </button>
+        <div>
+          <h3>{copy.title}</h3>
+          <p>{copy.duration}</p>
+        </div>
+      </div>
 
-      <div className="offer-lane__bottles" aria-hidden="true" data-count={totalBottles} data-mode={showKit ? "kit" : "bottles"}>
-        {showKit ? (
+      <div
+        className="offer-card__packshots"
+        data-count={bottles}
+        role="img"
+        aria-label={`${String(bottles)} frascos de CeluClin`}
+      >
+        {showProduct ? (
           <img
-            className="offer-lane__kit"
-            src={kit.src}
-            width={kit.width}
-            height={kit.height}
+            src={visual.src}
+            width={visual.width}
+            height={visual.height}
             alt=""
             loading="lazy"
             decoding="async"
           />
-        ) : showProduct
-          ? Array.from({ length: totalBottles }, (_, bottleIndex) => (
-              <img
-                key={bottleIndex}
-                src={product.src}
-                width={product.width}
-                height={product.height}
-                alt=""
-                loading="lazy"
-                decoding="async"
-              />
-            ))
-          : <span>{totalBottles}</span>}
+        ) : null}
       </div>
 
-      <div className="offer-lane__facts">
-        <p><span>Conteúdo</span><strong>{describeContents(offer)}</strong></p>
-        <p><span>Cápsulas</span><strong>{offer.totalCapsules}</strong></p>
-        {checkoutReady && offer.price.cash !== undefined ? (
-          <p className="offer-lane__price">
-            <span>Valor total</span><strong>{formatBRL(offer.price.cash)}</strong>
-            {fixture ? <small>fixture interna · valor fictício</small> : null}
-            {perBottle === null ? null : <small>{formatBRL(perBottle)} por frasco</small>}
-          </p>
-        ) : (
-          <p className="offer-lane__pending"><span>Compra</span><strong>Condições em validação</strong></p>
-        )}
+      <div className="offer-card__summary">
+        <strong>{copy.contents}</strong>
+        <span>{offer.totalCapsules} cápsulas no total</span>
       </div>
 
       {checkoutReady ? (
-        <a className="offer-lane__cta" href={offer.checkoutUrl} onClick={() => {
-          recordCommerceEvent("checkout_click", { offerId: offer.id, source: "homepage" });
-        }}>
-          Escolher {label.toLowerCase()}
+        <a
+          className="offer-card__cta"
+          href={getCheckoutUrlWithUtms(offer.checkoutUrl)}
+          onClick={() => {
+            recordCommerceEvent("checkout_click", {
+              offerId: offer.id,
+              source: "homepage",
+            });
+          }}
+        >
+          {copy.action}
         </a>
       ) : (
-        <span className="offer-lane__gate">Checkout protegido pelo gate</span>
+        <button className="offer-card__cta" type="button" disabled>
+          Checkout indisponível
+        </button>
       )}
     </article>
   );
@@ -132,53 +143,50 @@ export function CommercialSection() {
   const offerDataReady = canPublishCommercialSection(offers, dependencies);
   const fixtureReady = fixture?.name === "commercial-ready" && offerDataReady;
   const publicReady = offerDataReady && regulatoryPublicationReady && commercialSurfaceReady;
-  const checkoutReady = publicReady || fixtureReady;
-  const [selectedOfferId, setSelectedOfferId] = useState(offers[1]?.id ?? offers[0]?.id ?? null);
+  const previewReady = fixture === null && commercialPreviewReady;
+  const checkoutReady = publicReady || previewReady || fixtureReady;
   const viewsRecorded = useRef(false);
 
   useEffect(() => {
     if (!checkoutReady || viewsRecorded.current) return;
     viewsRecorded.current = true;
-    offers.forEach((offer) => recordCommerceEvent("offer_view", { offerId: offer.id, source: "homepage" }));
+    offers.forEach((offer) =>
+      recordCommerceEvent("offer_view", { offerId: offer.id, source: "homepage" }),
+    );
   }, [checkoutReady, offers]);
 
-  if (!publicReady && fixture === null) return null;
-
-  function selectOffer(offer: CommercialOffer) {
-    setSelectedOfferId(offer.id);
-    recordCommerceEvent("offer_select", { offerId: offer.id, source: "homepage" });
-  }
-
-  const { commercial } = homeContent;
+  if (!publicReady && !previewReady && fixture === null) return null;
 
   return (
-    <section className="commercial-section" id="kits" aria-labelledby="commercial-title" data-publication-ready={publicReady} data-ready-fixture={fixtureReady}>
-      <div className="commercial-section__heading section-shell">
-        <p className="eyebrow">{commercial.eyebrow}</p>
-        <h2 id="commercial-title">{commercial.title}</h2>
-        <p>{commercial.body}</p>
-        {!publicReady ? <small role="status">Direção interna · nenhuma oferta ou compra está publicada.</small> : null}
-      </div>
+    <>
+      <section
+        className="commercial-section"
+        id="ofertas"
+        aria-labelledby="commercial-title"
+        data-publication-ready={publicReady}
+        data-preview-ready={previewReady || fixtureReady}
+      >
+        <div className="commercial-section__heading section-shell">
+          <p className="eyebrow">Opções CeluClin</p>
+          <h2 id="commercial-title">Escolha como começar.</h2>
+          <p>
+            Compare pela duração que cabe na sua rotina. A condição comercial atual
+            aparece no checkout da Belvitale.
+          </p>
+        </div>
 
-      <div className="offer-lanes section-shell">
-        {offers.map((offer, index) => (
-          <OfferLane
-            key={offer.id}
-            offer={offer}
-            index={index}
-            selected={selectedOfferId === offer.id}
-            checkoutReady={checkoutReady}
-            fixture={fixtureReady}
-            onSelect={selectOffer}
-          />
-        ))}
-      </div>
-
-      <div className="purchase-ribbon" aria-label="Como a compra funcionará quando as ofertas forem aprovadas">
-        <p><span>Escolha</span> a duração pela conveniência.</p>
-        <p><span>Pagamento</span> no ambiente Yampi.</p>
-        <p><span>Acompanhamento</span> pelos canais informados após a compra.</p>
-      </div>
-    </section>
+        <div className="offer-cards section-shell">
+          {offers.map((offer, index) => (
+            <OfferCard
+              key={offer.id}
+              offer={offer}
+              index={index}
+              checkoutReady={checkoutReady}
+            />
+          ))}
+        </div>
+      </section>
+      <MobileOfferCta />
+    </>
   );
 }

@@ -2,13 +2,19 @@ export type VerificationStatus = "pending" | "owner-authorized";
 
 export type ProofCategoryId = "cellulite" | "laxity" | "localized-fat";
 
-export interface ProofAsset {
-  readonly id: string;
+export interface GalleryImage {
+  readonly src: string;
+  readonly alt: string;
   readonly category: ProofCategoryId;
-  readonly src: string | null;
+  readonly aspectRatio: number;
+  readonly fit: "contain" | "cover";
+  readonly objectPosition?: string;
+}
+
+export interface ProofAsset extends GalleryImage {
+  readonly id: string;
   readonly width: number;
   readonly height: number;
-  readonly alt: string;
   readonly verificationStatus: VerificationStatus;
   readonly sourceFile: string;
   readonly sequenceLabel: string;
@@ -42,6 +48,9 @@ export const proofAssets: readonly ProofAsset[] = [
     src: "/proof/cellulite/cellulite-01.webp",
     width: 1254,
     height: 1254,
+    aspectRatio: 1,
+    fit: "contain",
+    objectPosition: "center center",
     alt: "Montagem fotográfica em duas partes com enquadramento de glúteos e coxas.",
     verificationStatus: "owner-authorized",
     sourceFile: "prova 5.png",
@@ -53,6 +62,9 @@ export const proofAssets: readonly ProofAsset[] = [
     src: "/proof/cellulite/cellulite-02.webp",
     width: 1448,
     height: 1086,
+    aspectRatio: 1.3333,
+    fit: "contain",
+    objectPosition: "center center",
     alt: "Montagem fotográfica em duas partes com enquadramento de glúteos e pernas.",
     verificationStatus: "owner-authorized",
     sourceFile: "prova 3.png",
@@ -64,6 +76,9 @@ export const proofAssets: readonly ProofAsset[] = [
     src: "/proof/cellulite/cellulite-03.webp",
     width: 1448,
     height: 1086,
+    aspectRatio: 1.3333,
+    fit: "contain",
+    objectPosition: "center center",
     alt: "Montagem fotográfica em duas partes com enquadramento posterior de quadril e coxas.",
     verificationStatus: "owner-authorized",
     sourceFile: "prova 1(1).png",
@@ -75,6 +90,9 @@ export const proofAssets: readonly ProofAsset[] = [
     src: "/proof/cellulite/cellulite-04.webp",
     width: 1448,
     height: 1086,
+    aspectRatio: 1.3333,
+    fit: "contain",
+    objectPosition: "center center",
     alt: "Montagem fotográfica em duas partes com detalhe lateral de coxa.",
     verificationStatus: "owner-authorized",
     sourceFile: "prova 2.png",
@@ -86,6 +104,9 @@ export const proofAssets: readonly ProofAsset[] = [
     src: "/proof/laxity/laxity-01.webp",
     width: 1254,
     height: 1254,
+    aspectRatio: 1,
+    fit: "contain",
+    objectPosition: "center center",
     alt: "Montagem fotográfica em duas partes com enquadramento posterior do corpo.",
     verificationStatus: "owner-authorized",
     sourceFile: "prova 1 flacidez.png",
@@ -97,6 +118,9 @@ export const proofAssets: readonly ProofAsset[] = [
     src: "/proof/laxity/laxity-02.webp",
     width: 1373,
     height: 1145,
+    aspectRatio: 1.1991,
+    fit: "contain",
+    objectPosition: "center center",
     alt: "Montagem fotográfica em duas partes com enquadramento de braço erguido.",
     verificationStatus: "owner-authorized",
     sourceFile: "prova 2 flacidez.png",
@@ -108,6 +132,9 @@ export const proofAssets: readonly ProofAsset[] = [
     src: "/proof/localized-fat/localized-fat-01.webp",
     width: 1537,
     height: 1023,
+    aspectRatio: 1.5024,
+    fit: "contain",
+    objectPosition: "center center",
     alt: "Montagem fotográfica em duas partes com enquadramento lateral do abdômen.",
     verificationStatus: "owner-authorized",
     sourceFile: "prova gordura localizada  (1).png",
@@ -119,6 +146,9 @@ export const proofAssets: readonly ProofAsset[] = [
     src: "/proof/localized-fat/localized-fat-02.webp",
     width: 1448,
     height: 1086,
+    aspectRatio: 1.3333,
+    fit: "contain",
+    objectPosition: "center center",
     alt: "Montagem fotográfica em duas partes com enquadramento lateral de cintura e abdômen.",
     verificationStatus: "owner-authorized",
     sourceFile: "prova gordura localizada  (2).png",
@@ -130,6 +160,9 @@ export const proofAssets: readonly ProofAsset[] = [
     src: "/proof/localized-fat/localized-fat-03.webp",
     width: 1448,
     height: 1086,
+    aspectRatio: 1.3333,
+    fit: "contain",
+    objectPosition: "center center",
     alt: "Montagem fotográfica em duas partes com detalhe lateral de cintura e abdômen.",
     verificationStatus: "owner-authorized",
     sourceFile: "prova gordura localizada  (3).png",

@@ -175,10 +175,14 @@ p {
   background: var(--ink);
   font-weight: 760;
   text-decoration: none;
+  opacity: 0;
+  pointer-events: none;
   transform: translateY(-200%);
 }
 
 .skip-link:focus {
+  opacity: 1;
+  pointer-events: auto;
   transform: none;
 }
 

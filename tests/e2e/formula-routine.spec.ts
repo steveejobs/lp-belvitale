@@ -48,7 +48,8 @@ test("conflito de cúrcuma e benefícios não são publicados", async ({ page })
   await page.goto("/");
   const formula = page.locator("#composicao");
   await expect(formula).toHaveAttribute("data-publication-state", "partial");
-  await expect(formula).toContainText(/A cúrcuma permanece fora/);
+  await expect(formula).toContainText(/consultar todos os itens e avisos/i);
+  await expect(formula).not.toContainText(/validação|divergir entre as fontes/i);
   await expect(formula).not.toContainText("Extrato de cúrcuma");
   await expect(formula).not.toContainText("Curcumina");
   await expect(formula).not.toContainText(/imun|colágeno|antioxidante|benefício/i);
@@ -59,7 +60,9 @@ test("estado bloqueado não cria ingrediente de fallback", async ({ page }) => {
   const formula = page.locator("#composicao");
   await expect(formula).toHaveAttribute("data-publication-state", "blocked");
   await expect(formula.getByRole("tab")).toHaveCount(0);
-  await expect(formula.getByText(/validação documental/)).toBeVisible();
+  await expect(
+    formula.getByText(/Consulte a composição completa diretamente no rótulo original/),
+  ).toBeVisible();
   await expect(formula.getByRole("link", { name: /rótulo original/ })).toBeVisible();
 });
 
@@ -84,7 +87,7 @@ test("rótulo abre, fecha com Escape e devolve foco", async ({ page }) => {
   await page.locator("#rotulo").evaluate((element) => {
     element.scrollIntoView({ block: "center", behavior: "instant" });
   });
-  const trigger = page.getByRole("button", { name: "Ampliar para ler" });
+  const trigger = page.getByRole("button", { name: "Ampliar rótulo" });
   await trigger.click();
   const dialog = page.getByRole("dialog", { name: /Rótulo original ampliado/ });
   await expect(dialog).toBeVisible();

@@ -1,6 +1,7 @@
 import { useRef, type PointerEvent } from "react";
 import { homeContent } from "../content/homeContent";
 import { campaignAssets } from "../data/campaignAssets";
+import { commercialNavigationReady } from "../data/commercialPreview";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
 export function CampaignHero() {
@@ -35,11 +36,17 @@ export function CampaignHero() {
           </h1>
           <p className="campaign-hero__lead">{hero.lead}</p>
           <div className="campaign-hero__actions">
-            <a className="button button--primary" href="#celuclin">
-              {hero.primaryAction}
+            <a
+              className="button button--primary"
+              href={commercialNavigationReady ? "#ofertas" : "#celuclin"}
+            >
+              {commercialNavigationReady ? "Escolher meu CeluClin" : hero.primaryAction}
             </a>
-            <a className="button button--quiet" href="#rotulo">
-              Ler o rótulo
+            <a
+              className="button button--quiet"
+              href={commercialNavigationReady ? "#resultados" : "#rotulo"}
+            >
+              {commercialNavigationReady ? "Ver resultados" : "Ler o rótulo"}
             </a>
           </div>
           <div className="campaign-hero__facts">

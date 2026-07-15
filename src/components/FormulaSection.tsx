@@ -76,8 +76,7 @@ export function FormulaSection() {
         {active === undefined ? (
           <div className="formula-section__blocked" role="status">
             <p>
-              A composição será apresentada quando a validação documental
-              estiver concluída.
+              Consulte a composição completa diretamente no rótulo original.
             </p>
             <a href="#rotulo">
               Consultar o rótulo original
@@ -98,7 +97,7 @@ export function FormulaSection() {
               ) : (
                 <span aria-hidden="true" />
               )}
-              <figcaption>Imagem de cápsulas em validação documental</figcaption>
+              <figcaption>Cápsulas CeluClin</figcaption>
             </figure>
             <div
               className="formula-tabs"

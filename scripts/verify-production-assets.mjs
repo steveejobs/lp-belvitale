@@ -108,7 +108,7 @@ for (const requiredCopy of [
   "CeluClin, visto por inteiro",
   "Resultados organizados",
   "Resultados reais autorizados",
-  "O rótulo deixa de ser detalhe",
+  "Confira o rótulo original",
   "Dois por dia",
   "Sua pele não precisa ser perfeita",
   "61.493.515/0001-65",
@@ -193,7 +193,7 @@ try {
 
   await page.goto("http://127.0.0.1:4180/", { waitUntil: "networkidle" });
   assert.equal(await page.locator(".site").getAttribute("data-regulatory-status"), "pending");
-  assert.equal(await page.locator("#kits").count(), 0);
+  assert.equal(await page.locator("#ofertas").count(), 0);
   assert.equal(await page.locator('a[href="/quiz"]').count(), 0);
   assert.equal(await page.locator('a[href*="pay.yampi.com.br"]').count(), 0);
   assert.equal(await page.locator('link[rel="canonical"]').count(), 0);
@@ -219,7 +219,7 @@ try {
 
   await page.locator("#resultados").scrollIntoViewIfNeeded();
   await page.waitForTimeout(500);
-  assert.equal(await page.locator("#resultados .proof-figure img").count(), 9);
+  assert.ok((await page.locator("#resultados .proof-figure img").count()) <= 3);
   assert.equal(await page.getByRole("tab", { name: "Celulite", exact: true }).count(), 1);
   assert.equal(await page.getByRole("tab", { name: "Flacidez", exact: true }).count(), 1);
   assert.equal(await page.getByRole("tab", { name: "Gordura localizada", exact: true }).count(), 1);

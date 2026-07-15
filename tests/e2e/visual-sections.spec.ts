@@ -27,7 +27,7 @@ test("hero entrega tese, categoria, produto e ação na primeira dobra", async (
       }),
     ).toBeVisible();
     await expect(
-      hero.getByRole("link", { name: "Conhecer por dentro" }),
+      hero.getByRole("link", { name: "Escolher meu CeluClin" }),
     ).toBeInViewport();
     await expect(hero.getByText("60 cápsulas · 2 ao dia · 30 dias")).toBeInViewport();
     await expect(hero.locator('img[src="/product/celuclin-front-02.webp"]')).toBeInViewport();
@@ -65,7 +65,14 @@ test("assets reais cumprem funções distintas e o rótulo só aparece na transp
 }) => {
   await page.goto("/");
   await page.locator("#resultados").scrollIntoViewIfNeeded();
-  await expect(page.locator("#resultados .proof-figure img")).toHaveCount(9);
+  await expect(page.locator("#resultados .proof-figure img")).toHaveCount(3);
+  await expect(page.locator('#resultados img[src^="/proof/cellulite/"]')).toHaveCount(3);
+  await page.getByRole("tab", { name: "Flacidez" }).click();
+  await expect(page.locator("#resultados .proof-figure img")).toHaveCount(2);
+  await expect(page.locator('#resultados img[src^="/proof/laxity/"]')).toHaveCount(2);
+  await page.getByRole("tab", { name: "Gordura localizada" }).click();
+  await expect(page.locator("#resultados .proof-figure img")).toHaveCount(3);
+  await expect(page.locator('#resultados img[src^="/proof/localized-fat/"]')).toHaveCount(3);
   await page.locator(".site-footer").scrollIntoViewIfNeeded();
 
   const sources = await page.locator("img").evaluateAll((images) =>
@@ -80,8 +87,6 @@ test("assets reais cumprem funções distintas e o rótulo só aparece na transp
       "/product/celuclin-capsules.webp",
       "/lifestyle/freedom-01.webp",
       "/lifestyle/routine-01.webp",
-      "/proof/cellulite/cellulite-01.webp",
-      "/proof/laxity/laxity-01.webp",
       "/proof/localized-fat/localized-fat-01.webp",
       "/label/celuclin-label-front.webp",
     ]),
@@ -172,7 +177,7 @@ test("reduced motion preserva a campanha e reduz transições a um frame", async
     .evaluate((element) => getComputedStyle(element).transitionDuration);
   expect(Number.parseFloat(duration)).toBeLessThanOrEqual(0.001);
   await expect(
-    page.getByRole("link", { name: "Conhecer por dentro" }),
+    page.getByRole("link", { name: "Escolher meu CeluClin" }),
   ).toBeVisible();
   await context.close();
 });
@@ -200,7 +205,7 @@ test("console e rede permanecem sem erros durante a narrativa principal", async 
   await page.getByRole("tab", { name: /Vitamina C/ }).click();
   await page.locator("#resultados").scrollIntoViewIfNeeded();
   await page.locator("#rotulo").scrollIntoViewIfNeeded();
-  await page.getByRole("button", { name: "Ampliar para ler" }).click();
+  await page.getByRole("button", { name: "Ampliar rótulo" }).click();
   await page.keyboard.press("Escape");
   expect(errors).toEqual([]);
 });

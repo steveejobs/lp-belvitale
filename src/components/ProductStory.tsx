@@ -6,6 +6,8 @@ interface ProductScene {
   readonly asset: CampaignAsset;
   readonly label: string;
   readonly note: string;
+  readonly fit: "contain" | "cover";
+  readonly objectPosition: string;
 }
 
 const productScenes: readonly ProductScene[] = [
@@ -13,31 +15,43 @@ const productScenes: readonly ProductScene[] = [
     asset: campaignAssets.productFrontPrimary,
     label: "Frasco frontal",
     note: "O CeluClin por inteiro, com produto, tampa e rótulo no mesmo enquadramento.",
+    fit: "contain",
+    objectPosition: "center center",
   },
   {
     asset: campaignAssets.productFrontClose,
     label: "Rótulo em detalhe",
     note: "A identidade do CeluClin em enquadramento aproximado.",
+    fit: "contain",
+    objectPosition: "center center",
   },
   {
     asset: campaignAssets.productAngle,
     label: "Vista em ângulo",
     note: "Tampa pink, rótulo magenta e cápsulas à vista.",
+    fit: "contain",
+    objectPosition: "center center",
   },
   {
     asset: campaignAssets.productInHand,
     label: "Escala real",
     note: "O frasco na mão, com proporção e presença claras.",
+    fit: "contain",
+    objectPosition: "center center",
   },
   {
     asset: campaignAssets.capsules,
     label: "Cápsulas",
     note: "A apresentação visual das cápsulas que compõem a rotina.",
+    fit: "cover",
+    objectPosition: "center center",
   },
   {
     asset: campaignAssets.lifestyleHero,
     label: "Em cena",
     note: "O produto em uma composição clara, sem competir com a informação.",
+    fit: "contain",
+    objectPosition: "center center",
   },
 ];
 
@@ -92,8 +106,12 @@ export function ProductStory() {
               alt={index === activeIndex ? scene.asset.alt : ""}
               aria-hidden={index !== activeIndex}
               data-active={index === activeIndex}
-              loading={index === 0 ? "eager" : "lazy"}
+              loading="lazy"
               decoding="async"
+              style={{
+                objectFit: scene.fit,
+                objectPosition: scene.objectPosition,
+              }}
             />
           ))}
           <div className="product-story__counter" aria-hidden="true">

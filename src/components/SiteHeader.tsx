@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { navigationItems } from "../config/site";
+import { commercialNavigationReady } from "../data/commercialPreview";
 
 function MenuIcon({ close = false }: { readonly close?: boolean }) {
   return (
@@ -91,12 +92,17 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <a className="site-header__desktop-cta" href="#rotulo">
-          Ver o rótulo
+        <a
+          className="site-header__desktop-cta"
+          href={commercialNavigationReady ? "#ofertas" : "#rotulo"}
+        >
+          {commercialNavigationReady ? "Ver opções" : "Ver o rótulo"}
         </a>
 
         <div className="site-header__mobile-actions">
-          <a href="#resultados">Resultados</a>
+          <a href={commercialNavigationReady ? "#ofertas" : "#resultados"}>
+            {commercialNavigationReady ? "Ver opções" : "Resultados"}
+          </a>
           <button
             ref={menuButtonRef}
             type="button"
@@ -146,10 +152,10 @@ export function SiteHeader() {
           </nav>
           <a
             className="button button--primary"
-            href="#rotulo"
+            href={commercialNavigationReady ? "#ofertas" : "#rotulo"}
             onClick={() => setMenuOpen(false)}
           >
-            Ver o rótulo
+            {commercialNavigationReady ? "Ver opções" : "Ver o rótulo"}
           </a>
         </div>
       </dialog>

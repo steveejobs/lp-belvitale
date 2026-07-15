@@ -4,7 +4,7 @@ import {
   isConfirmedInstitutionalFact,
 } from "../data/institutionalFacts";
 import { getPublicLegalDocuments } from "../data/legalDocuments";
-import { regulatoryFacts } from "../data/regulatoryFacts";
+import { commercialNavigationReady } from "../data/commercialPreview";
 
 const footerNavigation = [
   { label: "Escolha", href: "#liberdade" },
@@ -12,6 +12,9 @@ const footerNavigation = [
   { label: "Fórmula", href: "#composicao" },
   { label: "Resultados", href: "#resultados" },
   { label: "Rótulo", href: "#rotulo" },
+  ...(commercialNavigationReady
+    ? [{ label: "Opções", href: "#ofertas" } as const]
+    : []),
   { label: "Dúvidas", href: "#faq" },
 ] as const;
 
@@ -88,11 +91,7 @@ export function SiteFooter() {
 
       <div className="section-shell site-footer__bottom">
         <p>© {new Date().getFullYear()} Belvitale.</p>
-        {import.meta.env.DEV ? (
-          <p data-regulatory-status={regulatoryFacts.sanitaryStatus}>
-            Ambiente interno · gate sanitário {regulatoryFacts.sanitaryStatus}
-          </p>
-        ) : null}
+        <p>CeluClin · suplemento alimentar</p>
       </div>
     </footer>
   );

@@ -213,21 +213,19 @@ async function captureHome(width, height) {
   await page.screenshot({ path: screenshotPath(prefix + "home-hero") });
   const sections = width < 700
     ? [
-        ["home-gallery", "#acervo"],
         ["home-emotional", "#liberdade"],
         ["home-product", "#celuclin"],
         ["home-formula", "#composicao"],
         ["home-results", "#resultados"],
         ["home-label", "#rotulo"],
         ["home-routine", "#rotina"],
-        ["home-offers", "#kits"],
+        ["home-offers", "#ofertas"],
         ["home-closing", ".campaign-closing"],
       ]
     : [
-        ["home-gallery", "#acervo"],
         ["home-product", "#celuclin"],
         ["home-results", "#resultados"],
-        ["home-offers", "#kits"],
+        ["home-offers", "#ofertas"],
       ];
 
   for (const [name, selector] of sections) {
@@ -236,7 +234,7 @@ async function captureHome(width, height) {
 
   await page.addStyleTag({
     content:
-      "html { scroll-behavior: auto !important; } #conteudo-principal > section, .proof-chapter, .site-footer { content-visibility: visible !important; contain-intrinsic-size: none !important; } .site-header, .choice-sequence__media, .product-story__media, .faq-section__heading { position: relative !important; top: auto !important; } .choice-sequence__story, .product-story__content { margin-top: 0 !important; }",
+      "html { scroll-behavior: auto !important; } #conteudo-principal > section, .site-footer { content-visibility: visible !important; contain-intrinsic-size: none !important; } .site-header, .choice-sequence__media, .product-story__media, .faq-section__heading { position: relative !important; top: auto !important; } .choice-sequence__story, .product-story__content { margin-top: 0 !important; }",
   });
   await page.locator("img[loading='lazy']").evaluateAll(async (images) => {
     for (const image of images) image.loading = "eager";
@@ -353,7 +351,7 @@ async function recordLabel() {
     await page.goto(baseURL + "/");
     await settle(page);
     await scrollToSection(page, "#rotulo", 1400);
-    await page.getByRole("button", { name: "Ampliar para ler" }).click();
+    await page.getByRole("button", { name: "Ampliar rótulo" }).click();
     await page.waitForTimeout(1400);
     await page.locator(".label-modal__viewport").evaluate((element) => {
       element.scrollTo({ left: element.scrollWidth, behavior: "smooth" });
@@ -370,11 +368,13 @@ async function recordProofStories() {
     await settle(page);
     await scrollToSection(page, "#resultados", 1300);
     for (let index = 0; index < 3; index += 1) {
-      await page.getByRole("button", { name: "Próximo registro de celulite" }).click();
+      await page.locator(".proof-gallery__controls button").last().click();
       await page.waitForTimeout(900);
     }
-    await scrollToSection(page, ".proof-chapter--laxity", 1400);
-    await scrollToSection(page, ".proof-chapter--localized", 1600);
+    await page.locator(".proof-gallery__tabs button").nth(1).click();
+    await page.waitForTimeout(1400);
+    await page.locator(".proof-gallery__tabs button").nth(2).click();
+    await page.waitForTimeout(1600);
   });
 }
 
@@ -419,8 +419,8 @@ async function recordCheckoutHandoff() {
     });
     await page.goto(baseURL + "/");
     await settle(page);
-    await scrollToSection(page, "#kits", 1200);
-    await page.getByRole("link", { name: "Escolher continuar" }).click();
+    await scrollToSection(page, "#ofertas", 1200);
+    await page.getByRole("link", { name: "Escolher 3 meses" }).click();
     await page.waitForTimeout(2200);
   });
 }

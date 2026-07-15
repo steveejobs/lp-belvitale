@@ -3,6 +3,7 @@ import {
   campaignAssets,
   canRenderCampaignAsset,
 } from "../data/campaignAssets";
+import { commercialNavigationReady } from "../data/commercialPreview";
 
 export function CampaignClosing() {
   const { closing } = homeContent;
@@ -22,8 +23,11 @@ export function CampaignClosing() {
           <em>{closing.titleAccent}</em>
         </h2>
         <p>{closing.body}</p>
-        <a className="button button--light" href="#rotulo">
-          Ler o rótulo completo
+        <a
+          className="button button--light"
+          href={commercialNavigationReady ? "#ofertas" : "#rotulo"}
+        >
+          {commercialNavigationReady ? "Ver opções do CeluClin" : "Ler o rótulo completo"}
         </a>
       </div>
     </section>

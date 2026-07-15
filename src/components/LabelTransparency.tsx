@@ -173,8 +173,8 @@ export function LabelTransparency() {
           />
         </div>
         <h2 id="label-section-title" ref={titleRef} tabIndex={-1}>
-          O rótulo deixa de ser detalhe.
-          <em>Você escolhe o que quer ler.</em>
+          Confira o rótulo original.
+          <em>Amplie só o que quiser ler.</em>
         </h2>
         <p>Tabela, composição, uso e avisos aparecem na arte original, sem reinterpretação.</p>
       </div>
@@ -226,7 +226,7 @@ export function LabelTransparency() {
           disabled={imageState === "error"}
           onClick={() => setModalOpen(true)}
         >
-          Ampliar para ler
+          Ampliar rótulo
         </button>
         <a
           className="text-link"

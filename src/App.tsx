@@ -13,6 +13,7 @@ import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
 import { getLegalDocumentByPath } from "./data/legalDocuments";
 import { regulatoryFacts } from "./data/regulatoryFacts";
+import { useAccessibleHashFocus } from "./hooks/useAccessibleHashFocus";
 import { isQuizPath } from "./quiz/quizRouting";
 import "./home.css";
 
@@ -34,6 +35,8 @@ function RouteLoading() {
 }
 
 export function App() {
+  useAccessibleHashFocus();
+
   if (isQuizPath(window.location.pathname)) {
     return <Suspense fallback={<RouteLoading />}><QuizRoute /></Suspense>;
   }
