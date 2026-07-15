@@ -5,6 +5,10 @@ import {
 } from "react";
 import { homeContent } from "../content/homeContent";
 import {
+  campaignAssets,
+  canRenderCampaignAsset,
+} from "../data/campaignAssets";
+import {
   formulaPublicationState,
   getPublishableIngredients,
   ingredientFacts,
@@ -35,6 +39,8 @@ export function FormulaSection() {
     ingredients.find((ingredient) => ingredient.id === activeId) ??
     ingredients[0];
   const { formula } = homeContent;
+  const capsuleMedia = campaignAssets.capsules;
+  const canShowCapsules = canRenderCampaignAsset(capsuleMedia);
 
   function moveTab(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const offset =
@@ -79,6 +85,21 @@ export function FormulaSection() {
           </div>
         ) : (
           <>
+            <figure className="formula-media" data-media-status={canShowCapsules ? "preview" : "blocked"}>
+              {canShowCapsules ? (
+                <img
+                  src={capsuleMedia.src}
+                  width={capsuleMedia.width}
+                  height={capsuleMedia.height}
+                  alt={capsuleMedia.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <span aria-hidden="true" />
+              )}
+              <figcaption>Imagem de cápsulas em validação documental</figcaption>
+            </figure>
             <div
               className="formula-tabs"
               role="tablist"

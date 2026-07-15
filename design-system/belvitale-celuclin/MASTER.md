@@ -1,91 +1,103 @@
-# Belvitale CeluClin — sistema mestre
+# Belvitale / CeluClin — sistema mestre
 
-Status: direção proprietária aprovada para desenvolvimento. Publicação comercial e regulatória continuam bloqueadas pelos gates do projeto.
+## Direção escolhida: Escolha em cena
 
-## Tese
+Uma campanha editorial móvel em que roupa, pele e rotina ocupam a cena antes da explicação técnica. O frasco entra como objeto de rotina; as provas ocupam capítulos inteiros; o rótulo plano aparece somente quando a narrativa chega à transparência.
 
-Um editorial de beleza íntimo e vivo que devolve espaço à escolha. A experiência reconhece o desconforto silencioso sem declarar o corpo errado e apresenta o CeluClin como uma rotina possível, nunca como salvador.
+Emoção central: **voltar a escolher sem negociar com a insegurança**.
 
-Emoção dominante: **liberdade consciente**.
+### Direções comparadas internamente
 
-Frase de encerramento: **Sua pele não precisa ser perfeita para você voltar a se sentir livre.**
+1. **Vestir o dia** — recortes de moda, pensamentos curtos e tipografia cinética. Forte para identificação, menos forte para revelar o produto.
+2. **Frasco de luz** — ameixa escura, transparência e cápsulas. Forte para desejo, com risco de parecer uma campanha genérica de suplemento.
+3. **Pele em capítulos** — prova visual full bleed e linguagem documental. Forte para credibilidade, com risco de esfriar a emoção.
 
-## Princípios
-
-1. O produto e o rótulo determinam a linguagem; tendências não determinam a marca.
-2. Desejo vem de composição, ritmo e copy específica — não de claims, urgência ou vergonha.
-3. Cada seção muda de silhueta e tem uma única função dominante.
-4. O rótulo oficial é a fonte visual publicável; packshots restritos servem apenas para direção interna até aprovação.
-5. A venda é explícita e só aparece quando todos os dados e direitos estiverem confirmados.
+`Escolha em cena` combina a tensão humana da primeira, o palco material da segunda e a escala de prova da terceira. Não usa a solução automática inicial da UI/UX Pro Max: amarelo/lilás, Playfair + Inter, marquee infinito e pinning longo foram rejeitados por não nascerem do CeluClin e por piorarem a carga móvel.
 
 ## Paleta extraída dos assets
 
-As amostras vieram de histogramas e recortes do rótulo, tampa e cápsulas reais. As cores de ação foram ajustadas apenas o necessário para contraste WCAG.
+As amostras foram quantizadas a partir do rótulo aprovado, da tampa presente nas imagens de produto e das cápsulas. Tons de fundo foram equilibrados para contraste e leitura.
 
-| Token | Valor | Origem e uso |
-|---|---:|---|
-| `ink-950` | `#24101E` | ameixa quase preta; texto principal |
-| `wine-800` | `#5A1837` | cápsulas/sombra profunda; fundos densos |
-| `wine-700` | `#7A173B` | cápsulas; superfície e dados |
-| `capsule-600` | `#990D15` | vinho avermelhado; detalhe controlado |
-| `action-600` | `#D90A73` | magenta ajustado; CTA com texto branco |
-| `cap-500` | `#EC0791` | magenta da tampa; faixas e foco não textual |
-| `label-500` | `#C3409C` | rosa vibrante do rótulo |
-| `label-300` | `#DC9FCC` | rosa claro do rótulo |
-| `violet-700` | `#5A2895` | violeta do rótulo; acento secundário raro |
-| `rose-100` | `#F3E7F1` | rosa pálido do rótulo; superfícies |
-| `paper-50` | `#FFF8F4` | branco quente; base editorial |
-| `white` | `#FFFFFF` | texto em fundos escuros e respiro |
+| Token | Valor | Origem / função |
+| --- | --- | --- |
+| `ink-950` | `#1B0814` | ameixa quase preta; texto e áreas noturnas |
+| `plum-900` | `#3D1029` | vinho profundo; palco de produto |
+| `plum-700` | `#6A173F` | cápsula/vinho; transições |
+| `cap-700` | `#C60067` | ação acessível sobre fundo claro |
+| `cap-500` | `#E6007E` | tampa magenta; áreas de energia |
+| `label-500` | `#C34BA1` | rosa do rótulo; faixas secundárias |
+| `label-700` | `#5D2E98` | violeta do rótulo; contraste pontual |
+| `capsule-700` | `#A6141D` | cápsulas; foco da composição |
+| `capsule-900` | `#6E1014` | cápsula profunda; detalhe e sombra |
+| `blush-100` | `#F7DDE8` | rosa pálido; respiro, nunca fundo universal |
+| `warm-050` | `#FFF8F3` | branco quente principal |
+| `warm-200` | `#EFD8CC` | tom translúcido/pele, bordas e placeholders |
+| `white` | `#FFFFFF` | texto sobre áreas escuras |
 
-Pares validados: `ink-950/paper-50` 17.1:1; `action-600/white` 4.7:1; `wine-700/white` 9.9:1. `cap-500` não é usado com texto branco em corpo pequeno.
+Regras:
+
+- `cap-500` pode dominar mídia, faixas e superfícies grandes; texto branco em botões usa `cap-700`.
+- Sobre `cap-500`, texto corrido usa `#10000A`: a variação de ameixa quase preta mantém a origem cromática e atinge contraste AA; lettering grande decorativo usa `warm-050` com pelo menos 82% de opacidade.
+- Verde, bege skincare, dourado, neon e gradiente de startup não entram.
+- Gradientes permitidos simulam luz atravessando vidro ou a passagem real entre magenta, vinho e violeta do rótulo.
+- Imagens de pele nunca recebem overlay, filtro, blur, máscara colorida ou texto sobre a região relevante.
 
 ## Tipografia
 
-- Display: **Newsreader Variable**, 600–720, optical sizing ativo. Para frases emocionais, alterna romano e itálico sem usar peso fino.
-- Interface e conteúdo: **Figtree Variable**, 430–760. Corpo mínimo 16 px; preferencial 17–19 px.
-- Dados: Figtree 680, algarismos tabulares, tracking negativo leve. Quantidade vem antes da legenda.
-- Escala fluida: display `clamp(2.8rem, 9vw, 7.8rem)`; H2 `clamp(2.35rem, 6.2vw, 5.8rem)`; corpo `clamp(1rem, 1.2vw, 1.16rem)`.
-- Linhas: títulos 0.88–0.98; corpo 1.5–1.65. Nunca justificar texto ou converter todos os títulos em caixa alta.
+- **Display:** Fraunces Variable em eixo de peso 560–760, sem depender de itálico ou eixos ausentes no arquivo latino carregado. Expressiva sem ficar fina; cria curvas tensas próximas ao monograma e ao nome CeluClin.
+- **Conteúdo e interface:** Figtree Variable, pesos 430–780, corpo mínimo de 16 px.
+- **Números:** Figtree 760–820, `font-variant-numeric: tabular-nums`, tracking negativo em escala grande.
+- Títulos não usam caixa alta integral. Eyebrows podem usar caixa alta com no máximo 0,12em de tracking.
+- Mobile: display entre 3rem e 4.35rem na primeira dobra; seções entre 2.7rem e 4rem. Desktop amplia por composição, não por repetição.
 
-## Geometria
+## Geometria e composição
 
-- Grade mobile: 4 colunas, margem 20 px, gutter 12 px; referência 390 × 844.
-- Grade desktop: 12 colunas, largura máxima 1440 px, margem 42–64 px.
-- Espaçamento base 4 px; ritmo principal 8 / 12 / 20 / 32 / 48 / 72 / 112.
-- Raios restritos: 0, 2, 12 e 24 px. Pílula só para estado/ação; cards não recebem raio por padrão.
-- Faixas inclinadas entre −4° e 4°; máscaras verticais; bordas que atravessam a grade; transparência como sobreposição de planos, não glassmorphism.
+- Base móvel: 390 × 844; shell responsivo de 16–24 px e áreas full bleed quando a mídia deve dominar.
+- Desktop: grid de 12 colunas, shell máximo de 92rem, copy contida e mídia escapando de 1 a 3 colunas.
+- Bordas são retas, oblíquas ou recortadas. Cantos arredondados ficam restritos a controles que precisam comunicar toque; nunca viram linguagem de seção.
+- DNA visual: faixas diagonais, recortes de 6–12 graus, linhas que atravessam divisões, máscaras verticais e sobreposição entre área sólida e transparência.
+- Cada capítulo precisa de uma silhueta própria: hero assimétrico, cena lifestyle full bleed, interlúdio tipográfico, palco escuro de produto, fórmula mineral, provas dominantes, rótulo horizontal, rotina calma e encerramento fotográfico.
 
-## Vocabulário de motion
+## Assets e verdade
 
-1. **Reveal tipográfico:** máscara horizontal curta; 420–620 ms.
-2. **Reveal de produto:** escala 0.96→1 e deslocamento de faixa; 650–900 ms.
-3. **Transição de mídia:** clip-path/objeto deslizando; 500–700 ms.
-4. **Estado do quiz:** troca lateral causal, 260–380 ms.
-5. **Feedback:** borda, preenchimento e microdeslocamento de 2 px; 120–180 ms.
+- O rótulo plano só pode aparecer em `#rotulo`, no modal e no PDF associado.
+- As nove provas têm autorização expressa do proprietário em 14/07/2026. São exibidas inteiras, na categoria recebida, sem inferir ordem, pessoa, período ou cronologia.
+- Nota obrigatória junto à prova: “Resultados reais autorizados. Experiências individuais podem variar.”
+- Os packshots disponíveis mostram texto divergente do rótulo oficial. Eles podem sustentar apenas o preview interno de direção enquanto `productMedia` estiver bloqueado; o build de release os remove.
+- Lifestyle, logos e cápsulas seguem o status documental registrado. O preview interno pode demonstrar a direção, mas status de produção não muda por variável de ambiente.
+- Miniaturas Yampi de 290 px nunca são ampliadas. Ofertas continuam sem preço ou checkout enquanto os gates comerciais estiverem pendentes.
 
-CSS é o padrão. Sem loop decorativo contínuo. `prefers-reduced-motion` remove deslocamento e preserva contraste/estado. A animação só começa em viewport e a interface permanece legível antes dela.
+## Famílias de motion (máximo 5)
 
-## Acessibilidade e performance
+1. **Entrada tipográfica:** recorte horizontal e mudança curta de eixo; 420–720 ms; uma vez por cena.
+2. **Revelação de produto:** máscara de 520 ms no hero e transições mais curtas nas interações; escala/rotação ficam limitadas a 2,5° e usam propriedades compostas.
+3. **Transição de mídia:** troca de imagem por máscara ou crossfade curto; nunca anima texto de leitura.
+4. **Progresso narrativo:** sticky curto, faixa de progresso e scroll nativo; no máximo uma área pinada por página e sem pinning móvel forçado.
+5. **Feedback:** seleção de opção, controle de prova e foco com resposta de 120–220 ms.
 
-- Alvos mínimos 44 × 44 px e distância mínima de 8 px.
-- Foco de 3 px em magenta/white, nunca removido.
-- Navegação completa por teclado; estado não depende de cor; headings recebem foco nas mudanças do quiz.
-- `100svh` como fallback e `100dvh` quando útil; safe areas em CTAs inferiores.
-- Imagens reservam proporção, usam dimensões explícitas, `decoding=async` e lazy load abaixo da dobra.
-- Sem packshot/lifestyle/prova bloqueado no bundle de produção.
-- Quiz e componentes internos pesados em chunks próprios.
-- Conteúdo essencial da home permanece no HTML de fallback e na árvore inicial.
+`prefers-reduced-motion` mantém todas as composições finais, remove scrub/parallax e troca máscaras por estados imediatos. Loops não são usados.
 
-## Gates imutáveis
+## Acessibilidade
 
-- Categoria: suplemento alimentar em cápsulas; não é medicamento.
-- Conteúdo: 60 cápsulas; uso informado de 2 ao dia; 30 dias é cálculo exato.
-- Fórmula pública parcial: só ingredientes confirmados; cúrcuma fica bloqueada enquanto o conflito documental existir.
-- Provas, depoimentos, lifestyle, packshot, ofertas, preço, frete, garantia e políticas só aparecem quando aprovados.
-- Checkouts Yampi não recebem parâmetros e permanecem fora da interface pública enquanto o gate comercial estiver fechado.
-- Quiz não diagnostica, não coleta PII e usa `belvitale:quiz:v1` com expiração de 30 dias.
-- Canonical, OG, sitemap e indexação do quiz exigem domínio real, revisão humana, status sanitário confirmado e configuração explícita.
+- Contraste mínimo WCAG AA; foco de 3 px com offset visível sobre claro e escuro.
+- Alvos de 44 × 44 px, 8 px entre alvos adjacentes.
+- Sem informação apenas por cor, movimento ou posição.
+- Provas têm alt descritivo sem “antes/depois”; legendas deixam explícito que a ordem não foi inferida.
+- Carrosséis usam scroll nativo, controles rotulados e região anunciada sem autoplay.
+- Quiz usa `fieldset`, `legend`, progresso semântico, feedback em `aria-live`, foco após mudança e retorno preservado.
 
-## Antipadrões reprovados
+## Performance
 
-Cards repetidos, verde botânico dominante, bege de skincare, rosa infantil, glassmorphism, blobs, glow, gradiente de startup, dourado artificial, ícone genérico, sombra colorida, hero simétrico, fade-up universal, estética médica ou de dropshipping.
+- Só a mídia do hero recebe prioridade. No mobile ela usa um derivado AVIF de 640 px/11 KB; o original permanece intacto para desktop e arquivo-fonte. Lifestyle, produto secundário, provas e rótulo usam lazy loading.
+- Dimensões e `aspect-ratio` sempre reservadas; placeholders usam `warm-200`, `plum-900` ou a cor dominante do capítulo.
+- Provas carregam por proximidade e `content-visibility: auto` por capítulo.
+- Quiz e rótulo continuam em chunks próprios; prova pode ser chunk próprio se o custo de interação justificar.
+- Scroll usa IntersectionObserver e um único `requestAnimationFrame` quando necessário. GSAP não é dependência desta direção.
+
+## Gates de aprovação visual
+
+- Hero: produto ou gate visual dominante, CTA na primeira dobra, headline compreendida em cinco segundos.
+- Seções: função, silhueta, dominante e contraste explícitos; remover qualquer trecho que apenas repita título + parágrafo.
+- Quiz: seis interações com quatro apresentações; o perfil não pode ser previsto por uma letra ou por uma única pergunta.
+- Prova: todas as imagens inteiras, sem slider artificial quando enquadramentos não coincidem.
+- Release: nenhuma variável de preview converte mídia, oferta, jurídico ou situação sanitária pendente em aprovado.

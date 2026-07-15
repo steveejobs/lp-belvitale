@@ -1,5 +1,7 @@
 # Revisão de conteúdo do quiz
 
+> Atualização de 14/07/2026: as perguntas auditadas nesta tabela pertencem à versão histórica e foram substituídas por seis novos ângulos em `src/data/quizQuestions.ts`. A implementação corrente cobre começo, quebra de ritmo, retomada, preferência de informação, reposição e compromisso realista; nenhuma pergunta mapeia diretamente para quantidade de potes.
+
 Revisão registrada em 14/07/2026 para a publicação controlada. Nenhuma pergunta, opção, peso ou perfil foi alterado como consequência desta auditoria.
 
 | Pergunta | Função | Semelhança com outras | Risco de indução | Status |

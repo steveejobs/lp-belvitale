@@ -2,6 +2,12 @@
 
 Atualizado em 14/07/2026. O rótulo foi inspecionado visualmente nas duas páginas do PDF fornecido. Informações comerciais e relatos não são promovidos a fatos sem a confirmação indicada abaixo.
 
+## Adendo de autorização das provas — 14/07/2026
+
+O proprietário da Belvitale declarou neste briefing possuir a documentação e a autorização necessárias para publicar e atribuir ao CeluClin as nove imagens de resultado recebidas. Essa declaração confirma o gate de uso das imagens e suas categorias originais: quatro registros de celulite, dois de flacidez e três de gordura localizada.
+
+A autorização não confirma identidade, data, duração, cronologia ou qual lado de uma montagem veio primeiro. Esses dados não podem ser inferidos. Os arquivos-fonte permanecem preservados sem retoque, e a publicação deve usar a nota: **“Resultados reais autorizados. Experiências individuais podem variar.”**
+
 ## Fatos confirmados
 
 - Marca: Belvitale.
@@ -22,12 +28,12 @@ Atualizado em 14/07/2026. O rótulo foi inspecionado visualmente nas duas págin
   - 3 frascos / 3 meses informados: `https://belvitale.pay.yampi.com.br/r/1E8NNCGJW9`;
   - 5 + 2 adicionais / 7 meses informados: `https://belvitale.pay.yampi.com.br/r/41CHX4MGPX`.
 - Os três checkouts foram revalidados em 14/07/2026 e confirmaram respectivamente as estruturas de 1 pote, 3 potes e 5 + 2 adicionais. O checkout usa “grátis” na terceira opção, mas essa condição promocional não está aprovada para a copy. Preços continuam fora da fonte de publicação porque não receberam confirmação humana.
+- Autorização declarada pelo proprietário para publicar e atribuir ao CeluClin as nove imagens de resultados, mantendo suas categorias recebidas e sem alterar os arquivos.
 
 ## Fatos ainda não confirmados
 
 - Origem, autoria, licenças e direitos das fotografias, renders, imagens lifestyle e logos.
-- Origem, autorização de uso, vínculo com clientes reais, consentimento, contexto, datas e ausência de manipulação enganosa das imagens chamadas “prova”.
-- Cronologia das imagens e identidade da pessoa em cada lado das montagens.
+- Identidade, datas, duração, contexto individual e cronologia das imagens de prova; nenhum desses dados acompanha a autorização de publicação.
 - Atualidade dos dados de fabricante, distribuidora, responsável técnica e alergênicos impressos no arquivo de rótulo; eles não serão reutilizados em copy institucional sem validação empresarial.
 - Razão social, nome fantasia jurídico, e-mail, WhatsApp, endereço, cidade, estado, domínio institucional e prazo de resposta do SAC.
 - Conteúdo jurídico final e aprovação da Política de Privacidade, dos Termos de Uso e da Política de Trocas e Reembolso.
@@ -47,6 +53,7 @@ Atualizado em 14/07/2026. O rótulo foi inspecionado visualmente nas duas págin
 - Listagem factual de ingredientes e quantidades, sem associar mecanismo ou promessa de resultado.
 - “Não contém glúten” e “não contém lactose”, porque constam no rótulo fornecido.
 - Mensagens sobre transparência, leitura do rótulo, constância, rotina e liberdade sem promessa corporal.
+- “Resultados reais autorizados. Experiências individuais podem variar.” junto ao acervo expressamente autorizado.
 - “Relato individual. A experiência pode variar de pessoa para pessoa.” somente após existir depoimento verdadeiro e autorizado.
 
 ## Claims proibidos
@@ -67,4 +74,4 @@ Atualizado em 14/07/2026. O rótulo foi inspecionado visualmente nas duas págin
 - Médicos recomendam sem prova.
 - Atua onde cremes não chegam.
 - Antes e depois gerado por IA.
-- “Resultado real”, “transformação comprovada” ou atribuição das imagens pendentes ao CeluClin.
+- “Transformação comprovada”, qualquer prazo, cronologia, resultado garantido ou contexto individual não documentado para as imagens autorizadas.

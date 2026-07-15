@@ -1,5 +1,27 @@
 # Ledger de requisitos
 
+## Reconstrução de campanha — estado corrente
+
+Esta seção substitui os contratos visuais das rodadas históricas abaixo. Os registros anteriores permanecem apenas como histórico técnico.
+
+| Requisito | Implementação / evidência | Status |
+| --- | --- | --- |
+| Ler a documentação obrigatória e equivalentes existentes | Fonte da verdade, escopo, fórmula, comercial, quiz, assets, auditorias, change impact e ledger foram abertos integralmente; três arquivos históricos solicitados continuam ausentes e não foram alegados como lidos | Concluído |
+| Usar UI/UX Pro Max ativamente | Skill local lida; buscas de design system, landing, social proof, React/performance, motion e auditoria UX; recomendação genérica rejeitada | Concluído |
+| Comparar três direções sem transferir decisão | `Vestir o dia`, `Frasco de luz` e `Pele em capítulos`; síntese `Escolha em cena` persistida no design system | Concluído |
+| Rótulo plano somente na transparência | Única referência renderizada em `LabelTransparency`; derivado de hero removido do repositório e do build | Concluído |
+| Provas autorizadas nas três categorias | Nove arquivos `owner-authorized`, capítulos distintos, enquadramento integral, sem cronologia inventada e com nota obrigatória | Concluído |
+| Packshot e lifestyle sem promoção indevida de status | Preview interno com nota; release normal remove `product/`, `lifestyle/` e `brand/` | Concluído |
+| Hero de campanha mobile-first | Produto dominante, headline específica, CTA, categoria, 60/2/30, aviso e entrada sincronizada por máscara | Concluído |
+| Narrativa contínua da home | Escolha → contexto → produto → fórmula → prova → rótulo → rotina → conveniência → quiz → dúvidas → encerramento | Concluído |
+| Fórmula tátil sem claims inventados | Sete tabs factuais, quantidade em foco, cápsulas e cúrcuma bloqueada por conflito | Concluído |
+| Quiz editorial com seis interações | Quatro apresentações, microfeedback, progresso, três perfis, storage/retomada e resultado não diagnóstico | Concluído |
+| Recomendação sem manipulação comercial | `resolveQuizRecommendation` permanece `null` até oferta, mapping e gates regulatórios aprovados | Concluído |
+| No máximo cinco famílias de motion | Tipografia, produto, mídia, progresso e feedback; sem loops; reduced motion preserva o estado final | Concluído |
+| Mobile, teclado, touch, foco e texto a 200% | 44 × 44 px, 8 px, dialogs, scroll nativo, sem overflow nos sete viewports requeridos | Concluído |
+| Release público seguro | Verificador aprovado: sem checkout, preço, canonical, sitemap, quiz publicado ou mídia de produto/lifestyle/brand; provas autorizadas permanecem | Concluído |
+| Evidências, Lighthouse, preview e commit | 23 capturas, sete WebM, Lighthouse 89/100/100, preview Vercel protegido e commit final da rodada | Concluído |
+
 ## Escopo ativo desta rodada
 
 | Requisito                                                       | Implementação/validação prevista                                                                          | Status    |
@@ -152,7 +174,7 @@
 | Produto sem packshot falso | Rótulo oficial em composição editorial; gate do packshot visível apenas internamente | Concluído |
 | Fórmula tátil | Sete ingredientes confirmados em foco navegável; cúrcuma bloqueada | Concluído |
 | Rótulo legível | Reveal, modal, Escape, retorno de foco, erro de imagem e PDF | Concluído |
-| Prova responsável | Zero depoimento ou mídia fictícia; direção interna sem lacuna pública | Concluído |
+| Prova responsável | Nove mídias `owner-authorized` nas categorias recebidas, sem retoque, cronologia ou contexto inventado; zero depoimento fictício | Concluído |
 | Kits responsáveis | Comparação 30/90/210 em desenvolvimento; preço, condição e checkout bloqueados | Concluído |
 | Quiz editorial | Seis ângulos, quatro apresentações e progresso pelas faixas do rótulo | Concluído |
 | Perfis humanos | Começo sem peso, Ritmo que volta e Cuidado em curso | Concluído |
@@ -160,9 +182,9 @@
 | Mobile-first | 360, 375, 390, 412, 430; alvos 44 px, safe area, sem overflow e 200% | Concluído |
 | Desktop | 1366 × 768 e 1440 × 900 inspecionados e testados | Concluído |
 | Acessibilidade | Teclado, foco, leitor semântico, reduced motion, erros e retorno de contexto | Concluído |
-| Performance | Lighthouse 95/100/100; TBT 90 ms; CLS 0; chunks e lazy loading | Concluído com limitação de LCP 2,7 s |
+| Performance | Lighthouse 89/100/100; FCP 1,65 s, LCP 3,25 s, TBT 183 ms, CLS 0; AVIF responsivo, chunks, preload e `content-visibility` | Concluído com limitação documentada de LCP |
 | SEO/release | Sem domínio fictício, canonical ou sitemap; home/quiz noindex enquanto gates fechados | Concluído |
-| Produção bloqueada | Sem Yampi, oferta, prova, packshot ou mídia restrita no build | Concluído |
-| Evidências | 13 capturas, quatro páginas inteiras, cinco WebM e Lighthouse JSON | Concluído |
+| Produção bloqueada | Sem Yampi, oferta, packshot ou mídia restrita no build normal; apenas as provas expressamente autorizadas permanecem públicas | Concluído |
+| Evidências | 23 capturas, quatro páginas inteiras, sete WebM e Lighthouse JSON | Concluído |
 | Preview | Vercel não produtivo, quiz com flag interna, proteção de equipe preservada | Concluído |
 | Qualidade | Lint, typecheck, build, verificador e Playwright 49/49 | Concluído |

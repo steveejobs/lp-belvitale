@@ -11,7 +11,7 @@ const requiredViewports = [
   { width: 1440, height: 900 },
 ] as const;
 
-test("hero comunica tese, categoria, produto editorial e CTA na primeira dobra", async ({
+test("hero entrega tese, categoria, produto e ação na primeira dobra", async ({
   page,
 }) => {
   for (const viewport of [
@@ -20,18 +20,19 @@ test("hero comunica tese, categoria, produto editorial e CTA na primeira dobra",
   ]) {
     await page.setViewportSize(viewport);
     await page.goto("/");
-    const hero = page.locator(".institutional-hero");
+    const hero = page.locator(".campaign-hero");
     await expect(
       hero.getByRole("heading", {
-        name: "Vista o que você quiser. Sem negociar com o espelho.",
+        name: "A celulite não precisa decidir o que você veste.",
       }),
     ).toBeVisible();
     await expect(
-      hero.getByRole("link", { name: "Conhecer o CeluClin" }),
+      hero.getByRole("link", { name: "Conhecer por dentro" }),
     ).toBeInViewport();
     await expect(hero.getByText("60 cápsulas · 2 ao dia · 30 dias")).toBeInViewport();
-    await expect(hero.locator('img[src="/label/celuclin-label-front-hero.webp"]')).toBeInViewport();
+    await expect(hero.locator('img[src="/product/celuclin-front-02.webp"]')).toBeInViewport();
     await expect(hero).toContainText("suplemento alimentar em cápsulas");
+    await expect(hero).toContainText("Não é medicamento");
   }
 });
 
@@ -59,27 +60,43 @@ test("header ganha superfície somente depois da rolagem", async ({ page }) => {
   await expect(header).toHaveAttribute("data-scrolled", "true");
 });
 
-test("nenhuma mídia bloqueada é carregada, nem no fim da página", async ({
+test("assets reais cumprem funções distintas e o rótulo só aparece na transparência", async ({
   page,
 }) => {
-  const requested: string[] = [];
-  page.on("request", (request) => requested.push(request.url()));
   await page.goto("/");
+  await page.locator("#resultados").scrollIntoViewIfNeeded();
+  await expect(page.locator("#resultados .proof-figure img")).toHaveCount(9);
   await page.locator(".site-footer").scrollIntoViewIfNeeded();
-  await page.waitForTimeout(300);
-  expect(requested.join("\n")).not.toMatch(
-    /\/(?:product|proof|lifestyle|brand)\//i,
-  );
+
   const sources = await page.locator("img").evaluateAll((images) =>
-    images.map((image) => image.getAttribute("src")),
+    [...new Set(images.map((image) => image.getAttribute("src")).filter(Boolean))],
   );
-  expect(sources.filter(Boolean)).toEqual(
-    expect.arrayContaining(["/label/celuclin-label-front.webp"]),
+  expect(sources).toEqual(
+    expect.arrayContaining([
+      "/product/celuclin-front-02.webp",
+      "/product/celuclin-front-01.webp",
+      "/product/celuclin-angle.webp",
+      "/product/celuclin-hand.webp",
+      "/product/celuclin-capsules.webp",
+      "/lifestyle/freedom-01.webp",
+      "/lifestyle/routine-01.webp",
+      "/proof/cellulite/cellulite-01.webp",
+      "/proof/laxity/laxity-01.webp",
+      "/proof/localized-fat/localized-fat-01.webp",
+      "/label/celuclin-label-front.webp",
+    ]),
   );
-  expect(sources.join(" ")).not.toMatch(/product|proof|lifestyle|brand/i);
+
+  const labelLocations = await page
+    .locator('img[src="/label/celuclin-label-front.webp"]')
+    .evaluateAll((images) => images.map((image) => image.closest("#rotulo") !== null));
+  expect(labelLocations.length).toBeGreaterThan(0);
+  expect(labelLocations.every(Boolean)).toBe(true);
+  await expect(page.locator('.campaign-hero img[src*="/label/"]')).toHaveCount(0);
+  await expect(page.locator('#composicao img[src*="/label/"]')).toHaveCount(0);
 });
 
-test("imagem ausente mantém mensagem factual e acesso ao PDF", async ({ page }) => {
+test("imagem de rótulo ausente mantém mensagem factual e acesso ao PDF", async ({ page }) => {
   await page.route("**/label/celuclin-label-front.webp", (route) =>
     route.abort("failed"),
   );
@@ -116,24 +133,32 @@ test("alvos primários mobile têm pelo menos 44 px e separação útil", async 
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  const boxes = await page
-    .locator(".institutional-hero__actions a, .site-header__mobile-actions a, .site-header__mobile-actions button")
-    .evaluateAll((elements) => elements.map((element) => element.getBoundingClientRect()));
+  const actions = page.locator(
+    ".campaign-hero__actions a, .site-header__mobile-actions button",
+  );
+  const boxes = await actions.evaluateAll((elements) =>
+    elements
+      .map((element) => element.getBoundingClientRect())
+      .filter((box) => box.width > 0 && box.height > 0),
+  );
   for (const box of boxes) {
     expect(box.height).toBeGreaterThanOrEqual(44);
     expect(box.width).toBeGreaterThanOrEqual(44);
   }
-  const heroActions = boxes.slice(2);
-  if (heroActions.length >= 2) {
-    const first = heroActions[0];
-    const second = heroActions[1];
-    if (first !== undefined && second !== undefined) {
-      expect(second.left - first.right).toBeGreaterThanOrEqual(8);
-    }
+
+  const heroBoxes = await page.locator(".campaign-hero__actions a").evaluateAll(
+    (elements) => elements.map((element) => element.getBoundingClientRect()),
+  );
+  const first = heroBoxes[0];
+  const second = heroBoxes[1];
+  if (first !== undefined && second !== undefined) {
+    const sameRow = Math.abs(first.top - second.top) < 4;
+    const gap = sameRow ? second.left - first.right : second.top - first.bottom;
+    expect(gap).toBeGreaterThanOrEqual(8);
   }
 });
 
-test("reduced motion preserva layout e remove animação longa", async ({
+test("reduced motion preserva a campanha e reduz transições a um frame", async ({
   browser,
 }) => {
   const context = await browser.newContext({
@@ -143,23 +168,26 @@ test("reduced motion preserva layout e remove animação longa", async ({
   const page = await context.newPage();
   await page.goto("/");
   const duration = await page
-    .locator(".hero-sculpture")
-    .evaluate((element) => getComputedStyle(element).animationDuration);
+    .locator(".campaign-hero__visual > picture > img")
+    .evaluate((element) => getComputedStyle(element).transitionDuration);
   expect(Number.parseFloat(duration)).toBeLessThanOrEqual(0.001);
   await expect(
-    page.getByRole("link", { name: "Conhecer o CeluClin" }),
+    page.getByRole("link", { name: "Conhecer por dentro" }),
   ).toBeVisible();
   await context.close();
 });
 
-test("HTML e bundle não publicam packshot ou prova restrita", async () => {
+test("HTML inicial não depende de mídia restrita e preserva conteúdo crítico", async () => {
   const html = await fs.readFile("index.html", "utf8");
   expect(html).not.toMatch(/\/product\/|\/proof\/|\/lifestyle\/|\/brand\//);
+  expect(html).not.toContain("celuclin-label-front-hero");
   expect(html).not.toContain("example.test");
+  expect(html).toContain("A celulite não precisa");
+  expect(html).toContain("Histórias que a pele conta");
   expect(html).toContain("noindex, nofollow");
 });
 
-test("console e rede permanecem sem erros durante navegação principal", async ({
+test("console e rede permanecem sem erros durante a narrativa principal", async ({
   page,
 }) => {
   const errors: string[] = [];
@@ -170,6 +198,7 @@ test("console e rede permanecem sem erros durante navegação principal", async 
   await page.goto("/");
   await page.locator("#composicao").scrollIntoViewIfNeeded();
   await page.getByRole("tab", { name: /Vitamina C/ }).click();
+  await page.locator("#resultados").scrollIntoViewIfNeeded();
   await page.locator("#rotulo").scrollIntoViewIfNeeded();
   await page.getByRole("button", { name: "Ampliar para ler" }).click();
   await page.keyboard.press("Escape");

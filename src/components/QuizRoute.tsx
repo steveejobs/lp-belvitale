@@ -6,6 +6,11 @@ import {
   type RefObject,
 } from "react";
 import { canonicalUrl } from "../config/site";
+import {
+  campaignAssets,
+  canRenderCampaignAsset,
+  internalMediaPreview,
+} from "../data/campaignAssets";
 import { getQuizAccessMode } from "../data/quizPublication";
 import {
   quizPublicationApproved,
@@ -13,6 +18,8 @@ import {
 } from "../data/quizPublicationConfig";
 import { quizQuestions, type QuizQuestion } from "../data/quizQuestions";
 import { quizProfiles, type QuizProfile } from "../data/quizProfiles";
+import { proofAssets, proofAuthorization } from "../data/proofGallery";
+import { resolveQuizRecommendation } from "../quiz/quizRecommendation";
 import { recordQuizEvent } from "../quiz/quizEvents";
 import {
   getQuizRoutePath,
@@ -50,11 +57,11 @@ function QuizMetadata({ path }: { readonly path: QuizRoutePath }) {
     const isResult = path === "result";
     document.title = isResult
       ? "Seu ritmo de autocuidado | Belvitale"
-      : "Que ritmo faz o cuidado continuar? | Belvitale";
+      : "Onde o seu cuidado encontra ritmo? | Belvitale";
 
     const descriptionText = isResult
       ? "Um perfil de organização da rotina de autocuidado, sem diagnóstico ou promessa de resultado."
-      : "Seis escolhas rápidas para entender o que ajuda uma rotina de autocuidado a caber na vida real.";
+      : "Seis escolhas rápidas para descobrir o que ajuda uma rotina de autocuidado a caber na vida real.";
     let description = document.querySelector<HTMLMetaElement>(
       'meta[name="description"]',
     );
@@ -97,7 +104,7 @@ function QuizMetadata({ path }: { readonly path: QuizRoutePath }) {
       .forEach((meta) => meta.remove());
     if (quizPublicationApproved && canonicalUrl !== null) {
       const values = {
-        "og:title": "Que ritmo faz o cuidado continuar? | Belvitale",
+        "og:title": "Onde o seu cuidado encontra ritmo? | Belvitale",
         "og:description":
           "Seis escolhas rápidas sobre começo, retomada e vida real.",
         "og:type": "website",
@@ -130,7 +137,7 @@ function QuizBrand() {
         <a className="quiz-brand" href="/" aria-label="Belvitale — início">
           belvitale
         </a>
-        <span>CeluClin · seu ritmo</span>
+        <span>CeluClin · escolha 01—06</span>
       </div>
     </header>
   );
@@ -140,31 +147,36 @@ function QuizStart({ onStart }: { readonly onStart: () => void }) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   useTitleFocus(titleRef, "start");
 
+  const capsules = campaignAssets.capsules;
+  const canShowCapsules = canRenderCampaignAsset(capsules);
+
   return (
     <main className="quiz-main" id="conteudo-quiz">
       <div className="quiz-shell quiz-start">
-        <div className="quiz-start__art" aria-hidden="true">
-          <span />
-          <span />
-          <strong>6</strong>
-          <small>escolhas</small>
+        <div className="quiz-start__art">
+          {canShowCapsules ? (
+            <img src={capsules.src} width={capsules.width} height={capsules.height} alt="" fetchPriority="high" decoding="async" />
+          ) : null}
+          <span aria-hidden="true" />
+          <strong aria-hidden="true">6</strong>
+          <small aria-hidden="true">escolhas</small>
         </div>
         <div className="quiz-start__content">
           <p className="quiz-eyebrow">Um editorial interativo</p>
           <h1 ref={titleRef} tabIndex={-1}>
-            <span>Que ritmo faz</span>
-            <em>o cuidado continuar?</em>
+            <span>Onde o seu cuidado</span>
+            <em>encontra ritmo?</em>
           </h1>
           <p className="quiz-lead">
-            Seis escolhas rápidas para entender o que ajuda uma rotina a
-            caber na sua vida — inclusive quando o dia sai do plano.
+            Seis cenas rápidas para perceber o que ajuda uma rotina a caber
+            na vida real — inclusive quando o dia sai do plano.
           </p>
           <button
             className="quiz-button quiz-button--primary"
             type="button"
             onClick={onStart}
           >
-            Descobrir meu ritmo
+            Entrar na experiência
           </button>
           <p className="quiz-microcopy">
             Menos de 2 minutos. Você pode voltar e mudar respostas.
@@ -200,6 +212,9 @@ function QuizQuestionScreen({
   const titleRef = useRef<HTMLHeadingElement>(null);
   useTitleFocus(titleRef, question.id);
   const errorId = "quiz-error-" + question.id;
+  const selectedOption = question.options.find(
+    (option) => option.id === selectedOptionId,
+  );
 
   function selectOption(event: ChangeEvent<HTMLInputElement>) {
     onSelect(event.currentTarget.value);
@@ -284,7 +299,8 @@ function QuizQuestionScreen({
           <p className="quiz-feedback" aria-live="polite">
             {selectedOptionId === null
               ? "Escolha a frase mais próxima do seu cotidiano."
-              : "Escolha registrada. Você pode continuar ou mudar a resposta."}
+              : selectedOption?.detail ??
+                "Escolha registrada. Você pode continuar ou mudar a resposta."}
           </p>
           <p
             className="quiz-error"
@@ -320,26 +336,33 @@ function QuizResult({
   const profile = quizProfiles[profileId];
   const titleRef = useRef<HTMLHeadingElement>(null);
   useTitleFocus(titleRef, profileId);
+  const product = campaignAssets.productFrontPrimary;
+  const canShowProduct = canRenderCampaignAsset(product);
+  const evidence = proofAssets.find((asset) => asset.category === "cellulite");
+  const recommendation = resolveQuizRecommendation(profileId);
 
   return (
     <main className="quiz-main quiz-main--result" id="conteudo-quiz">
       <div className="quiz-result">
         <div className="quiz-result__reveal">
+          <div className="quiz-result__reveal-band" aria-hidden="true" />
           <div className="quiz-shell">
             <p className="quiz-eyebrow">{profile.eyebrow}</p>
             <h1 ref={titleRef} tabIndex={-1}>
               {profile.title}
             </h1>
             <p>{profile.description}</p>
+            <span>perfil de rotina · não diagnóstico</span>
           </div>
         </div>
 
         <div className="quiz-shell quiz-result__body">
           <section className="quiz-result__traits" aria-labelledby="traits-title">
-            <h2 id="traits-title">O que aparece no seu jeito de cuidar</h2>
+            <p className="quiz-eyebrow">Três pistas</p>
+            <h2 id="traits-title">O que aparece no seu jeito de cuidar.</h2>
             <ul>
-              {profile.characteristics.map((characteristic) => (
-                <li key={characteristic}>{characteristic}</li>
+              {profile.characteristics.map((characteristic, index) => (
+                <li key={characteristic}><span>0{index + 1}</span>{characteristic}</li>
               ))}
             </ul>
           </section>
@@ -351,24 +374,51 @@ function QuizResult({
           </section>
 
           <section className="quiz-next-step" aria-labelledby="next-step-title">
-            <p className="quiz-eyebrow">Um próximo passo possível</p>
-            <h2 id="next-step-title">Conhecer antes de escolher.</h2>
-            <p>{profile.nextStep}</p>
-            <div className="quiz-result__actions">
-              <a
-                className="quiz-button quiz-button--primary"
-                href="/#composicao"
-                onClick={() =>
-                  recordQuizEvent("quiz_composition_click", { source: "quiz" })
-                }
-              >
-                Abrir a composição
-              </a>
-              <a className="quiz-text-link" href="/#rotulo">
-                Ler o rótulo original
-              </a>
+            <div className="quiz-next-step__media" data-media-status={canShowProduct ? "preview" : "blocked"}>
+              {canShowProduct ? (
+                <img src={product.src} width={product.width} height={product.height} alt={product.alt} loading="lazy" decoding="async" />
+              ) : <span aria-hidden="true">CeluClin</span>}
+            </div>
+            <div className="quiz-next-step__copy">
+              <p className="quiz-eyebrow">Um próximo passo possível</p>
+              <h2 id="next-step-title">Conhecer antes de escolher.</h2>
+              <p>{profile.nextStep}</p>
+              <div className="quiz-result__actions">
+                <a className="quiz-button quiz-button--primary" href="/#composicao" onClick={() => recordQuizEvent("quiz_composition_click", { source: "quiz" })}>
+                  Abrir a composição
+                </a>
+                <a className="quiz-text-link" href="/#rotulo">Ler o rótulo original</a>
+              </div>
             </div>
           </section>
+
+          {recommendation !== null ? (
+            <section className="quiz-recommendation" aria-labelledby="recommendation-title" data-ready="true">
+              <p className="quiz-eyebrow">{recommendation.disclosure}</p>
+              <h2 id="recommendation-title">Opção sugerida para o seu ritmo</h2>
+              <p>{recommendation.rationale}</p>
+              <a className="quiz-button quiz-button--primary" href={recommendation.offer.checkoutUrl}>Ver opção de {recommendation.offer.approximateDurationMonths * 30} dias</a>
+            </section>
+          ) : internalMediaPreview ? (
+            <section className="quiz-recommendation" aria-labelledby="recommendation-title" data-ready="false">
+              <p className="quiz-eyebrow">Próximo passo comercial</p>
+              <h2 id="recommendation-title">Opção sugerida para o seu ritmo</h2>
+              <p>A recomendação de conveniência permanece protegida até ofertas, política, mídia, identidade empresarial e situação sanitária estarem aprovadas.</p>
+              <span>Recomendação não publicada</span>
+            </section>
+          ) : null}
+
+          {evidence?.src === null || evidence === undefined ? null : (
+            <section className="quiz-evidence" aria-labelledby="evidence-title">
+              <div>
+                <p className="quiz-eyebrow">Prova geral da marca</p>
+                <h2 id="evidence-title">Uma imagem autorizada. Não um resultado calculado pelo quiz.</h2>
+                <p>{proofAuthorization.disclaimer} Esta imagem não foi escolhida a partir das suas respostas.</p>
+                <a className="quiz-text-link" href="/#resultados">Ver todas as séries</a>
+              </div>
+              <img src={evidence.src} width={evidence.width} height={evidence.height} alt={evidence.alt} loading="lazy" decoding="async" />
+            </section>
+          )}
 
           <div className="quiz-result__footer">
             <p>

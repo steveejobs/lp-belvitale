@@ -1,5 +1,7 @@
 # Arquitetura do quiz de rotina
 
+> Atualização de campanha — 14/07/2026: a experiência visual e as seis perguntas foram substituídas. O conceito corrente é **“Onde o seu cuidado encontra ritmo?”**; os perfis são **Começo sem peso**, **Ritmo que volta** e **Cuidado em curso**. Permanecem válidos os contratos de rota, scoring puro, storage sanitizado, privacidade, eventos sem respostas individuais e gates descritos abaixo.
+
 Registrado em 14/07/2026. O quiz responde apenas qual formato de rotina é mais compatível com o momento informado. Não avalia corpo, saúde, necessidade, eficácia ou prazo de resultado.
 
 ## Publicação

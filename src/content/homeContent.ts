@@ -1,76 +1,112 @@
 export const homeContent = {
   hero: {
     eyebrow: "Belvitale · suplemento alimentar em cápsulas",
-    titleLead: "Vista o que você quiser.",
-    titleAccent: ["Sem negociar", "com o espelho."],
+    titleLead: "A celulite não precisa",
+    titleAccent: "decidir o que você veste.",
     lead:
-      "Cuidar da pele pode caber na sua rotina sem transformar seu corpo em problema. CeluClin é uma escolha de autocuidado com composição e uso à vista.",
-    primaryAction: "Conhecer o CeluClin",
-    secondaryAction: "Abrir a fórmula",
+      "CeluClin entra na rotina com composição e uso à vista — sem transformar o seu corpo em problema ou prometer perfeição.",
+    primaryAction: "Conhecer por dentro",
+    secondaryAction: "Descobrir meu ritmo",
     meta: "60 cápsulas · 2 ao dia · 30 dias",
     notice: "Suplemento alimentar. Não é medicamento.",
   },
   emotional: {
-    eyebrow: "O espaço entre querer e escolher",
-    title: "Às vezes, a roupa já estava escolhida.",
-    passages: [
-      "A mão pega o short. Volta. A foto acontece, mas você pensa duas vezes antes de aparecer.",
-      "Não porque seu corpo esteja errado. Porque a insegurança ocupou espaço demais na decisão.",
+    eyebrow: "Quando a insegurança tenta votar",
+    title: "A escolha já era sua.",
+    beats: [
+      {
+        number: "01",
+        thought: "O short já estava na mão.",
+        release: "Ele pode continuar ali — ou ir com você.",
+      },
+      {
+        number: "02",
+        thought: "A foto podia ter sido só uma foto.",
+        release: "Sem procurar primeiro o ângulo que esconde.",
+      },
+      {
+        number: "03",
+        thought: "O espelho não precisava votar.",
+        release: "Você pode escolher por vontade, não por negociação.",
+      },
     ],
-    release:
-      "Cuidar de si também pode ser abrir esse espaço de novo — para vestir, sair e aparecer por vontade.",
   },
   education: {
-    eyebrow: "Sem culpa disfarçada de explicação",
-    title: "Celulite não é uma medida de peso, disciplina ou cuidado.",
+    eyebrow: "Tire a culpa da frente",
+    title: "Celulite não mede peso, disciplina ou cuidado.",
     body:
-      "Ela é comum em corpos diferentes e sua aparência não se resume a uma causa simples. Você não precisa de uma aula sobre defeitos; precisa de informação que não transforme o seu corpo em culpa.",
-    sourceLabel: "Informação educativa, não diagnóstico.",
+      "Ela é comum em corpos diferentes e sua aparência não se resume a uma causa simples. Informação útil não transforma pele em falha.",
+    counters: ["peso", "disciplina", "falta de cuidado"],
+    sourceLabel: "Contexto educativo. Não é diagnóstico.",
   },
   product: {
-    eyebrow: "CeluClin entra em cena",
-    title: "Uma rotina. Não uma promessa de perfeição.",
+    eyebrow: "CeluClin, sem papel de salvador",
+    title: "Um objeto de rotina. Uma escolha consciente.",
     body:
-      "CeluClin é um suplemento alimentar em cápsulas da Belvitale. A proposta é simples de entender: composição consultável, uso informado no rótulo e um gesto que pode caber no dia.",
+      "CeluClin é um suplemento alimentar em cápsulas da Belvitale. Antes de qualquer decisão comercial, você encontra categoria, composição, modo de uso e rótulo.",
+    stages: [
+      {
+        id: "presence",
+        kicker: "Presença",
+        copy: "O frasco entra em cena. Seu corpo não vira argumento.",
+      },
+      {
+        id: "inside",
+        kicker: "Por dentro",
+        copy: "Cápsulas visíveis, fórmula consultável e nenhum benefício inventado.",
+      },
+      {
+        id: "routine",
+        kicker: "Na vida real",
+        copy: "Duas cápsulas ao dia, conforme o uso informado no rótulo.",
+      },
+    ],
     facts: [
       { value: "60", label: "cápsulas no frasco" },
       { value: "2", label: "cápsulas ao dia" },
       { value: "30", label: "dias calculados" },
     ],
-    labelAction: "Ler o rótulo original",
   },
   formula: {
-    eyebrow: "Abra a fórmula",
-    title: "Toque. Compare. Leia sem pressa.",
+    eyebrow: "Composição em foco",
+    title: "O que entra na rotina precisa aparecer por inteiro.",
     body:
-      "A porção informada corresponde a duas cápsulas. Aqui entram apenas ingredientes e quantidades confirmados nas fontes auditadas.",
-    source: "Quantidade por porção · fonte: rótulo e documentação",
+      "A porção informada corresponde a duas cápsulas. Toque nos ingredientes para comparar somente nomes e quantidades confirmados.",
+    source: "Quantidade por porção · rótulo + documentação",
     partial:
-      "Um item permanece fora desta lista enquanto o nome divergir entre as fontes. O rótulo original segue disponível para consulta.",
+      "A cúrcuma permanece fora desta seleção enquanto o nome divergir entre as fontes. O rótulo original continua disponível para leitura integral.",
+  },
+  proof: {
+    eyebrow: "Resultados autorizados",
+    titleLead: "Histórias que a pele conta",
+    titleAccent: "melhor do que qualquer promessa.",
+    context:
+      "O acervo é exibido na categoria recebida, com o enquadramento integral preservado. Não inferimos ordem, período, identidade ou duração.",
   },
   routine: {
-    eyebrow: "Um momento de respiro",
-    titleLead: "Duas cápsulas.",
-    titleAccent: "Todos os dias.",
+    eyebrow: "Baixe o ritmo",
+    titleLead: "Dois por dia.",
+    titleAccent: "Um momento que cabe.",
     body:
-      "Sessenta cápsulas divididas pelo uso informado de duas ao dia: 30 dias de rotina.",
+      "Sessenta cápsulas divididas pelo uso informado de duas ao dia: 30 dias de rotina. Sem compensação, cronômetro ou espetáculo.",
   },
   commercial: {
-    eyebrow: "Escolher também é entender o ritmo",
-    title: "Três maneiras de organizar a continuidade.",
+    eyebrow: "Organizar sem prometer mais",
+    title: "Escolha a duração pela conveniência, nunca pela promessa de eficácia.",
     body:
-      "A comparação comercial só fica pública quando preço, condições, imagens, direitos, política e situação sanitária estiverem confirmados.",
+      "As três estruturas estão desenhadas. Preço, parcelamento, imagens de kit, política, identidade empresarial e situação sanitária continuam protegidos pelo gate comercial.",
     labels: {
-      "one-month": "Primeiro passo",
-      "three-months": "Continuidade",
-      "seven-months": "Experiência completa",
+      "one-month": "Começar",
+      "three-months": "Continuar",
+      "seven-months": "Organizar por mais tempo",
     },
   },
   closing: {
-    eyebrow: "Liberdade consciente",
+    eyebrow: "A última palavra é sua",
     titleLead: "Sua pele não precisa ser perfeita",
     titleAccent: "para você voltar a se sentir livre.",
     body:
-      "Escolher com calma. Conhecer o que entra na rotina. E deixar que a vontade volte a falar mais alto que a insegurança.",
+      "Conheça o que entra na rotina. Repare no que combina com a sua vida. Depois, escolha sem pressa.",
+    action: "Descobrir meu ritmo",
   },
 } as const;

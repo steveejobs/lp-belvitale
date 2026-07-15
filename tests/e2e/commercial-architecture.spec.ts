@@ -170,21 +170,21 @@ test("eventos comerciais permanecem locais e sem PII", () => {
   expect(JSON.stringify(events)).not.toMatch(/email|phone|answer/i);
 });
 
-test("estado real mostra direção bloqueada sem preço, mídia ou checkout", async ({
+test("estado real mostra direção interna sem preço ou checkout", async ({
   page,
 }) => {
   await page.goto("/");
   const section = page.locator("#kits");
   await expect(section).toBeVisible();
   await expect(section).toHaveAttribute("data-publication-ready", "false");
-  await expect(section.getByText(/Gate ativo/)).toBeVisible();
-  await expect(section.locator("img")).toHaveCount(0);
+  await expect(section.getByText(/Direção interna/)).toBeVisible();
+  await expect(section.locator("img").first()).toBeVisible();
   await expect(
     section.locator('a[href*="belvitale.pay.yampi.com.br"]'),
   ).toHaveCount(0);
   await expect(section).not.toContainText("R$");
-  await expect(section.getByText("Experiência completa")).toBeVisible();
-  await expect(section).not.toContainText("5 frascos + 2");
+  await expect(section.getByText("Organizar por mais tempo")).toBeVisible();
+  await expect(section).toContainText("5 frascos + 2 adicionais");
 });
 
 test("fixture interna preserva URLs e identifica valores fictícios", async ({
@@ -194,7 +194,7 @@ test("fixture interna preserva URLs e identifica valores fictícios", async ({
   await page.goto("/");
   const section = page.locator("#kits");
   await expect(section).toHaveAttribute("data-ready-fixture", "true");
-  await expect(section.getByText(/dados fictícios identificados/)).toBeVisible();
+  await expect(section.getByText(/Direção interna/)).toBeVisible();
   const links = section.locator('a[href*="belvitale.pay.yampi.com.br"]');
   await expect(links).toHaveCount(3);
   await expect(links.nth(0)).toHaveAttribute(
@@ -217,12 +217,14 @@ test("CTA da fixture funciona por teclado e registra somente IDs", async ({
 }) => {
   await installReadyFixture(page);
   await page.goto("/");
-  const cta = page.locator("#kits .commercial-offer__cta").first();
+  const firstOffer = page.locator('#kits [data-offer-id="one-month"]');
+  const selector = firstOffer.locator(".offer-lane__selector");
+  await selector.focus();
+  await page.keyboard.press("Enter");
+  await expect(firstOffer).toHaveAttribute("data-selected", "true");
+  const cta = firstOffer.locator(".offer-lane__cta");
   await cta.focus();
   await page.keyboard.press("Enter");
-  await expect(
-    page.locator('#kits [data-offer-id="one-month"]'),
-  ).toHaveAttribute("data-selected", "true");
   const events = await page.evaluate(
     () =>
       (window as Window & { __BELVITALE_COMMERCE_EVENTS__?: unknown[] })

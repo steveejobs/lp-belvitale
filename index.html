@@ -6,7 +6,7 @@
     <link rel="icon" href="data:," />
     <link
       rel="preload"
-      href="/node_modules/@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2"
+      href="/node_modules/@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -18,13 +18,6 @@
       type="font/woff2"
       crossorigin
     />
-    <link
-      rel="preload"
-      href="/label/celuclin-label-front-hero.webp"
-      as="image"
-      type="image/webp"
-      fetchpriority="high"
-    />
     <meta name="robots" content="noindex, nofollow" />
     <meta
       name="description"
@@ -35,7 +28,7 @@
     <meta property="og:site_name" content="Belvitale" />
     <meta
       property="og:title"
-      content="Vista o que você quiser. Sem negociar com o espelho. | Belvitale"
+      content="A celulite não precisa decidir o que você veste. | Belvitale"
     />
     <meta
       property="og:description"
@@ -48,7 +41,7 @@
         "name": "Belvitale"
       }
     </script>
-    <title>Belvitale | CeluClin — liberdade consciente</title>
+    <title>Belvitale | CeluClin — a escolha continua sua</title>
     <style>
       .bootstrap {
         min-height: 100vh;
@@ -145,14 +138,21 @@
         background: linear-gradient(105deg, #7a173b 0 38%, #ec0791 38% 70%, #5a2895 70%);
         transform: rotate(-2deg);
       }
-      .bootstrap__media img {
-        position: absolute;
-        top: 24%;
-        left: -8%;
-        width: 116%;
-        height: 58%;
-        object-fit: cover;
-        transform: rotate(2deg);
+      .bootstrap__media strong,
+      .bootstrap__media span {
+        position: relative;
+        z-index: 1;
+        display: block;
+        margin: 2rem;
+        color: white;
+      }
+      .bootstrap__media strong {
+        margin-top: 5rem;
+        font: 600 clamp(3rem, 12vw, 6rem) Georgia, serif;
+      }
+      .bootstrap__media span {
+        max-width: 14rem;
+        font-size: .75rem;
       }
       .bootstrap__facts {
         padding-block: 4rem;
@@ -220,32 +220,25 @@
                 Belvitale · suplemento alimentar em cápsulas
               </p>
               <h1>
-                Vista o que você quiser.
-                <em>Sem negociar com o espelho.</em>
+                A celulite não precisa
+                <em>decidir o que você veste.</em>
               </h1>
               <p class="bootstrap__copy">
-                Cuidar da pele pode caber na sua rotina sem transformar seu
-                corpo em problema. CeluClin é uma escolha de autocuidado com
-                composição e uso à vista.
+                CeluClin entra na rotina com composição e uso à vista — sem
+                transformar o seu corpo em problema ou prometer perfeição.
               </p>
               <div class="bootstrap__actions">
-                <a href="#celuclin">Conhecer o CeluClin</a>
-                <a href="#composicao">Abrir a fórmula</a>
+                <a href="#celuclin">Conhecer por dentro</a>
+                <a href="#composicao">Abrir a composição</a>
               </div>
               <p class="bootstrap__meta">
                 60 cápsulas · 2 ao dia · 30 dias
               </p>
                <p>Suplemento alimentar. Não é medicamento.</p>
              </div>
-             <div class="bootstrap__media" aria-hidden="true">
-               <img
-                 src="/label/celuclin-label-front-hero.webp"
-                 width="1310"
-                 height="621"
-                 alt=""
-                 fetchpriority="high"
-                 decoding="sync"
-               />
+             <div class="bootstrap__media" aria-label="Imagem oficial do produto aguardando validação">
+               <strong>CeluClin</strong>
+               <span>Packshot oficial em validação documental.</span>
              </div>
            </section>
           <section class="bootstrap__facts" id="celuclin">
@@ -265,6 +258,14 @@
                 <div><dt>Chlorella</dt><dd>100 mg</dd></div>
                 <div><dt>Spirulina</dt><dd>100 mg</dd></div>
               </dl>
+            </div>
+          </section>
+          <section class="bootstrap__facts" id="resultados">
+            <div class="bootstrap__shell">
+              <p class="bootstrap__eyebrow">Resultados autorizados</p>
+              <h2>Histórias que a pele conta melhor do que qualquer promessa.</h2>
+              <p class="bootstrap__copy">Celulite, flacidez e gordura localizada. Enquadramentos preservados; sem inferir pessoa, período ou ordem.</p>
+              <p>Resultados reais autorizados. Experiências individuais podem variar.</p>
             </div>
           </section>
           <section class="bootstrap__label bootstrap__shell" id="rotulo">

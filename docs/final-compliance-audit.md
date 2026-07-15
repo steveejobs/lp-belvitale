@@ -1,5 +1,7 @@
 # Auditoria final de conformidade — Belvitale / CeluClin
 
+> Atualização de 14/07/2026: a matriz abaixo registra o artefato anterior e permanece como histórico independente. A reconstrução corrente corrigiu o domínio fictício, criou gate sanitário central, reescreveu o quiz, publicou as nove provas após autorização expressa do proprietário e mantém produto/lifestyle/brand, ofertas e indexação bloqueados. O estado corrente é documentado em `docs/redesign-delivery.md`, `docs/campaign-asset-map.md` e na seção inicial de `docs/requirements-ledger.md`.
+
 Data da auditoria: 14/07/2026  
 Escopo: auditoria integral, somente leitura, do código, conteúdo renderizado, build existente, rotas, documentação e evidências visuais. Nenhum arquivo de aplicação, conteúdo, configuração, asset ou build foi alterado nesta rodada. Este relatório é o único arquivo criado.
 

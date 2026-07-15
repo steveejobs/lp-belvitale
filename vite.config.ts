@@ -6,20 +6,47 @@ import { defineConfig, loadEnv, type Plugin } from "vite";
 import { regulatoryPublicationReady } from "./src/data/regulatoryFacts";
 
 const rootDirectory = path.dirname(fileURLToPath(import.meta.url));
-const restrictedPublicFolders = ["proof", "product", "lifestyle", "brand"];
+const homeEntry = path.resolve(rootDirectory, "index.html");
+const restrictedPublicFolders = ["product", "lifestyle", "brand"];
+const obsoletePublicFiles = [
+  path.join("label", "celuclin-label-front-hero.webp"),
+];
 
-function excludeUnverifiedMedia(): Plugin {
+function excludeUnverifiedMedia(internalMediaPreview: boolean): Plugin {
   return {
     name: "exclude-unverified-media",
     apply: "build",
     async closeBundle() {
+      if (internalMediaPreview) return;
       await Promise.all(
-        restrictedPublicFolders.map(async (folder) =>
-          rm(path.join(rootDirectory, "dist", folder), {
+        [
+          ...restrictedPublicFolders.map((folder) => path.join(folder)),
+          ...obsoletePublicFiles,
+        ].map(async (target) =>
+          rm(path.join(rootDirectory, "dist", target), {
             recursive: true,
             force: true,
           }),
         ),
+      );
+    },
+  };
+}
+
+function preloadInternalHeroMedia(internalMediaPreview: boolean): Plugin {
+  return {
+    name: "preload-internal-hero-media",
+    transformIndexHtml(html, context) {
+      if (
+        !internalMediaPreview ||
+        path.resolve(context.filename) !== homeEntry
+      ) {
+        return html;
+      }
+
+      return html.replace(
+        "</head>",
+        '    <link rel="preload" href="/product/celuclin-front-02-640.avif" as="image" type="image/avif" media="(max-width: 47.99rem)" fetchpriority="high" />\n    <link rel="preload" href="/product/celuclin-front-02.webp" as="image" type="image/webp" media="(min-width: 48rem)" fetchpriority="high" />\n  </head>',
       );
     },
   };
@@ -112,6 +139,9 @@ export default defineConfig(({ command, mode }) => {
     loadedEnvironment.VITE_QUIZ_PUBLICATION_STATUS;
   const canonicalValue =
     process.env.VITE_CANONICAL_URL ?? loadedEnvironment.VITE_CANONICAL_URL;
+  const internalMediaPreview =
+    (process.env.VITE_INTERNAL_MEDIA ??
+      loadedEnvironment.VITE_INTERNAL_MEDIA) === "true";
   const publicationRequested = publicationValue === "approved";
   const publicationApproved =
     publicationRequested && regulatoryPublicationReady;
@@ -132,12 +162,13 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [
       react(),
+      preloadInternalHeroMedia(internalMediaPreview),
       quizPublicationSeo(
         publicationApproved,
         canonicalBase,
         command === "build",
       ),
-      excludeUnverifiedMedia(),
+      excludeUnverifiedMedia(internalMediaPreview),
     ],
     build: {
       sourcemap: false,

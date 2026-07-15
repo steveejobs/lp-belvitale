@@ -1,8 +1,9 @@
 export const navigationItems = [
+  { label: "Escolha", href: "#liberdade" },
   { label: "CeluClin", href: "#celuclin" },
   { label: "Fórmula", href: "#composicao" },
+  { label: "Resultados", href: "#resultados" },
   { label: "Rótulo", href: "#rotulo" },
-  { label: "Dúvidas", href: "#faq" },
 ] as const;
 
 function isReservedHostname(hostname: string): boolean {

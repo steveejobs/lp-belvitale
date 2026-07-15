@@ -102,12 +102,12 @@ A homepage continua deliberadamente parcial. A arquitetura comercial está imple
 
 - `/quiz`: introdução e seis perguntas, uma por etapa.
 - `/quiz/resultado`: perfil retomável após conclusão válida armazenada localmente.
-- Status: `development`; sem link no header, homepage, rodapé ou sitemap.
+- Status: bloqueado para publicação/indexação; disponível em desenvolvimento e no preview interno, sem sitemap.
 - Produção sem flag interna: estado indisponível e `noindex, nofollow`, sem perguntas ou ofertas.
-- Perfis: Começo simples, Constância gradual e Continuidade consciente.
+- Perfis: Começo sem peso, Ritmo que volta e Cuidado em curso.
 - Persistência: somente IDs de resposta, etapa, perfil e data de conclusão no dispositivo.
-- CTA final: composição da homepage; nenhum mapping comercial está aprovado.
+- CTA final: composição e rótulo da homepage; nenhum mapping comercial está aprovado.
 
 ## Expansão futura
 
-A galeria só poderá ser ligada em produção após cada item mudar de `pending` para um status documentalmente aprovado. A fórmula completa depende da resolução documental da linha de cúrcuma e dos dados presentes em apenas uma fonte. A seção comercial depende da confirmação integral registrada em `docs/commercial-offer-audit.md`, incluindo a aprovação jurídica da política de trocas e reembolso. O quiz depende de revisão de copy, privacidade e aprovação explícita do status; depoimentos continuam fora desta arquitetura.
+As nove provas mudaram para `owner-authorized` por declaração expressa do proprietário e estão ligadas nas categorias recebidas, sem cronologia ou contexto inventados. A fórmula completa continua dependendo da resolução documental da linha de cúrcuma e dos dados presentes em apenas uma fonte. A seção comercial depende da confirmação integral registrada em `docs/commercial-offer-audit.md`, incluindo a aprovação jurídica da política de trocas e reembolso. O quiz depende de revisão humana, privacidade e aprovação explícita do status; depoimentos textuais continuam fora desta arquitetura.

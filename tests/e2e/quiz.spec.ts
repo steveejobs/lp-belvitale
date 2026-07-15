@@ -59,7 +59,7 @@ function toAnswers(optionIds: readonly string[]): QuizAnswer[] {
 
 async function startQuiz(page: Page) {
   await page.goto("/quiz");
-  const button = page.getByRole("button", { name: "Descobrir meu ritmo" });
+  const button = page.getByRole("button", { name: "Entrar na experiência" });
   await expect(button).toBeVisible();
   await button.click();
 }
@@ -192,7 +192,7 @@ test("início comunica duração, privacidade e ausência de diagnóstico", asyn
 }) => {
   await page.goto("/quiz");
   await expect(
-    page.getByRole("heading", { name: "Que ritmo faz o cuidado continuar?" }),
+    page.getByRole("heading", { name: "Onde o seu cuidado encontra ritmo?" }),
   ).toBeVisible();
   await expect(page.getByText(/Menos de 2 minutos/)).toBeVisible();
   await expect(page.getByText(/Sem diagnóstico, sem dados pessoais/)).toBeVisible();
@@ -212,7 +212,9 @@ test("pergunta mostra progresso orgânico, feedback e erro associado", async ({
   await page.getByRole("button", { name: "Continuar" }).click();
   await expect(page.getByRole("alert")).toContainText("Escolha uma resposta");
   await selectOption(page, "begin-small");
-  await expect(page.getByText(/Escolha registrada/)).toBeVisible();
+  await expect(page.locator(".quiz-feedback")).toContainText(
+    "Pouca fricção antes de criar estrutura",
+  );
   await page.getByRole("button", { name: "Continuar" }).click();
   await expect(progress).toHaveAttribute("aria-valuenow", "2");
 });

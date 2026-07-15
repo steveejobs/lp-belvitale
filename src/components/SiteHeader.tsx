@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { navigationItems } from "../config/site";
+import { quizPublicationApproved } from "../data/quizPublicationConfig";
 
 function MenuIcon({ close = false }: { readonly close?: boolean }) {
   return (
@@ -22,6 +23,10 @@ export function SiteHeader() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
+  const quizAvailable =
+    import.meta.env.DEV ||
+    import.meta.env.VITE_INTERNAL_QUIZ === "true" ||
+    quizPublicationApproved;
 
   useEffect(() => {
     const update = () => setScrolled(window.scrollY > 16);
@@ -77,12 +82,12 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <a className="site-header__desktop-cta" href="#celuclin">
-          Conhecer CeluClin
+        <a className="site-header__desktop-cta" href={quizAvailable ? "/quiz" : "#resultados"}>
+          {quizAvailable ? "Descobrir meu ritmo" : "Ver resultados"}
         </a>
 
         <div className="site-header__mobile-actions">
-          <a href="#celuclin">CeluClin</a>
+          <a href="#resultados">Resultados</a>
           <button
             ref={menuButtonRef}
             type="button"
@@ -132,10 +137,10 @@ export function SiteHeader() {
           </nav>
           <a
             className="button button--primary"
-            href="#celuclin"
+            href={quizAvailable ? "/quiz" : "#resultados"}
             onClick={() => setMenuOpen(false)}
           >
-            Conhecer o CeluClin
+            {quizAvailable ? "Descobrir meu ritmo" : "Ver resultados"}
           </a>
         </div>
       </dialog>

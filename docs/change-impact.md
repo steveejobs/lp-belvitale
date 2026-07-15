@@ -2,14 +2,15 @@
 
 Esta rodada substitui os contratos de preservação visual e hashes registrados nas rodadas históricas abaixo. A autorização foi reconstruir a camada visual, narrativa e experiencial, preservando verdade, dados, gates, privacidade, acessibilidade, checkouts e infraestrutura saudável.
 
-- Checkpoint anterior ao redesign: commit `4d538aa`.
-- Home, quiz e resultado foram recompostos; `CeluClinIntro` e `TrustBar` foram removidos.
-- Novos contratos centrais: `homeContent`, `regulatoryFacts`, `commercialPublicationGate`, `quizRecommendation` e design system persistido.
-- O rótulo aprovado continua sendo a única mídia real publicada. Foi criada apenas uma derivação WebP responsiva do mesmo arquivo para o hero, sem alterar texto ou desenho.
-- Ofertas, provas e packshot ficam disponíveis apenas como direção interna; seus dados e chunks não entram na produção bloqueada.
+- Checkpoint imediatamente anterior a esta reconstrução: commit `59ecbcf`; checkpoint original antes da primeira exploração: `4d538aa`.
+- Home, quiz e resultado foram recompostos novamente. `InstitutionalHero`, `FreedomEditorial`, `ProductReveal`, `ProofGallery` e `BelvitaleInstitutional` foram aposentados; os novos componentes de campanha assumem seus papéis sem preservar hashes visuais.
+- Novos contratos centrais: `campaignAssets`, autorização em `proofGallery`, `homeContent`, gates regulatório/comercial, `quizRecommendation` e design system persistido.
+- O rótulo plano foi removido do hero e de toda decoração. Seu antigo derivado de hero foi apagado; a arte só aparece em `#rotulo`, no modal e no PDF.
+- As nove provas receberam autorização expressa nesta rodada e entram no build, nas categorias celulite, flacidez e gordura localizada. Produto, cápsulas, lifestyle e logos continuam em revisão e só aparecem no preview interno.
+- Ofertas permanecem como direção interna sem preço ou checkout; os links Yampi exatos continuam centralizados e protegidos.
 - Perguntas e pesos do quiz mudaram; scoring puro, storage, privacidade, rotas e recuperação foram preservados.
 - HTML crítico, lazy loading, preloads latinos, content visibility e code splitting foram revistos.
-- Evidências antigas foram substituídas pelos 13 enquadramentos, quatro páginas inteiras e cinco gravações requeridos.
+- Evidências antigas serão substituídas pelas capturas, páginas inteiras e gravações da campanha corrente antes do commit final.
 - Resultado final e limitações: `docs/redesign-delivery.md`.
 
 # Impacto da rodada institucional

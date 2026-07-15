@@ -7,8 +7,10 @@ import { getPublicLegalDocuments } from "../data/legalDocuments";
 import { regulatoryFacts } from "../data/regulatoryFacts";
 
 const footerNavigation = [
+  { label: "Escolha", href: "#liberdade" },
   { label: "CeluClin", href: "#celuclin" },
   { label: "Fórmula", href: "#composicao" },
+  { label: "Resultados", href: "#resultados" },
   { label: "Rótulo", href: "#rotulo" },
   { label: "Dúvidas", href: "#faq" },
 ] as const;

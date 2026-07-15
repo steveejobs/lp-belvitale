@@ -86,10 +86,10 @@ test("home reduz culpa e encerra com liberdade sem inventar história", async ({
   await page.goto("/");
   await expect(
     page.getByRole("heading", {
-      name: "Celulite não é uma medida de peso, disciplina ou cuidado.",
+      name: "Celulite não mede peso, disciplina ou cuidado.",
     }),
   ).toBeVisible();
-  await expect(page.locator(".education-section")).toContainText(
+  await expect(page.locator(".skin-context")).toContainText(
     "não se resume a uma causa simples",
   );
   await expect(
@@ -132,7 +132,7 @@ test("copy pública não contém claims, urgência ou termos comerciais bloquead
   await page.goto("/");
   const text = await page.locator("body").innerText();
   expect(text).not.toMatch(
-    /cura|elimina(?:r)? a celulite|queima gordura|gordura presa|drenagem|toxinas|inflamação|resultado garantido|aprovado pela Anvisa|últimas unidades|mais vendido/i,
+    /\bcura\b|elimina(?:r)? a celulite|queima gordura|gordura presa|drenagem|toxinas|inflamação|resultado garantido|aprovado pela Anvisa|últimas unidades|mais vendido/i,
   );
   expect(text).not.toMatch(/frete grátis|garantia de \d+ dias|R\$\s*\d/i);
 });

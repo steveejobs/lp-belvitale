@@ -1,11 +1,12 @@
 # Informações pendentes
 
-## Bloqueios para a galeria
+Adendo de 14/07/2026: autorização de publicação e atribuição das nove imagens de resultado foi declarada pelo proprietário e deixou de ser pendência. Permanecem ausentes identidade, datas, duração e cronologia; nenhum desses campos pode ser inventado.
+
+## Contexto não fornecido para a galeria autorizada
 
 - Entregar o arquivo ausente `prova 1`, citado pelo usuário mas não encontrado.
-- Confirmar para cada montagem: origem, titular dos direitos, pessoa retratada, contexto do registro, datas, integridade, ausência de manipulação enganosa, vínculo real com o produto e autorização de publicação.
-- Definir uma ordem editorial aprovada. A implementação temporária não interpreta números como cronologia.
-- Informar se alguma imagem é gerada por IA. Imagem de IA nunca poderá ser usada como prova social.
+- Identidade, contexto individual, datas e duração não foram fornecidos e não podem aparecer na copy.
+- A implementação preserva a classificação recebida e não interpreta nomes, números ou lados das montagens como cronologia.
 
 ## Bloqueios para mídias de produto e marca
 
