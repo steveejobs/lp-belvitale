@@ -1,0 +1,1223 @@
+:root {
+  color-scheme: dark;
+  font-family: "Figtree Variable", Figtree, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+@font-face {
+  font-family: "Figtree Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/node_modules/@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Fraunces Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/node_modules/@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2") format("woff2");
+}
+
+html:has(.concept-root),
+body:has(.concept-root) {
+  min-width: 320px;
+  margin: 0;
+  background: #21131f;
+}
+
+body:has(.concept-root) {
+  overflow-x: hidden;
+}
+
+body:has(.concept-root) * {
+  box-sizing: border-box;
+}
+
+body:has(.concept-root) a:focus-visible {
+  outline: 3px solid #ff2d91;
+  outline-offset: 4px;
+}
+
+.concept-root {
+  --cream: #fff7f0;
+  --ink: #21131f;
+  --plum: #2c172b;
+  --wine: #701b48;
+  --magenta: #d40775;
+  --pink: #ef2b91;
+  --blush: #e7b7b4;
+  --line-dark: rgb(255 247 240 / 28%);
+  --line-light: rgb(33 19 31 / 22%);
+  isolation: isolate;
+  overflow: clip;
+}
+
+.concept-root figure,
+.concept-root h1,
+.concept-root h2,
+.concept-root p {
+  margin: 0;
+}
+
+.concept-root figure {
+  overflow: hidden;
+}
+
+.concept-root img {
+  display: block;
+  max-width: 100%;
+}
+
+.concept-scene {
+  position: relative;
+  min-height: 100svh;
+  overflow: clip;
+}
+
+.concept-mark {
+  width: 8.25rem;
+  height: auto;
+  object-fit: contain;
+}
+
+.concept-kicker {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.concept-lede {
+  max-width: 32rem;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.concept-cta {
+  display: inline-flex;
+  min-width: 11.25rem;
+  min-height: 3.25rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem 0.75rem 1.25rem;
+  color: var(--cream);
+  background: var(--magenta);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 180ms ease, transform 180ms ease;
+  touch-action: manipulation;
+}
+
+.concept-cta span {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.concept-cta:hover {
+  background: var(--pink);
+  transform: translateY(-2px);
+}
+
+.concept-cta:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.concept-facts {
+  display: flex;
+  max-width: 32rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.8rem;
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.concept-facts span {
+  display: inline-flex;
+  min-height: 1.75rem;
+  align-items: center;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--line-light);
+}
+
+.concept-facts--inverted {
+  color: var(--cream);
+}
+
+.concept-facts--inverted span {
+  border-color: var(--line-dark);
+}
+
+.concept-note,
+.concept-disclosure {
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.concept-note {
+  margin-top: 0.7rem !important;
+}
+
+.concept-disclosure {
+  color: rgb(255 247 240 / 72%);
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition: opacity 450ms ease, transform 650ms cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Concept A: a dark poster where the hand-held pack crosses the editorial cut. */
+.concept-a {
+  color: var(--cream);
+  background: var(--plum);
+}
+
+.concept-a__hero {
+  min-height: max(100svh, 46rem);
+  background: var(--plum);
+}
+
+.concept-a__grain {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #321a30;
+  clip-path: polygon(0 0, 58% 0, 42% 100%, 0 100%);
+}
+
+.concept-a__masthead {
+  position: absolute;
+  z-index: 4;
+  top: 1.25rem;
+  right: 1.25rem;
+  left: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: rgb(255 247 240 / 76%);
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.concept-a__copy {
+  position: relative;
+  z-index: 3;
+  width: min(100% - 2.5rem, 32rem);
+  padding-top: 7.7rem;
+  padding-bottom: 3rem;
+  margin: 0 auto;
+}
+
+.concept-a__copy h1 {
+  max-width: 10ch;
+  margin-top: 0.9rem;
+  font-family: "Fraunces Variable", Georgia, serif;
+  font-size: clamp(3.5rem, 16vw, 7.25rem);
+  font-weight: 520;
+  line-height: 0.88;
+}
+
+.concept-a__copy h1 em {
+  display: block;
+  color: var(--pink);
+  font-style: normal;
+}
+
+.concept-a__copy .concept-lede {
+  margin-top: 1.3rem;
+  color: rgb(255 247 240 / 78%);
+}
+
+.concept-a__copy .concept-cta {
+  margin-top: 1.4rem;
+}
+
+.concept-a__product {
+  position: absolute;
+  z-index: 2;
+  right: -8vw;
+  bottom: -2rem;
+  width: min(88vw, 31rem);
+  aspect-ratio: 0.8;
+  transform: translate3d(0, calc(var(--lab-scroll, 0) * -5rem), 0) rotate(3deg);
+  transform-origin: 50% 100%;
+  transition: transform 500ms cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+.concept-a__product.is-visible {
+  opacity: 1;
+  transform: translate3d(0, calc(var(--lab-scroll, 0) * -5rem), 0) rotate(3deg);
+}
+
+.concept-a__product img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+}
+
+.concept-a__product figcaption {
+  position: absolute;
+  right: 0.65rem;
+  bottom: 0.75rem;
+  width: 8rem;
+  color: var(--cream);
+  font-size: 0.68rem;
+  line-height: 1.3;
+  text-align: right;
+}
+
+.concept-a__scene-number,
+.concept-b__folio,
+.concept-c__scene-label {
+  position: absolute;
+  z-index: 4;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.concept-a__scene-number {
+  right: 1.25rem;
+  bottom: 1.25rem;
+  color: rgb(255 247 240 / 66%);
+}
+
+.concept-a__recognition {
+  display: grid;
+  min-height: 110svh;
+  align-items: center;
+  background: var(--wine);
+}
+
+.concept-a__lifestyle {
+  position: absolute;
+  inset: 0 0 0 18%;
+  clip-path: inset(7% 0 7% 0);
+}
+
+.concept-a__lifestyle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 45% center;
+  transform: scale(1.04);
+  transition: transform 1.2s cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+.concept-a__lifestyle.is-visible img {
+  transform: scale(1);
+}
+
+.concept-a__recognition-copy {
+  position: relative;
+  z-index: 2;
+  width: min(100% - 2.5rem, 26rem);
+  padding: 1.25rem;
+  margin: 22rem auto 0;
+  background: var(--plum);
+}
+
+.concept-a__recognition-copy h2 {
+  max-width: 8ch;
+  margin-top: 0.65rem;
+  font-family: "Fraunces Variable", Georgia, serif;
+  font-size: clamp(2.8rem, 13vw, 5.6rem);
+  font-weight: 520;
+  line-height: 0.9;
+}
+
+.concept-a__recognition-copy p:not(.concept-kicker) {
+  max-width: 19rem;
+  margin-top: 1rem;
+  color: rgb(255 247 240 / 76%);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.concept-a__choice-line {
+  display: flex;
+  margin-top: 1.6rem;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.2rem;
+  color: var(--pink);
+  font-family: "Fraunces Variable", Georgia, serif;
+  font-size: 1.4rem;
+}
+
+.concept-a__results {
+  display: grid;
+  min-height: 116svh;
+  align-content: center;
+  padding: 6rem 1.25rem 3rem;
+  background: var(--ink);
+}
+
+.concept-a__results-head {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 29rem);
+}
+
+.concept-a__results h2 {
+  margin-top: 0.65rem;
+  font-family: "Fraunces Variable", Georgia, serif;
+  font-size: clamp(2.4rem, 10vw, 5rem);
+  font-weight: 520;
+  line-height: 0.92;
+}
+
+.concept-a__proof {
+  position: relative;
+  width: calc(100% + 2.5rem);
+  margin: 2rem -1.25rem 0;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 900ms cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+.concept-a__proof.is-visible {
+  clip-path: inset(0 0 0 0);
+}
+
+.concept-a__proof img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.concept-a__results .concept-disclosure {
+  position: relative;
+  z-index: 2;
+  margin-top: 1rem;
+}
+
+/* Concept B: a printed editorial page that exposes the image through hard cuts. */
+.concept-b {
+  color: var(--ink);
+  background: var(--cream);
+}
+
+.concept-b .concept-mark {
+  width: 9rem;
+}
+
+.concept-b__hero {
+  min-height: max(100svh, 48rem);
+  background: var(--cream);
+}
+
+.concept-b__rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  width: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  color: var(--cream);
+  background: var(--magenta);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  writing-mode: vertical-rl;
+  text-transform: uppercase;
+}
+
+.concept-b__masthead {
+  position: absolute;
+  z-index: 5;
+  top: 1.25rem;
+  right: 1.25rem;
+  left: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: rgb(33 19 31 / 72%);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.concept-b__product {
+  position: absolute;
+  top: 9rem;
+  right: 1.25rem;
+  width: 73vw;
+  max-width: 29rem;
+  aspect-ratio: 0.8;
+  background: #e4b8aa;
+  clip-path: polygon(7% 0, 100% 3%, 93% 100%, 0 96%);
+  transform: translateX(10%);
+  transition: clip-path 900ms cubic-bezier(0.22, 0.84, 0.24, 1), transform 800ms cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+.concept-b__product.is-visible {
+  transform: translateX(0);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.concept-b__product img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.concept-b__hero-copy {
+  position: absolute;
+  z-index: 3;
+  right: 1.25rem;
+  bottom: 2rem;
+  left: 3.5rem;
+  padding-top: 1.25rem;
+}
+
+.concept-b__hero-copy h1 {
+  max-width: 8ch;
+  margin-top: 0.8rem;
+  font-family: "Fraunces Variable", Georgia, serif;
+  font-size: clamp(3.4rem, 15vw, 7.25rem);
+  font-weight: 520;
+  line-height: 0.86;
+}
+
+.concept-b__hero-copy h1 em {
+  display: block;
+  color: var(--magenta);
+  font-style: normal;
+}
+
+.concept-b__hero-copy .concept-lede {
+  margin-top: 1rem;
+  color: rgb(33 19 31 / 76%);
+}
+
+.concept-b__hero-copy .concept-cta {
+  margin-top: 1.1rem;
+}
+
+.concept-b__folio {
+  right: 1.25rem;
+  bottom: 1.25rem;
+  color: rgb(33 19 31 / 60%);
+}
+
+.concept-b__recognition {
+  display: grid;
+  min-height: 112svh;
+  align-content: center;
+  padding: 5rem 1.25rem 3rem 3.5rem;
+  background: #dca2a6;
+}
+
+.concept-b__recognition-frame {
+  position: relative;
+  width: min(100%, 28rem);
+  aspect-ratio: 0.82;
+  margin: 0 auto;
+  border: 1px solid rgb(33 19 31 / 38%);
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 850ms cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+.concept-b__recognition-frame.is-visible {
+  clip-path: inset(0 0 0 0);
+}
+
+.concept-b__recognition-frame figure {
+  height: 100%;
+}
+
+.concept-b__recognition-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.concept-b__recognition-frame > span {
+  position: absolute;
+  right: 0.65rem;
+  bottom: 0.65rem;
+  padding: 0.3rem 0.45rem;
+  color: var(--cream);
+  background: var(--ink);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.concept-b__recognition-copy {
+  width: min(100%, 27rem);
+  padding-top: 1.5rem;
+  margin: 0 auto;
+}
+
+.concept-b__recognition-copy h2 {
+  max-width: 10ch;
+  margin-top: 0.65rem;
+  font-family: "Fraunces Variable", Georgia, serif;
+  font-size: clamp(2.8rem, 12vw, 5.75rem);
+  font-weight: 520;
+  line-height: 0.9;
+}
+
+.concept-b__recognition-copy p:not(.concept-kicker) {
+  max-width: 22rem;
+  margin-top: 0.9rem;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.concept-b__underlines {
+  display: flex;
+  margin-top: 1.2rem;
+  gap: 1.2rem;
+  font-family: "Fraunces Variable", Georgia, serif;
+  font-size: 1.3rem;
+}
+
+.concept-b__underlines span {
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid var(--magenta);
+}
+
+.concept-b__results {
+  min-height: 128svh;
+  padding: 7rem 1.25rem 3rem 3.5rem;
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.concept-b__results-copy {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 25rem);
+}
+
+.concept-b__results h2 {
+  margin-top: 0.6rem;
+  font-family: "Fraunces Variable", Georgia, serif;
+  font-size: clamp(2.7rem, 11vw, 5.75rem);
+  font-weight: 520;
+  line-height: 0.88;
+}
+
+.concept-b__proof {
+  position: relative;
+  width: calc(100% + 1.25rem);
+  margin-top: 2.1rem;
+  margin-left: -1.25rem;
+  overflow: visible;
+  clip-path: inset(0 0 0 100%);
+  transition: clip-path 1s cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+.concept-b__proof.is-visible {
+  clip-path: inset(0 0 0 0);
+}
+
+.concept-b__proof img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.concept-b__proof-rule {
+  position: absolute;
+  inset: 0 auto 0 50%;
+  width: 2px;
+  background: var(--pink);
+  box-shadow: 0 0 0 8px rgb(239 43 145 / 12%);
+  transform: translateX(-50%) translateX(calc(var(--lab-scroll, 0) * 4rem));
+}
+
+.concept-b__results .concept-disclosure {
+  max-width: 18rem;
+  margin-top: 1.1rem;
+}
+
+.concept-b__results .concept-b__folio {
+  color: rgb(255 247 240 / 60%);
+}
+
+@media (max-width: 47.99rem) {
+  .concept-b__hero {
+    display: flex;
+    min-height: max(100svh, 54rem);
+    flex-direction: column;
+  }
+
+  .concept-root .concept-b__product {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 62vw;
+    max-width: none;
+    margin: 5rem 1.25rem 0 auto;
+    transform: translateX(0);
+  }
+
+  .concept-b__hero-copy {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    margin: -1.4rem 1.25rem 0 3.5rem;
+    background: var(--cream);
+  }
+}
+
+/* Concept C: a vertical film with full-bleed frames and lateral copy cuts. */
+.concept-c {
+  color: var(--cream);
+  background: #1b111a;
+}
+
+.concept-c__hero {
+  min-height: 122svh;
+  background: #1b111a;
+}
+
+.concept-c__hero-media {
+  position: absolute;
+  inset: 0;
+}
+
+.concept-c__hero-media::after {
+  position: absolute;
+  inset: 0;
+  background: rgb(27 17 26 / 28%);
+  content: "";
+}
+
+.concept-c__hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 64% center;
+  transform: scale(1.06);
+  transition: transform 1.2s cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+.concept-c__hero-media.is-visible img {
+  transform: scale(1);
+}
+
+.concept-c__topline {
+  position: absolute;
+  z-index: 3;
+  top: 1.25rem;
+  right: 1.25rem;
+  left: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: rgb(255 247 240 / 82%);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.concept-c__hero-copy {
+  position: absolute;
+  z-index: 3;
+  right: 1.25rem;
+  bottom: 4.5rem;
+  left: 1.25rem;
+  padding: 1.25rem;
+  opacity: 1;
+  background: rgb(27 17 26 / 84%);
+  clip-path: inset(0 0 0 100%);
+  animation: concept-c-copy-in 900ms 160ms cubic-bezier(0.22, 0.84, 0.24, 1) forwards;
+  transition: clip-path 800ms cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+.concept-c__hero-copy.is-visible {
+  clip-path: inset(0 0 0 0);
+}
+
+.concept-c__hero-copy h1 {
+  max-width: 9ch;
+  margin-top: 0.75rem;
+  font-family: "Fraunces Variable", Georgia, serif;
+  font-size: clamp(3rem, 13vw, 6.6rem);
+  font-weight: 520;
+  line-height: 0.88;
+}
+
+.concept-c__hero-copy .concept-lede {
+  margin-top: 1rem;
+  color: rgb(255 247 240 / 78%);
+}
+
+.concept-c__hero-copy .concept-cta {
+  margin-top: 1.1rem;
+}
+
+.concept-c__scrollcue {
+  position: absolute;
+  z-index: 3;
+  right: 1.25rem;
+  bottom: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgb(255 247 240 / 64%);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.concept-c__scrollcue span {
+  display: block;
+  width: 1.5rem;
+  height: 2px;
+  background: var(--pink);
+  transform-origin: left;
+  animation: concept-cue 1.8s ease-in-out infinite;
+}
+
+.concept-c__recognition {
+  min-height: 130svh;
+  background: #e7b7b4;
+  color: var(--ink);
+}
+
+.concept-c__recognition-media {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 72svh;
+}
+
+.concept-c__recognition-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+  transform: translateX(8%);
+  transition: transform 950ms cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+.concept-c__recognition-media.is-visible img {
+  transform: translateX(0);
+}
+
+.concept-c__recognition-copy {
+  position: absolute;
+  z-index: 2;
+  right: 1.25rem;
+  bottom: 3rem;
+  left: 1.25rem;
+  padding: 1.25rem;
+  background: var(--cream);
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 750ms cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+.concept-c__recognition-copy.is-visible {
+  clip-path: inset(0 0 0 0);
+}
+
+.concept-c__recognition-copy h2 {
+  max-width: 9ch;
+  margin-top: 0.65rem;
+  font-family: "Fraunces Variable", Georgia, serif;
+  font-size: clamp(2.6rem, 11vw, 5.5rem);
+  font-weight: 520;
+  line-height: 0.9;
+}
+
+.concept-c__recognition-copy p:not(.concept-kicker) {
+  max-width: 22rem;
+  margin-top: 0.95rem;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.concept-c__line-list {
+  display: flex;
+  margin-top: 1.2rem;
+  gap: 1rem;
+  font-family: "Fraunces Variable", Georgia, serif;
+  font-size: 1.35rem;
+}
+
+.concept-c__line-list span {
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid var(--magenta);
+}
+
+.concept-c__line-list span:nth-child(2) {
+  color: var(--magenta);
+  transform: translateY(-0.35rem);
+}
+
+.concept-c__scene-label {
+  right: 1.25rem;
+  bottom: 1.25rem;
+  color: rgb(33 19 31 / 62%);
+}
+
+.concept-c__results {
+  min-height: 135svh;
+  background: #23151f;
+}
+
+.concept-c__results-media {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 100%);
+  transition: clip-path 1s cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+.concept-c__results-media.is-visible {
+  clip-path: inset(0 0 0 0);
+}
+
+.concept-c__results-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.concept-c__results-copy {
+  position: absolute;
+  z-index: 2;
+  right: 1.25rem;
+  bottom: 3rem;
+  left: 1.25rem;
+  padding: 1.25rem;
+  background: rgb(35 21 31 / 88%);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 800ms cubic-bezier(0.22, 0.84, 0.24, 1);
+}
+
+.concept-c__results-copy.is-visible {
+  clip-path: inset(0 0 0 0);
+}
+
+.concept-c__results-copy h2 {
+  max-width: 8ch;
+  margin-top: 0.65rem;
+  font-family: "Fraunces Variable", Georgia, serif;
+  font-size: clamp(2.8rem, 12vw, 5.8rem);
+  font-weight: 520;
+  line-height: 0.88;
+}
+
+.concept-c__results-copy .concept-disclosure {
+  max-width: 19rem;
+  margin-top: 1rem;
+}
+
+.concept-c__results .concept-c__scene-label {
+  color: rgb(255 247 240 / 64%);
+}
+
+@keyframes concept-cue {
+  0%,
+  100% {
+    transform: scaleX(0.35);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes concept-c-copy-in {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (min-width: 48rem) {
+  .concept-mark {
+    width: 11rem;
+  }
+
+  .concept-lede {
+    font-size: 1.05rem;
+  }
+
+  .concept-a__masthead,
+  .concept-c__topline {
+    top: 1.75rem;
+    right: 3rem;
+    left: 3rem;
+  }
+
+  .concept-a__copy {
+    width: min(44vw, 37rem);
+    padding-top: 12rem;
+    margin-left: 7vw;
+  }
+
+  .concept-a__copy h1,
+  .concept-b__hero-copy h1,
+  .concept-c__hero-copy h1 {
+    font-size: clamp(5rem, 8.4vw, 8rem);
+  }
+
+  .concept-a__product {
+    right: 7vw;
+    bottom: -4rem;
+    width: min(42vw, 41rem);
+  }
+
+  .concept-a__product figcaption {
+    right: -2.5rem;
+    bottom: 6.5rem;
+  }
+
+  .concept-a__scene-number {
+    right: 3rem;
+    bottom: 2rem;
+  }
+
+  .concept-a__recognition {
+    min-height: 108svh;
+  }
+
+  .concept-a__lifestyle {
+    inset: 0 21% 0 18%;
+  }
+
+  .concept-a__recognition-copy {
+    width: min(36vw, 30rem);
+    margin: 18rem 8vw 0 auto;
+  }
+
+  .concept-a__recognition-copy h2 {
+    font-size: clamp(4rem, 7.5vw, 7.5rem);
+  }
+
+  .concept-a__results {
+    min-height: 115svh;
+    padding: 7rem 6vw 4rem;
+  }
+
+  .concept-a__results-head {
+    width: min(39vw, 38rem);
+    margin-left: 4vw;
+  }
+
+  .concept-a__results h2 {
+    font-size: clamp(4rem, 6.1vw, 6.8rem);
+  }
+
+  .concept-a__proof {
+    width: min(69vw, 78rem);
+    margin-top: -3rem;
+    margin-right: 0;
+    margin-left: auto;
+  }
+
+  .concept-a__results .concept-disclosure {
+    margin-top: -1rem;
+    margin-left: 4vw;
+  }
+
+  .concept-b__rail {
+    width: 3rem;
+  }
+
+  .concept-b__masthead {
+    right: 3rem;
+    left: 6rem;
+  }
+
+  .concept-b__product {
+    top: 9rem;
+    right: 10vw;
+    width: min(42vw, 43rem);
+  }
+
+  .concept-b__hero-copy {
+    right: auto;
+    bottom: 5rem;
+    left: 11vw;
+    width: min(42vw, 40rem);
+  }
+
+  .concept-b__hero-copy h1 {
+    font-size: clamp(5rem, 8.2vw, 8rem);
+  }
+
+  .concept-b__folio {
+    right: 3rem;
+    bottom: 2rem;
+  }
+
+  .concept-b__recognition {
+    display: grid;
+    min-height: 112svh;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+    gap: 7vw;
+    padding: 8rem 9vw 5rem 11vw;
+  }
+
+  .concept-b__recognition-frame {
+    width: min(39vw, 38rem);
+    margin: 0;
+  }
+
+  .concept-b__recognition-copy {
+    width: min(31vw, 32rem);
+    margin: 0;
+  }
+
+  .concept-b__recognition-copy h2 {
+    font-size: clamp(4rem, 6.6vw, 7rem);
+  }
+
+  .concept-b__results {
+    min-height: 124svh;
+    padding: 8rem 8vw 4rem 11vw;
+  }
+
+  .concept-b__results-copy {
+    width: min(34vw, 34rem);
+  }
+
+  .concept-b__results h2 {
+    font-size: clamp(4.3rem, 7vw, 7.5rem);
+  }
+
+  .concept-b__proof {
+    width: min(65vw, 76rem);
+    margin-top: -5rem;
+    margin-left: auto;
+  }
+
+  .concept-b__results .concept-disclosure {
+    margin-left: 3vw;
+  }
+
+  .concept-c__hero {
+    min-height: 100svh;
+  }
+
+  .concept-c__hero-media img {
+    object-position: 69% center;
+  }
+
+  .concept-c__hero-copy {
+    right: auto;
+    bottom: 5rem;
+    left: 7vw;
+    width: min(38vw, 42rem);
+    padding: 1.75rem;
+  }
+
+  .concept-c__hero-copy h1 {
+    font-size: clamp(3.7rem, 5.4vw, 5.8rem);
+  }
+
+  .concept-c__scrollcue {
+    right: 3rem;
+    bottom: 2rem;
+  }
+
+  .concept-c__recognition {
+    min-height: 132svh;
+  }
+
+  .concept-c__recognition-media {
+    right: 31%;
+    height: 100%;
+  }
+
+  .concept-c__recognition-media img {
+    object-position: 46% center;
+  }
+
+  .concept-c__recognition-copy {
+    right: 7vw;
+    bottom: 7rem;
+    left: auto;
+    width: min(34vw, 36rem);
+    padding: 1.75rem;
+  }
+
+  .concept-c__recognition-copy h2 {
+    font-size: clamp(4rem, 6.2vw, 7rem);
+  }
+
+  .concept-c__scene-label {
+    right: 3rem;
+    bottom: 2rem;
+  }
+
+  .concept-c__results {
+    min-height: 135svh;
+  }
+
+  .concept-c__results-media {
+    right: 24%;
+  }
+
+  .concept-c__results-copy {
+    right: auto;
+    bottom: 7rem;
+    left: 7vw;
+    width: min(34vw, 38rem);
+    padding: 1.75rem;
+  }
+
+  .concept-c__results-copy h2 {
+    font-size: clamp(4rem, 6.5vw, 7rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body:has(.concept-root) {
+    scroll-behavior: auto;
+  }
+
+  .concept-root *,
+  .concept-root *::before,
+  .concept-root *::after {
+    animation-name: none !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
