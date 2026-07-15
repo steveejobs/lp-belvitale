@@ -57,7 +57,7 @@ O arquivo `prova 1` citado na classificação recebida não está presente no di
 
 ## Derivados normalizados gerados
 
-As cópias abaixo foram geradas sem remover ou renomear as fontes. `proof` permanece no `dist/` por autorização expressa do proprietário. As pastas `product`, `lifestyle` e `brand` são excluídas automaticamente do build normal; `label` permanece publicado somente em sua seção própria.
+As cópias abaixo foram geradas sem remover ou renomear as fontes. `proof` permanece no `dist/` por autorização expressa do proprietário. As pastas `product`, `lifestyle`, `brand` e `checkout` são excluídas automaticamente do build normal; `label` permanece publicado somente em sua seção própria.
 
 | Fonte                                      | Cópia normalizada                                  | Tipo    |      Dimensões |      Peso | Uso/status                                 |
 | ------------------------------------------ | -------------------------------------------------- | ------- | -------------: | --------: | ------------------------------------------ |
@@ -85,12 +85,15 @@ As cópias abaixo foram geradas sem remover ou renomear as fontes. `proof` perma
 | `logo sem fundo branca.png`                | `public/brand/belvitale-monogram-light.webp`       | WebP    |   546 × 480 px |  20.126 B | Excluído da produção; `brand-review`       |
 | `belvitale sem fundo preto.png`            | `public/brand/belvitale-wordmark-dark.webp`        | WebP    |   496 × 369 px |  14.034 B | Excluído da produção; `brand-review`       |
 | `belvitale sem fundo branco.png`           | `public/brand/belvitale-wordmark-light.webp`       | WebP    |  2508 × 627 px |  86.812 B | Excluído da produção; `brand-review`       |
+| `checkout-assets/celuclin-kit-01-month-yampi.png`  | `public/checkout/celuclin-kit-01-month-yampi.png`  | PNG     |   290 × 314 px |  63.745 B | Excluído da produção; `commercial-review` |
+| `checkout-assets/celuclin-kit-03-months-yampi.png` | `public/checkout/celuclin-kit-03-months-yampi.png` | PNG     |   290 × 329 px |  89.694 B | Excluído da produção; `commercial-review` |
+| `checkout-assets/celuclin-kit-07-months-yampi.png` | `public/checkout/celuclin-kit-07-months-yampi.png` | PNG     |   290 × 289 px |  84.412 B | Excluído da produção; `commercial-review` |
 | página 1 de `154x73 - Celuclin Rotulo.pdf` | `public/label/celuclin-label-front.webp`           | WebP    |  1310 × 621 px | 187.194 B | Produção; `approved-label`                 |
 | `154x73 - Celuclin Rotulo.pdf`             | `public/label/celuclin-label-complete.pdf`         | PDF 1.6 |      2 páginas | 846.156 B | Produção/download; `approved-label`        |
 
 ## Assets recuperados dos checkouts
 
-As três mídias abaixo foram baixadas das páginas Yampi fornecidas pelo usuário em 14/07/2026. São miniaturas públicas do resumo do checkout, não versões originais em alta resolução. Permanecem preservadas fora de `public/` e não alteram a lógica de assets da aplicação.
+As três mídias abaixo foram baixadas das páginas Yampi fornecidas pelo usuário em 14/07/2026. São miniaturas públicas do resumo do checkout, não versões originais em alta resolução. Nesta rodada, cópias literais foram colocadas em `public/checkout/` para o preview interno; a pasta é removida automaticamente do build público por `vite.config.ts`.
 
 | Arquivo local                                                        | Tipo real |    Dimensões |     Peso | Conteúdo observado                                     | Origem                                                                               | Seção sugerida                   | Pode ser prova? | Status              |
 | -------------------------------------------------------------------- | --------- | -----------: | -------: | ------------------------------------------------------ | ------------------------------------------------------------------------------------ | -------------------------------- | --------------- | ------------------- |

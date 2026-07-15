@@ -213,6 +213,7 @@ async function captureHome(width, height) {
   await page.screenshot({ path: screenshotPath(prefix + "home-hero") });
   const sections = width < 700
     ? [
+        ["home-gallery", "#acervo"],
         ["home-emotional", "#liberdade"],
         ["home-product", "#celuclin"],
         ["home-formula", "#composicao"],
@@ -223,6 +224,7 @@ async function captureHome(width, height) {
         ["home-closing", ".campaign-closing"],
       ]
     : [
+        ["home-gallery", "#acervo"],
         ["home-product", "#celuclin"],
         ["home-results", "#resultados"],
         ["home-offers", "#kits"],

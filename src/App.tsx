@@ -5,6 +5,7 @@ import { ChoiceSequence } from "./components/ChoiceSequence";
 import { EducationSection } from "./components/EducationSection";
 import { FaqSection } from "./components/FaqSection";
 import { FormulaSection } from "./components/FormulaSection";
+import { GalleryAtlas } from "./components/GalleryAtlas";
 import { LegalDocumentRoute } from "./components/LegalDocumentRoute";
 import { ProductStory } from "./components/ProductStory";
 import { QuizHomeCta } from "./components/QuizHomeCta";
@@ -48,6 +49,7 @@ export function App() {
       <SiteHeader />
       <main id="conteudo-principal">
         <CampaignHero />
+        <GalleryAtlas />
         <ChoiceSequence />
         <EducationSection />
         <ProductStory />

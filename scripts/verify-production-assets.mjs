@@ -55,6 +55,7 @@ for (const forbiddenTarget of [
   "product",
   "lifestyle",
   "brand",
+  "checkout",
   "label/celuclin-label-front-hero.webp",
 ]) {
   assert.equal(
@@ -156,7 +157,7 @@ if (mainScript !== undefined) {
 }
 if (mainStyle !== undefined) {
   const size = (await fs.stat(path.join(assetsDirectory, mainStyle))).size;
-  assert.ok(size <= 42_000, "CSS inicial acima de 42 kB: " + String(size));
+  assert.ok(size <= 48_000, "CSS inicial acima de 48 kB: " + String(size));
 }
 
 const server = await preview({

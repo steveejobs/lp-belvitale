@@ -188,3 +188,17 @@ Esta seção substitui os contratos visuais das rodadas históricas abaixo. Os r
 | Evidências | 23 capturas, quatro páginas inteiras, sete WebM e Lighthouse JSON | Concluído |
 | Preview | Vercel não produtivo, quiz com flag interna, proteção de equipe preservada | Concluído |
 | Qualidade | Lint, typecheck, build, verificador e Playwright 49/49 | Concluído |
+
+## Rodada de acervo visual e impacto editorial — 15/07/2026
+
+| Requisito | Implementação/validação | Status |
+| --- | --- | --- |
+| Usar todas as imagens elegíveis sem quebrar o contrato do rótulo | `GalleryAtlas` centraliza marca, produto, lifestyle, provas e kits via `src/data/galleryAssets.ts`; o rótulo permanece apenas em `#rotulo` | Concluído |
+| Preservar gates de produção | `product`, `lifestyle`, `brand` e `checkout` continuam removidos do build público; provas autorizadas e rótulo permanecem publicados | Concluído |
+| Acervo visível cedo | Nova seção `#acervo` entra logo após o hero e foi adicionada à navegação principal | Concluído |
+| Galeria mobile intuitiva | Trilho horizontal com scroll-snap, dimensões reservadas e legendas curtas | Concluído |
+| Mosaico desktop com presença visual | Grid editorial assimétrico, imagens no primeiro viewport do acervo e logos claros sobre fundo escuro | Concluído |
+| Kits reais no preview interno | `CommercialSection` usa as três imagens de checkout quando o preview interno está ativo, mantendo preço/compra bloqueados | Concluído |
+| Referências analisadas | `docs/reference-analysis.md` registra o que foi absorvido e o que não foi copiado das duas páginas enviadas | Concluído |
+| Evidências | Screenshots `390x844-home-gallery.png`, `1440x900-home-gallery.png`, QA manual de acervo/rótulo/kits/overflow e Playwright 49/49 | Concluído |
+| Qualidade | Lint, build, verificador de produção, Playwright e auditoria visual | Concluído |

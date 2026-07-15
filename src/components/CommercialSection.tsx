@@ -6,6 +6,7 @@ import {
   canRenderCampaignAsset,
   internalMediaPreview,
 } from "../data/campaignAssets";
+import { checkoutGalleryAssets } from "../data/galleryAssets";
 import {
   calculatePricePerBottle,
   canPublishCommercialSection,
@@ -55,6 +56,12 @@ function OfferLane({ offer, index, selected, checkoutReady, fixture, onSelect }:
   const days = offer.approximateDurationMonths * 30;
   const product = campaignAssets.productFrontPrimary;
   const showProduct = canRenderCampaignAsset(product);
+  const kit = checkoutGalleryAssets.find((asset) => {
+    if (offer.id === "one-month") return asset.id === "kit-one-month";
+    if (offer.id === "three-months") return asset.id === "kit-three-months";
+    return asset.id === "kit-seven-months";
+  });
+  const showKit = internalMediaPreview && kit !== undefined;
   const perBottle = calculatePricePerBottle(offer.price.cash, totalBottles);
 
   return (
@@ -65,8 +72,18 @@ function OfferLane({ offer, index, selected, checkoutReady, fixture, onSelect }:
         <small>{days} dias</small>
       </button>
 
-      <div className="offer-lane__bottles" aria-hidden="true" data-count={totalBottles}>
-        {showProduct
+      <div className="offer-lane__bottles" aria-hidden="true" data-count={totalBottles} data-mode={showKit ? "kit" : "bottles"}>
+        {showKit ? (
+          <img
+            className="offer-lane__kit"
+            src={kit.src}
+            width={kit.width}
+            height={kit.height}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        ) : showProduct
           ? Array.from({ length: totalBottles }, (_, bottleIndex) => (
               <img
                 key={bottleIndex}

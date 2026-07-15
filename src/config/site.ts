@@ -1,4 +1,5 @@
 export const navigationItems = [
+  { label: "Acervo", href: "#acervo" },
   { label: "Escolha", href: "#liberdade" },
   { label: "CeluClin", href: "#celuclin" },
   { label: "Fórmula", href: "#composicao" },

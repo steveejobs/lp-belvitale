@@ -7,7 +7,7 @@ import { regulatoryPublicationReady } from "./src/data/regulatoryFacts";
 
 const rootDirectory = path.dirname(fileURLToPath(import.meta.url));
 const homeEntry = path.resolve(rootDirectory, "index.html");
-const restrictedPublicFolders = ["product", "lifestyle", "brand"];
+const restrictedPublicFolders = ["product", "lifestyle", "brand", "checkout"];
 const obsoletePublicFiles = [
   path.join("label", "celuclin-label-front-hero.webp"),
 ];
