@@ -6,7 +6,9 @@ Auditoria visual concluída em 14/07/2026. Os arquivos-fonte permanecem preserva
 
 Em 14/07/2026, o proprietário declarou possuir documentação e autorização para publicar e atribuir ao CeluClin as nove imagens classificadas nas séries de celulite, flacidez e gordura localizada. O status corrente dessas nove linhas é `owner-authorized`, substituindo o `pending-verification` registrado na auditoria inicial da tabela histórica abaixo.
 
-O adendo não cria datas, duração, identidade, cronologia ou contexto individual. Os PNGs-fonte permanecem intactos em `galeria belvitale/`; os WebPs de entrega preservam dimensões proporcionais e enquadramento integral, sem retoque corporal. Produto, cápsulas, lifestyle e logos não foram abrangidos por essa autorização e conservam seus gates próprios.
+O adendo não cria datas, duração, identidade, cronologia ou contexto individual. Os PNGs-fonte permanecem intactos em `galeria belvitale/`; os WebPs de entrega preservam dimensões proporcionais e enquadramento integral, sem retoque corporal.
+
+Em 15/07/2026, o proprietário autorizou explicitamente o uso, na homepage, das imagens de produto, cápsulas, lifestyle e logos fornecidas na galeria. Esses arquivos passam a `owner-authorized` para uso visual na rota `/`. A autorização não permite usar texto pequeno ou ilegível dos packshots como fonte factual; a arte plana aprovada continua sendo a única fonte visual do rótulo. Kits e checkout permanecem bloqueados.
 
 ## Regras de status
 
@@ -57,7 +59,7 @@ O arquivo `prova 1` citado na classificação recebida não está presente no di
 
 ## Derivados normalizados gerados
 
-As cópias abaixo foram geradas sem remover ou renomear as fontes. `proof` permanece no `dist/` por autorização expressa do proprietário. As pastas `product`, `lifestyle`, `brand` e `checkout` são excluídas automaticamente do build normal; `label` permanece publicado somente em sua seção própria.
+As cópias abaixo foram geradas sem remover ou renomear as fontes. `proof`, `product`, `lifestyle` e `brand` permanecem no `dist/` por autorização expressa do proprietário. `checkout` continua excluído automaticamente do build normal; `label` permanece publicado somente em sua seção própria.
 
 | Fonte                                      | Cópia normalizada                                  | Tipo    |      Dimensões |      Peso | Uso/status                                 |
 | ------------------------------------------ | -------------------------------------------------- | ------- | -------------: | --------: | ------------------------------------------ |

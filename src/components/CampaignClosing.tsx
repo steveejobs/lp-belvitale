@@ -3,16 +3,11 @@ import {
   campaignAssets,
   canRenderCampaignAsset,
 } from "../data/campaignAssets";
-import { quizPublicationApproved } from "../data/quizPublicationConfig";
 
 export function CampaignClosing() {
   const { closing } = homeContent;
   const media = campaignAssets.lifestyleFreedom;
   const canShowMedia = canRenderCampaignAsset(media);
-  const quizAvailable =
-    import.meta.env.DEV ||
-    import.meta.env.VITE_INTERNAL_QUIZ === "true" ||
-    quizPublicationApproved;
 
   return (
     <section className="campaign-closing" id="belvitale" aria-labelledby="closing-title">
@@ -27,8 +22,8 @@ export function CampaignClosing() {
           <em>{closing.titleAccent}</em>
         </h2>
         <p>{closing.body}</p>
-        <a className="button button--light" href={quizAvailable ? "/quiz" : "#composicao"}>
-          {quizAvailable ? closing.action : "Conhecer a composição"}
+        <a className="button button--light" href="#rotulo">
+          Ler o rótulo completo
         </a>
       </div>
     </section>

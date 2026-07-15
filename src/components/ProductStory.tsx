@@ -1,98 +1,140 @@
-import { useEffect, useRef, useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { homeContent } from "../content/homeContent";
-import {
-  campaignAssets,
-  canRenderCampaignAsset,
-  type CampaignAsset,
-} from "../data/campaignAssets";
+import { campaignAssets, type CampaignAsset } from "../data/campaignAssets";
 
-const productMedia: readonly CampaignAsset[] = [
-  campaignAssets.productFrontClose,
-  campaignAssets.productAngle,
-  campaignAssets.productInHand,
+interface ProductScene {
+  readonly asset: CampaignAsset;
+  readonly label: string;
+  readonly note: string;
+}
+
+const productScenes: readonly ProductScene[] = [
+  {
+    asset: campaignAssets.productFrontPrimary,
+    label: "Frasco frontal",
+    note: "O CeluClin por inteiro, com produto, tampa e rótulo no mesmo enquadramento.",
+  },
+  {
+    asset: campaignAssets.productFrontClose,
+    label: "Rótulo em detalhe",
+    note: "A identidade do CeluClin em enquadramento aproximado.",
+  },
+  {
+    asset: campaignAssets.productAngle,
+    label: "Vista em ângulo",
+    note: "Tampa pink, rótulo magenta e cápsulas à vista.",
+  },
+  {
+    asset: campaignAssets.productInHand,
+    label: "Escala real",
+    note: "O frasco na mão, com proporção e presença claras.",
+  },
+  {
+    asset: campaignAssets.capsules,
+    label: "Cápsulas",
+    note: "A apresentação visual das cápsulas que compõem a rotina.",
+  },
+  {
+    asset: campaignAssets.lifestyleHero,
+    label: "Em cena",
+    note: "O produto em uma composição clara, sem competir com a informação.",
+  },
 ];
+
+function Arrow({ direction }: { readonly direction: "left" | "right" }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20">
+      <path
+        d={direction === "left" ? "M15 5 8 12l7 7" : "m9 5 7 7-7 7"}
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.7"
+      />
+    </svg>
+  );
+}
 
 export function ProductStory() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const stepRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const product = homeContent.product;
-  const hasMedia = productMedia.some(canRenderCampaignAsset);
+  const activeScene = productScenes[activeIndex] ?? productScenes[0];
 
-  useEffect(() => {
-    if (!("IntersectionObserver" in window)) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible === undefined) return;
-        const index = Number((visible.target as HTMLElement).dataset.stageIndex);
-        if (Number.isInteger(index)) setActiveIndex(index);
-      },
-      { rootMargin: "-35% 0px -35%", threshold: [0, 0.5, 1] },
-    );
-    stepRefs.current.forEach((element) => {
-      if (element !== null) observer.observe(element);
-    });
-    return () => observer.disconnect();
-  }, []);
+  function select(index: number) {
+    setActiveIndex((index + productScenes.length) % productScenes.length);
+  }
+
+  function moveWithKeyboard(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    select(index + (event.key === "ArrowRight" ? 1 : -1));
+  }
 
   return (
     <section className="product-story" id="celuclin" aria-labelledby="product-title">
-      <div className="product-story__stage">
-        <div className="product-story__media" data-has-media={hasMedia}>
-          {hasMedia ? (
-            productMedia.map((asset, index) =>
-              canRenderCampaignAsset(asset) ? (
+      <div className="product-story__intro section-shell">
+        <div>
+          <p className="eyebrow">{product.eyebrow}</p>
+          <h2 id="product-title">CeluClin, visto por inteiro.</h2>
+        </div>
+        <p>{product.body}</p>
+      </div>
+
+      <div className="product-story__gallery section-shell">
+        <div className="product-story__media" aria-live="polite">
+          {productScenes.map((scene, index) => (
+            <img
+              key={scene.asset.id}
+              src={scene.asset.src}
+              width={scene.asset.width}
+              height={scene.asset.height}
+              alt={index === activeIndex ? scene.asset.alt : ""}
+              aria-hidden={index !== activeIndex}
+              data-active={index === activeIndex}
+              loading={index === 0 ? "eager" : "lazy"}
+              decoding="async"
+            />
+          ))}
+          <div className="product-story__counter" aria-hidden="true">
+            {String(activeIndex + 1).padStart(2, "0")} / {String(productScenes.length).padStart(2, "0")}
+          </div>
+          <div className="product-story__arrows">
+            <button type="button" onClick={() => select(activeIndex - 1)} aria-label="Imagem anterior do produto">
+              <Arrow direction="left" />
+            </button>
+            <button type="button" onClick={() => select(activeIndex + 1)} aria-label="Próxima imagem do produto">
+              <Arrow direction="right" />
+            </button>
+          </div>
+        </div>
+
+        <div className="product-story__details">
+          <div className="product-story__scene-copy" key={activeScene?.asset.id}>
+            <span>Detalhe {String(activeIndex + 1).padStart(2, "0")}</span>
+            <h3>{activeScene?.label}</h3>
+            <p>{activeScene?.note}</p>
+          </div>
+
+          <div className="product-story__thumbs" role="tablist" aria-label="Imagens do CeluClin">
+            {productScenes.map((scene, index) => (
+              <button
+                key={scene.asset.id}
+                type="button"
+                role="tab"
+                aria-selected={index === activeIndex}
+                aria-label={`Ver ${scene.label.toLowerCase()}`}
+                onClick={() => select(index)}
+                onKeyDown={(event) => moveWithKeyboard(event, index)}
+              >
                 <img
-                  key={asset.id}
-                  src={asset.src}
-                  width={asset.width}
-                  height={asset.height}
-                  alt={index === activeIndex ? asset.alt : ""}
-                  aria-hidden={index !== activeIndex}
-                  data-active={index === activeIndex}
+                  src={scene.asset.src}
+                  width={scene.asset.width}
+                  height={scene.asset.height}
+                  alt=""
                   loading="lazy"
                   decoding="async"
                 />
-              ) : null,
-            )
-          ) : (
-            <div className="product-story__media-gate">
-              <span>60</span>
-              <strong>CeluClin</strong>
-              <small>imagem oficial em validação</small>
-            </div>
-          )}
-          <span className="product-story__glass" aria-hidden="true" />
-          <p aria-live="polite">
-            Cena {activeIndex + 1} de {productMedia.length}
-          </p>
-        </div>
-
-        <div className="product-story__content section-shell">
-          <div className="product-story__heading">
-            <p className="eyebrow eyebrow--light">{product.eyebrow}</p>
-            <h2 id="product-title">{product.title}</h2>
-            <p>{product.body}</p>
-          </div>
-
-          <div className="product-story__steps" aria-label="Cenas do produto">
-            {product.stages.map((stage, index) => (
-              <button
-                key={stage.id}
-                type="button"
-                ref={(element) => {
-                  stepRefs.current[index] = element;
-                }}
-                data-stage-index={index}
-                data-active={index === activeIndex}
-                aria-pressed={index === activeIndex}
-                onClick={() => setActiveIndex(index)}
-              >
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <strong>{stage.kicker}</strong>
-                <small>{stage.copy}</small>
               </button>
             ))}
           </div>
@@ -106,6 +148,10 @@ export function ProductStory() {
             <dt>{fact.label}</dt>
           </div>
         ))}
+        <div className="product-story__fact-note">
+          <dd>Suplemento alimentar</dd>
+          <dt>Não é medicamento.</dt>
+        </div>
       </dl>
     </section>
   );

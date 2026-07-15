@@ -11,6 +11,14 @@ import { useReducedMotion } from "../hooks/useReducedMotion";
 const labelImage = "/label/celuclin-label-front.webp";
 const labelPdf = "/label/celuclin-label-complete.pdf";
 type ImageState = "loading" | "loaded" | "error";
+type LabelFocus = "overview" | "nutrition" | "formula" | "use";
+
+const labelFocusOptions: readonly { readonly id: LabelFocus; readonly label: string }[] = [
+  { id: "overview", label: "Visão geral" },
+  { id: "nutrition", label: "Tabela" },
+  { id: "formula", label: "Composição" },
+  { id: "use", label: "Uso e avisos" },
+];
 
 function CloseIcon() {
   return (
@@ -107,6 +115,7 @@ export function LabelTransparency() {
   const [revealed, setRevealed] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [imageState, setImageState] = useState<ImageState>("loading");
+  const [activeFocus, setActiveFocus] = useState<LabelFocus>("overview");
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -151,29 +160,54 @@ export function LabelTransparency() {
       aria-labelledby="label-section-title"
     >
       <div className="section-shell label-transparency__heading">
-        <p className="eyebrow">O objeto que conta tudo</p>
+        <div>
+          <p className="eyebrow">Informação sem esconder</p>
+          <img
+            className="label-transparency__mark"
+            src="/brand/belvitale-monogram-light.webp"
+            width="546"
+            height="480"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
         <h2 id="label-section-title" ref={titleRef} tabIndex={-1}>
-          O rótulo não é rodapé.
-          <em>É parte da escolha.</em>
+          O rótulo deixa de ser detalhe.
+          <em>Você escolhe o que quer ler.</em>
         </h2>
-        <p>
-          Abra, amplie e leia a arte plana original da embalagem com calma.
-        </p>
+        <p>Tabela, composição, uso e avisos aparecem na arte original, sem reinterpretação.</p>
       </div>
 
-      <div className="label-roll" data-state={imageState}>
+      <div className="section-shell label-focus" role="tablist" aria-label="Áreas do rótulo">
+        {labelFocusOptions.map((option) => (
+          <button
+            key={option.id}
+            type="button"
+            role="tab"
+            aria-selected={activeFocus === option.id}
+            onClick={() => setActiveFocus(option.id)}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="label-roll" data-state={imageState} data-focus={activeFocus}>
         <div className="label-roll__edge" aria-hidden="true" />
-        <img
-          src={labelImage}
-          width="1310"
-          height="621"
-          sizes="(min-width: 75rem) 86rem, 140vw"
-          loading="lazy"
-          decoding="async"
-          alt="Arte plana completa do rótulo do suplemento alimentar CeluClin"
-          onLoad={() => setImageState("loaded")}
-          onError={() => setImageState("error")}
-        />
+        <div className="label-roll__viewport">
+          <img
+            src={labelImage}
+            width="1310"
+            height="621"
+            sizes="(min-width: 75rem) 82rem, 100vw"
+            loading="lazy"
+            decoding="async"
+            alt="Arte plana completa do rótulo do suplemento alimentar CeluClin"
+            onLoad={() => setImageState("loaded")}
+            onError={() => setImageState("error")}
+          />
+        </div>
         {imageState === "loading" ? (
           <span className="label-roll__state">Abrindo o rótulo…</span>
         ) : null}

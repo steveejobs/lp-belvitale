@@ -15,8 +15,8 @@
 - Sem biblioteca de carrossel, modal ou animação no bundle de produção.
 - Playwright apenas em desenvolvimento para validar interações, viewports, console, screenshots e gravações.
 - A aplicação contém a campanha editorial da homepage, fórmula e rotina auditadas, provas autorizadas, FAQ factual, encerramento, rodapé, rotas legais controladas, seção pública do rótulo e arquitetura comercial protegida por status.
-- A campanha inclui header responsivo, hero com mídia interna grande, narrativa lifestyle, educação sem culpa, palco de produto, capítulos de prova e fechamento emocional.
-- O fallback tipado impede que packshot, lifestyle ou logo pendentes sejam renderizados no release normal; o hero permanece completo com um gate visual honesto.
+- A campanha inclui header responsivo com wordmark oficial, hero com produto autorizado em grande escala, narrativa lifestyle, educação sem culpa, galeria uniforme de produto, provas por solução, leitura ampliável do rótulo e fechamento emocional.
+- O build normal publica produto, lifestyle e logos autorizados; kits, checkout e quiz público continuam protegidos pelos gates próprios.
 - O gate comercial impede que ofertas incompletas criem DOM em produção. Preços de fixture existem somente nos testes e no script de evidências, fora do bundle público.
 - O quiz de rotina usa duas entradas HTML próprias, dados tipados, pontuação pura e armazenamento local sanitizado. Seu status continua bloqueado para produção, mas integra a campanha em desenvolvimento e no preview com flag interna.
 
@@ -27,5 +27,5 @@
 - Dados tipados e centralizados em `src/data/`.
 - Tokens visuais em propriedades customizadas CSS no início de `src/styles.css`.
 - Assets-fonte preservados; derivados normalizados ficam em `public/`.
-- As nove provas autorizadas pelo proprietário entram no artefato `dist/`; produto, lifestyle e marca continuam removidos do build normal e disponíveis apenas no preview interno.
+- As nove provas autorizadas entram no artefato `dist/`. A autorização explícita de 15/07/2026 também libera produto, lifestyle e logos fornecidos para a homepage; kits e checkout continuam removidos do build normal.
 - Metadados estáticos incluem apenas fatos confirmados e schema `Organization` mínimo; o canonical depende de `VITE_CANONICAL_URL` válido e não há schema `Product`.

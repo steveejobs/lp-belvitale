@@ -27,7 +27,16 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="section-shell site-footer__layout">
         <div className="site-footer__brand">
-          <a href="/#inicio" aria-label="Belvitale — início">belvitale</a>
+          <a href="/#inicio" aria-label="Belvitale — início">
+            <img
+              src="/brand/belvitale-wordmark-light.webp"
+              width="2508"
+              height="627"
+              alt="Belvitale"
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
           <p>
             CeluClin é um suplemento alimentar e não é medicamento.
             Experiências individuais podem variar.

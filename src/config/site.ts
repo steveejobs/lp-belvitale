@@ -1,10 +1,8 @@
 export const navigationItems = [
-  { label: "Acervo", href: "#acervo" },
-  { label: "Escolha", href: "#liberdade" },
-  { label: "CeluClin", href: "#celuclin" },
-  { label: "Fórmula", href: "#composicao" },
+  { label: "Produto", href: "#celuclin" },
+  { label: "Rotina", href: "#liberdade" },
+  { label: "Composição", href: "#composicao" },
   { label: "Resultados", href: "#resultados" },
-  { label: "Rótulo", href: "#rotulo" },
 ] as const;
 
 function isReservedHostname(hostname: string): boolean {

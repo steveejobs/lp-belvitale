@@ -37,9 +37,9 @@ export const campaignAssets = {
     width: 1122,
     height: 1402,
     alt: "Frasco CeluClin em vista frontal, sobre fundo claro.",
-    status: "internal-review",
+    status: "owner-authorized",
     productionNote:
-      "O texto miúdo visível diverge da arte oficial; uso restrito ao preview interno.",
+      "Uso visual autorizado pelo proprietário para a homepage em 15/07/2026.",
     dominantColor: "#E6C1B0",
   },
   productFrontClose: {
@@ -49,9 +49,9 @@ export const campaignAssets = {
     width: 1122,
     height: 1402,
     alt: "Frasco CeluClin em enquadramento frontal aproximado.",
-    status: "internal-review",
+    status: "owner-authorized",
     productionNote:
-      "O texto miúdo visível diverge da arte oficial; uso restrito ao preview interno.",
+      "Uso visual autorizado pelo proprietário para a homepage em 15/07/2026.",
     dominantColor: "#E8C8B7",
   },
   productAngle: {
@@ -61,9 +61,9 @@ export const campaignAssets = {
     width: 1122,
     height: 1402,
     alt: "Frasco CeluClin em ângulo, iluminado sobre fundo ameixa.",
-    status: "internal-review",
+    status: "owner-authorized",
     productionNote:
-      "O texto miúdo visível diverge da arte oficial; uso restrito ao preview interno.",
+      "Uso visual autorizado pelo proprietário para a homepage em 15/07/2026.",
     dominantColor: "#3D2E39",
   },
   productInHand: {
@@ -73,9 +73,9 @@ export const campaignAssets = {
     width: 1122,
     height: 1402,
     alt: "Mão segurando um frasco CeluClin em ambiente iluminado.",
-    status: "internal-review",
+    status: "owner-authorized",
     productionNote:
-      "O texto miúdo visível diverge da arte oficial; uso restrito ao preview interno.",
+      "Uso visual autorizado pelo proprietário para a homepage em 15/07/2026.",
     dominantColor: "#D8B49E",
   },
   capsules: {
@@ -85,9 +85,9 @@ export const campaignAssets = {
     width: 1122,
     height: 1402,
     alt: "Cápsulas avermelhadas sobre uma superfície mineral clara.",
-    status: "internal-review",
+    status: "owner-authorized",
     productionNote:
-      "A associação das cápsulas ao produto ainda depende da validação documental do asset.",
+      "Uso visual autorizado pelo proprietário para a homepage em 15/07/2026.",
     dominantColor: "#A6141D",
   },
   lifestyleFreedom: {
@@ -97,9 +97,9 @@ export const campaignAssets = {
     width: 1122,
     height: 1402,
     alt: "Cena editorial de uma mulher adulta junto a uma janela iluminada.",
-    status: "internal-review",
+    status: "owner-authorized",
     productionNote:
-      "Lifestyle ilustrativo; direitos e procedência permanecem em revisão.",
+      "Uso visual autorizado pelo proprietário para a homepage em 15/07/2026.",
     dominantColor: "#EDE2D9",
   },
   lifestyleRoutine: {
@@ -109,10 +109,22 @@ export const campaignAssets = {
     width: 1122,
     height: 1402,
     alt: "Cena editorial de uma mulher servindo água em um copo.",
-    status: "internal-review",
+    status: "owner-authorized",
     productionNote:
-      "Lifestyle ilustrativo; direitos e procedência permanecem em revisão.",
+      "Uso visual autorizado pelo proprietário para a homepage em 15/07/2026.",
     dominantColor: "#B58E72",
+  },
+  lifestyleHero: {
+    id: "lifestyle-hero",
+    kind: "lifestyle",
+    src: "/lifestyle/celuclin-hero.webp",
+    width: 1122,
+    height: 1402,
+    alt: "Frasco CeluClin em uma composição editorial clara com folhas.",
+    status: "owner-authorized",
+    productionNote:
+      "Uso visual autorizado pelo proprietário para a homepage em 15/07/2026.",
+    dominantColor: "#D9B9B0",
   },
 } as const satisfies Readonly<Record<string, CampaignAsset>>;
 

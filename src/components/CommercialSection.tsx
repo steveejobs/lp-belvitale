@@ -142,7 +142,7 @@ export function CommercialSection() {
     offers.forEach((offer) => recordCommerceEvent("offer_view", { offerId: offer.id, source: "homepage" }));
   }, [checkoutReady, offers]);
 
-  if (!internalMediaPreview && !publicReady) return null;
+  if (!publicReady && fixture === null) return null;
 
   function selectOffer(offer: CommercialOffer) {
     setSelectedOfferId(offer.id);

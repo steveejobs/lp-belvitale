@@ -202,3 +202,20 @@ Esta seção substitui os contratos visuais das rodadas históricas abaixo. Os r
 | Referências analisadas | `docs/reference-analysis.md` registra o que foi absorvido e o que não foi copiado das duas páginas enviadas | Concluído |
 | Evidências | Screenshots `390x844-home-gallery.png`, `1440x900-home-gallery.png`, QA manual de acervo/rótulo/kits/overflow e Playwright 49/49 | Concluído |
 | Qualidade | Lint, build, verificador de produção, Playwright e auditoria visual | Concluído |
+
+## Reconstrução clean da homepage — 15/07/2026
+
+Esta rodada substitui a direção visual assimétrica do acervo na rota `/`. A autorização explícita do proprietário neste pedido libera produto, lifestyle e logos fornecidos para uso na homepage. Kits, checkout, preços, claims, quiz e o gate sanitário continuam fora do escopo.
+
+| Requisito | Implementação/validação | Status |
+| --- | --- | --- |
+| Home clean, minimalista e elegante | Superfícies claras, preto e branco, acento magenta do frasco, grid consistente e respiro controlado | Concluído |
+| Produto real como protagonista | Frasco frontal no hero e seis cenas uniformes: frente integral, close, ângulo, mão, cápsulas e lifestyle | Concluído |
+| Logos oficiais preto e branco | Wordmark escuro no header, monograma claro no rótulo e wordmark claro no rodapé, sem distorção | Concluído |
+| Galerias separadas por solução | Celulite, flacidez e gordura localizada em controles e palcos independentes, sem misturar séries | Concluído |
+| Imagens alinhadas | Proporções reservadas, mídia integral, trilhos uniformes e ausência de mosaico assimétrico | Concluído |
+| Rótulo claramente localizado | Seção própria, abertura visual por máscara, quatro focos de leitura, modal legível e PDF original | Concluído |
+| Motion funcional | Movimento restrito a produto, troca de galeria e abertura do rótulo; reduced motion preservado | Concluído |
+| Quiz preservado | Nenhum arquivo, conteúdo, scoring, storage ou rota do quiz foi alterado; 13 testes do quiz passaram | Concluído |
+| Kits e comércio preservados | Nenhum kit, preço, checkout ou CTA comercial aparece na home real; fixtures continuam isoladas | Concluído |
+| QA visual e técnico | Capturas `home-clean-*`, vídeo `home-clean-interactions.webm`, sete viewports, 200%, teclado, console, rede, lint, typecheck, build, gate de produção e regressão afetada 36/36 | Concluído |

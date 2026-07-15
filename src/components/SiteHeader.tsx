@@ -1,18 +1,31 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { navigationItems } from "../config/site";
-import { quizPublicationApproved } from "../data/quizPublicationConfig";
 
 function MenuIcon({ close = false }: { readonly close?: boolean }) {
   return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22">
       <path
-        d={close ? "m6 6 12 12M18 6 6 18" : "M4 8h16M8 16h12"}
+        d={close ? "m6 6 12 12M18 6 6 18" : "M4 8h16M4 16h16"}
         fill="none"
         stroke="currentColor"
         strokeLinecap="round"
-        strokeWidth="1.8"
+        strokeWidth="1.6"
       />
     </svg>
+  );
+}
+
+function DarkWordmark() {
+  return (
+    <span className="brand-wordmark brand-wordmark--dark" aria-hidden="true">
+      <img
+        src="/brand/belvitale-wordmark-dark.webp"
+        width="496"
+        height="369"
+        alt=""
+        decoding="async"
+      />
+    </span>
   );
 }
 
@@ -23,10 +36,6 @@ export function SiteHeader() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
-  const quizAvailable =
-    import.meta.env.DEV ||
-    import.meta.env.VITE_INTERNAL_QUIZ === "true" ||
-    quizPublicationApproved;
 
   useEffect(() => {
     const update = () => setScrolled(window.scrollY > 16);
@@ -69,7 +78,7 @@ export function SiteHeader() {
     <header className="site-header" data-scrolled={scrolled}>
       <div className="section-shell site-header__inner">
         <a className="site-wordmark" href="#inicio" aria-label="Belvitale — início">
-          belvitale
+          <DarkWordmark />
         </a>
 
         <nav className="site-header__desktop-nav" aria-label="Navegação principal">
@@ -82,8 +91,8 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <a className="site-header__desktop-cta" href={quizAvailable ? "/quiz" : "#resultados"}>
-          {quizAvailable ? "Descobrir meu ritmo" : "Ver resultados"}
+        <a className="site-header__desktop-cta" href="#rotulo">
+          Ver o rótulo
         </a>
 
         <div className="site-header__mobile-actions">
@@ -105,7 +114,7 @@ export function SiteHeader() {
         className="mobile-menu"
         id="menu-mobile"
         ref={dialogRef}
-        aria-labelledby="mobile-menu-title"
+        aria-label="belvitale"
         onCancel={(event) => {
           event.preventDefault();
           setMenuOpen(false);
@@ -114,7 +123,7 @@ export function SiteHeader() {
       >
         <div className="mobile-menu__panel">
           <div className="mobile-menu__heading">
-            <p id="mobile-menu-title">belvitale</p>
+            <DarkWordmark />
             <button
               ref={closeButtonRef}
               type="button"
@@ -137,10 +146,10 @@ export function SiteHeader() {
           </nav>
           <a
             className="button button--primary"
-            href={quizAvailable ? "/quiz" : "#resultados"}
+            href="#rotulo"
             onClick={() => setMenuOpen(false)}
           >
-            {quizAvailable ? "Descobrir meu ritmo" : "Ver resultados"}
+            Ver o rótulo
           </a>
         </div>
       </dialog>

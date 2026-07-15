@@ -35,12 +35,30 @@ const proofFiles = [
   "proof/localized-fat/localized-fat-03.webp",
 ];
 
+const homeMediaFiles = [
+  "product/celuclin-front-01.webp",
+  "product/celuclin-front-02.webp",
+  "product/celuclin-front-02-640.webp",
+  "product/celuclin-front-02-640.avif",
+  "product/celuclin-angle.webp",
+  "product/celuclin-hand.webp",
+  "product/celuclin-capsules.webp",
+  "lifestyle/celuclin-hero.webp",
+  "lifestyle/freedom-01.webp",
+  "lifestyle/routine-01.webp",
+  "brand/belvitale-wordmark-dark.webp",
+  "brand/belvitale-wordmark-light.webp",
+  "brand/belvitale-monogram-dark.webp",
+  "brand/belvitale-monogram-light.webp",
+];
+
 for (const relativeFile of [
   "index.html",
   "quiz/index.html",
   "quiz/resultado/index.html",
   "label/celuclin-label-front.webp",
   "label/celuclin-label-complete.pdf",
+  ...homeMediaFiles,
   ...proofFiles,
 ]) {
   assert.equal(
@@ -52,9 +70,6 @@ for (const relativeFile of [
 
 for (const forbiddenTarget of [
   "sitemap.xml",
-  "product",
-  "lifestyle",
-  "brand",
   "checkout",
   "label/celuclin-label-front-hero.webp",
 ]) {
@@ -90,10 +105,11 @@ for (const requiredCopy of [
   "A celulite não precisa",
   "decidir o que você veste",
   "Celulite não mede peso",
-  "Um objeto de rotina",
-  "Histórias que a pele conta",
+  "CeluClin, visto por inteiro",
+  "Resultados organizados",
   "Resultados reais autorizados",
-  "O rótulo não é rodapé",
+  "O rótulo deixa de ser detalhe",
+  "Dois por dia",
   "Sua pele não precisa ser perfeita",
   "61.493.515/0001-65",
   "(63) 99108-1785",
@@ -183,7 +199,11 @@ try {
   assert.equal(await page.locator('link[rel="canonical"]').count(), 0);
   assert.equal(await page.locator('meta[name="robots"]').getAttribute("content"), "noindex, nofollow");
   assert.match(await page.locator("h1").innerText(), /A celulite não precisa/);
-  assert.equal(await page.locator('.campaign-hero[data-media-status="preview"]').count(), 0);
+  assert.equal(
+    await page.locator('.campaign-hero__visual[data-media-status="approved"]').count(),
+    1,
+  );
+  assert.equal(await page.locator("#celuclin .product-story__media > img").count(), 6);
 
   await page.locator("#rotulo").scrollIntoViewIfNeeded();
   await page.waitForTimeout(300);
@@ -200,9 +220,9 @@ try {
   await page.locator("#resultados").scrollIntoViewIfNeeded();
   await page.waitForTimeout(500);
   assert.equal(await page.locator("#resultados .proof-figure img").count(), 9);
-  assert.equal(await page.getByRole("heading", { name: "Celulite", exact: true }).count(), 1);
-  assert.equal(await page.getByRole("heading", { name: "Flacidez", exact: true }).count(), 1);
-  assert.equal(await page.getByRole("heading", { name: "Gordura localizada", exact: true }).count(), 1);
+  assert.equal(await page.getByRole("tab", { name: "Celulite", exact: true }).count(), 1);
+  assert.equal(await page.getByRole("tab", { name: "Flacidez", exact: true }).count(), 1);
+  assert.equal(await page.getByRole("tab", { name: "Gordura localizada", exact: true }).count(), 1);
   const proofDisclaimer = page.locator(".proof-stories__disclaimer strong");
   assert.equal(await proofDisclaimer.count(), 1);
   assert.equal(
@@ -212,10 +232,18 @@ try {
 
   await page.locator(".site-footer").scrollIntoViewIfNeeded();
   await page.waitForTimeout(300);
+  const requestedText = requested.join("\n");
+  for (const publicMediaFolder of ["product", "lifestyle", "brand"]) {
+    assert.match(
+      requestedText,
+      new RegExp("/" + publicMediaFolder + "/", "i"),
+      "mídia autorizada não solicitada: " + publicMediaFolder,
+    );
+  }
   assert.equal(
-    requested.join("\n").match(/\/(?:product|lifestyle|brand)\//i),
+    requestedText.match(/\/checkout\//i),
     null,
-    "mídia restrita solicitada pelo runtime",
+    "mídia comercial bloqueada solicitada pelo runtime",
   );
 
   for (const quizPath of ["/quiz/", "/quiz/resultado/"]) {
@@ -243,5 +271,5 @@ try {
 }
 
 process.stdout.write(
-  "Release gate validado: provas autorizadas publicadas; produto, lifestyle, marca, ofertas, canonical e quiz público permanecem bloqueados.\n",
+  "Release gate validado: produto, lifestyle, marca, rótulo e provas autorizadas publicados; checkout, canonical e quiz público permanecem bloqueados.\n",
 );

@@ -170,21 +170,14 @@ test("eventos comerciais permanecem locais e sem PII", () => {
   expect(JSON.stringify(events)).not.toMatch(/email|phone|answer/i);
 });
 
-test("estado real mostra direção interna sem preço ou checkout", async ({
+test("estado real mantém a direção comercial interna fora da home", async ({
   page,
 }) => {
   await page.goto("/");
   const section = page.locator("#kits");
-  await expect(section).toBeVisible();
-  await expect(section).toHaveAttribute("data-publication-ready", "false");
-  await expect(section.getByText(/Direção interna/)).toBeVisible();
-  await expect(section.locator("img").first()).toBeVisible();
-  await expect(
-    section.locator('a[href*="belvitale.pay.yampi.com.br"]'),
-  ).toHaveCount(0);
-  await expect(section).not.toContainText("R$");
-  await expect(section.getByText("Organizar por mais tempo")).toBeVisible();
-  await expect(section).toContainText("5 frascos + 2 adicionais");
+  await expect(section).toHaveCount(0);
+  await expect(page.locator('a[href*="belvitale.pay.yampi.com.br"]')).toHaveCount(0);
+  await expect(page.locator("body")).not.toContainText("Direção interna");
 });
 
 test("fixture interna preserva URLs e identifica valores fictícios", async ({

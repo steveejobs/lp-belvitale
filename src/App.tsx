@@ -5,10 +5,8 @@ import { ChoiceSequence } from "./components/ChoiceSequence";
 import { EducationSection } from "./components/EducationSection";
 import { FaqSection } from "./components/FaqSection";
 import { FormulaSection } from "./components/FormulaSection";
-import { GalleryAtlas } from "./components/GalleryAtlas";
 import { LegalDocumentRoute } from "./components/LegalDocumentRoute";
 import { ProductStory } from "./components/ProductStory";
-import { QuizHomeCta } from "./components/QuizHomeCta";
 import { RoutineSection } from "./components/RoutineSection";
 import { SeoMetadata } from "./components/SeoMetadata";
 import { SiteFooter } from "./components/SiteFooter";
@@ -16,6 +14,7 @@ import { SiteHeader } from "./components/SiteHeader";
 import { getLegalDocumentByPath } from "./data/legalDocuments";
 import { regulatoryFacts } from "./data/regulatoryFacts";
 import { isQuizPath } from "./quiz/quizRouting";
+import "./home.css";
 
 const QuizRoute = lazy(() =>
   import("./components/QuizRoute").then((module) => ({ default: module.QuizRoute })),
@@ -49,10 +48,9 @@ export function App() {
       <SiteHeader />
       <main id="conteudo-principal">
         <CampaignHero />
-        <GalleryAtlas />
+        <ProductStory />
         <ChoiceSequence />
         <EducationSection />
-        <ProductStory />
         <FormulaSection />
         <Suspense fallback={<div className="section-placeholder section-placeholder--proof" aria-hidden="true" />}>
           <ProofStories />
@@ -62,7 +60,6 @@ export function App() {
         </Suspense>
         <RoutineSection />
         <Suspense fallback={null}><CommercialSection /></Suspense>
-        <QuizHomeCta />
         <FaqSection />
         <CampaignClosing />
       </main>

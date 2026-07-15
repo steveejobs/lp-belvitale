@@ -71,7 +71,7 @@ export const homeContent = {
     eyebrow: "Composição em foco",
     title: "O que entra na rotina precisa aparecer por inteiro.",
     body:
-      "A porção informada corresponde a duas cápsulas. Toque nos ingredientes para comparar somente nomes e quantidades confirmados.",
+      "A porção informada corresponde a duas cápsulas. Nomes e quantidades seguem a informação confirmada na embalagem.",
     source: "Quantidade por porção · rótulo + documentação",
     partial:
       "A cúrcuma permanece fora desta seleção enquanto o nome divergir entre as fontes. O rótulo original continua disponível para leitura integral.",

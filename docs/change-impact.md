@@ -167,6 +167,24 @@ Registrado antes da implementação em 14/07/2026.
 - `siteAssets.ts`: SHA-256 `BA412D15C713C3EAE4C7DEE3B98D2AB87E7C052D01ED9EFACE4D248BB6E919A0`.
 - `SeoMetadata.tsx`: SHA-256 `9660E035BE80F75D7033AE7B139BEC40B6148A23114852C7D7CD395643924A78`.
 
+## Impacto planejado — reconstrução clean da homepage em 15/07/2026
+
+| Arquivo | Componentes/contratos | Rotas | Validação obrigatória |
+| --- | --- | --- | --- |
+| `src/App.tsx` | Ordem e seleção das cenas públicas | `/` | Home completa, quiz e rotas legais |
+| `src/components/SiteHeader.tsx` | Logos oficiais e navegação responsiva | `/` | Teclado, Escape, foco e 390 px |
+| `src/components/CampaignHero.tsx` | Produto dominante, copy e CTA | `/` | Primeira dobra 390 × 844 e 1440 × 900 |
+| `src/components/ChoiceSequence.tsx` | Lifestyle e liberdade de escolha | `/` | Enquadramento, contraste e lazy loading |
+| `src/components/ProductStory.tsx` | Galeria uniforme do produto | `/` | Clique, teclado, mídia integral e estabilidade |
+| `src/components/ProofStories.tsx` | Galerias por solução | `/` | Nove imagens, categorias isoladas e disclaimer |
+| `src/components/LabelTransparency.tsx` | Abertura e leitura do rótulo | `/` | Motion, modal, erro, PDF e reduced motion |
+| `src/components/SiteFooter.tsx` | Logo clara e dados confirmados | `/` | Contraste, telefone e CNPJ |
+| `src/data/campaignAssets.ts` | Autorização atual de produto/lifestyle | `/` e build | Assets presentes sem liberar kits ou claims |
+| `src/home.css` | Sistema visual isolado da nova home | `/` | Sem regressão visual em `/quiz` |
+| `vite.config.ts` | Publicação de produto/lifestyle/brand autorizados | build | Dist inclui somente as pastas liberadas |
+
+Arquivos de quiz, perguntas, perfis, scoring, storage, CSS do quiz, oferta, checkout e fatos regulatórios permanecem protegidos e não serão editados.
+
 ## Resultado — arquitetura comercial controlada
 
 - `src/data/commercialOffers.ts` centraliza as três estruturas, URLs, status de preço, checkout, conteúdo, imagem, direitos e publicação.

@@ -2,10 +2,9 @@ import {
   campaignAssets,
   canRenderCampaignAsset,
   internalMediaPreview,
+  type CampaignAsset,
 } from "./campaignAssets";
 import { proofAssets } from "./proofGallery";
-
-type CampaignAssetValue = (typeof campaignAssets)[keyof typeof campaignAssets];
 
 export type GalleryAssetGroup =
   | "brand"
@@ -39,7 +38,7 @@ const brandAssets: readonly GalleryAsset[] = [
     height: 500,
     alt: "Monograma quadrado da Belvitale.",
     sourceFile: "BV belvitale.png",
-    availability: "internal-preview",
+    availability: "public",
   },
   {
     id: "brand-wordmark-dark",
@@ -51,7 +50,7 @@ const brandAssets: readonly GalleryAsset[] = [
     height: 369,
     alt: "Assinatura Belvitale em versao escura.",
     sourceFile: "belvitale sem fundo preto.png",
-    availability: "internal-preview",
+    availability: "public",
   },
   {
     id: "brand-wordmark-light",
@@ -63,7 +62,7 @@ const brandAssets: readonly GalleryAsset[] = [
     height: 627,
     alt: "Assinatura Belvitale em versao clara.",
     sourceFile: "belvitale sem fundo branco.png",
-    availability: "internal-preview",
+    availability: "public",
   },
   {
     id: "brand-monogram-dark",
@@ -75,7 +74,7 @@ const brandAssets: readonly GalleryAsset[] = [
     height: 400,
     alt: "Simbolo Belvitale em versao escura.",
     sourceFile: "logo sem fundo preta.png",
-    availability: "internal-preview",
+    availability: "public",
   },
   {
     id: "brand-monogram-light",
@@ -87,12 +86,12 @@ const brandAssets: readonly GalleryAsset[] = [
     height: 480,
     alt: "Simbolo Belvitale em versao clara.",
     sourceFile: "logo sem fundo branca.png",
-    availability: "internal-preview",
+    availability: "public",
   },
 ];
 
 function fromCampaignAsset(
-  asset: CampaignAssetValue,
+  asset: CampaignAsset,
   metadata: Pick<GalleryAsset, "group" | "title" | "kicker" | "sourceFile">,
 ): GalleryAsset {
   return {
@@ -105,7 +104,10 @@ function fromCampaignAsset(
     height: asset.height,
     alt: asset.alt,
     sourceFile: metadata.sourceFile,
-    availability: "internal-preview",
+    availability:
+      asset.status === "approved" || asset.status === "owner-authorized"
+        ? "public"
+        : "internal-preview",
   };
 }
 
@@ -151,12 +153,12 @@ const productAssets: readonly GalleryAsset[] = [
     group: "routine",
     title: "Cena de campanha",
     kicker: "Rotina",
-    src: "/lifestyle/celuclin-hero.webp",
+    src: campaignAssets.lifestyleHero.src,
     width: 1122,
     height: 1402,
     alt: "Cena editorial da campanha CeluClin em fundo claro.",
     sourceFile: "publiclifestylehero.webp.png",
-    availability: "internal-preview",
+    availability: "public",
   },
   fromCampaignAsset(campaignAssets.lifestyleRoutine, {
     group: "routine",

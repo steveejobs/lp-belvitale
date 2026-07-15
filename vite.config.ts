@@ -7,7 +7,7 @@ import { regulatoryPublicationReady } from "./src/data/regulatoryFacts";
 
 const rootDirectory = path.dirname(fileURLToPath(import.meta.url));
 const homeEntry = path.resolve(rootDirectory, "index.html");
-const restrictedPublicFolders = ["product", "lifestyle", "brand", "checkout"];
+const restrictedPublicFolders = ["checkout"];
 const obsoletePublicFiles = [
   path.join("label", "celuclin-label-front-hero.webp"),
 ];
@@ -33,14 +33,11 @@ function excludeUnverifiedMedia(internalMediaPreview: boolean): Plugin {
   };
 }
 
-function preloadInternalHeroMedia(internalMediaPreview: boolean): Plugin {
+function preloadHomeHeroMedia(): Plugin {
   return {
-    name: "preload-internal-hero-media",
+    name: "preload-home-hero-media",
     transformIndexHtml(html, context) {
-      if (
-        !internalMediaPreview ||
-        path.resolve(context.filename) !== homeEntry
-      ) {
+      if (path.resolve(context.filename) !== homeEntry) {
         return html;
       }
 
@@ -162,7 +159,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [
       react(),
-      preloadInternalHeroMedia(internalMediaPreview),
+      preloadHomeHeroMedia(),
       quizPublicationSeo(
         publicationApproved,
         canonicalBase,

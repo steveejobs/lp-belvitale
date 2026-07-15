@@ -1,101 +1,151 @@
-import { useRef, useState, type UIEvent } from "react";
+import { useState } from "react";
 import { homeContent } from "../content/homeContent";
 import {
   proofAssets,
   proofAuthorization,
+  proofCategories,
   type ProofAsset,
+  type ProofCategoryId,
 } from "../data/proofGallery";
 
-function ProofFigure({ asset }: { readonly asset: ProofAsset }) {
+function Arrow({ direction }: { readonly direction: "left" | "right" }) {
   return (
-    <figure className="proof-figure">
+    <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20">
+      <path
+        d={direction === "left" ? "M15 5 8 12l7 7" : "m9 5 7 7-7 7"}
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.7"
+      />
+    </svg>
+  );
+}
+
+function ProofFigure({ asset, active }: { readonly asset: ProofAsset; readonly active: boolean }) {
+  return (
+    <figure className="proof-figure" data-active={active} aria-hidden={!active}>
       {asset.src === null ? null : (
         <img
           src={asset.src}
           width={asset.width}
           height={asset.height}
-          alt={asset.alt}
+          alt={active ? asset.alt : ""}
           loading="lazy"
           decoding="async"
         />
       )}
-      <figcaption>
-        <span>{asset.sequenceLabel}</span>
-        <small>Enquadramento preservado · ordem não inferida</small>
-      </figcaption>
+      <figcaption className="sr-only">Imagem autorizada da série selecionada.</figcaption>
     </figure>
   );
 }
 
 export function ProofStories() {
-  const railRef = useRef<HTMLDivElement>(null);
-  const [celluliteIndex, setCelluliteIndex] = useState(0);
+  const [activeCategory, setActiveCategory] = useState<ProofCategoryId>("cellulite");
+  const [activeByCategory, setActiveByCategory] = useState<Record<ProofCategoryId, number>>({
+    cellulite: 0,
+    laxity: 0,
+    "localized-fat": 0,
+  });
   const { proof } = homeContent;
-  const cellulite = proofAssets.filter((asset) => asset.category === "cellulite");
-  const laxity = proofAssets.filter((asset) => asset.category === "laxity");
-  const localizedFat = proofAssets.filter((asset) => asset.category === "localized-fat");
 
-  function updateRail(event: UIEvent<HTMLDivElement>) {
-    const rail = event.currentTarget;
-    const first = rail.querySelector<HTMLElement>(".proof-figure");
-    if (first === null) return;
-    const step = first.offsetWidth + 16;
-    setCelluliteIndex(Math.max(0, Math.min(cellulite.length - 1, Math.round(rail.scrollLeft / step))));
-  }
-
-  function moveRail(direction: -1 | 1) {
-    const rail = railRef.current;
-    if (rail === null) return;
-    const first = rail.querySelector<HTMLElement>(".proof-figure");
-    if (first === null) return;
-    rail.scrollBy({ left: direction * (first.offsetWidth + 16), behavior: "smooth" });
+  function selectAsset(category: ProofCategoryId, index: number) {
+    const categoryAssets = proofAssets.filter((asset) => asset.category === category);
+    const normalized = (index + categoryAssets.length) % categoryAssets.length;
+    setActiveByCategory((current) => ({ ...current, [category]: normalized }));
   }
 
   return (
     <section className="proof-stories" id="resultados" aria-labelledby="proof-title">
       <div className="proof-stories__heading section-shell">
-        <p className="eyebrow eyebrow--light">{proof.eyebrow}</p>
-        <h2 id="proof-title">
-          <span>{proof.titleLead}</span>
-          <em>{proof.titleAccent}</em>
-        </h2>
+        <p className="eyebrow">{proof.eyebrow}</p>
+        <h2 id="proof-title">Resultados organizados para você ver com clareza.</h2>
         <p>{proof.context}</p>
       </div>
 
-      <section className="proof-chapter proof-chapter--cellulite" aria-labelledby="proof-cellulite-title">
-        <div className="proof-chapter__title section-shell">
-          <p>Capítulo 01</p>
-          <h3 id="proof-cellulite-title">Celulite</h3>
-          <div className="proof-rail__controls">
-            <button type="button" onClick={() => moveRail(-1)} aria-label="Registro anterior de celulite">←</button>
-            <span aria-live="polite">{celluliteIndex + 1} / {cellulite.length}</span>
-            <button type="button" onClick={() => moveRail(1)} aria-label="Próximo registro de celulite">→</button>
-          </div>
+      <div className="proof-gallery section-shell">
+        <div className="proof-gallery__tabs" role="tablist" aria-label="Soluções apresentadas">
+          {proofCategories.map((category) => (
+            <button
+              key={category.id}
+              id={`proof-tab-${category.id}`}
+              type="button"
+              role="tab"
+              aria-selected={activeCategory === category.id}
+              aria-controls={`proof-panel-${category.id}`}
+              onClick={() => setActiveCategory(category.id)}
+            >
+              {category.label}
+            </button>
+          ))}
         </div>
-        <div className="proof-rail" ref={railRef} onScroll={updateRail} tabIndex={0} aria-label="Série autorizada de celulite">
-          {cellulite.map((asset) => <ProofFigure asset={asset} key={asset.id} />)}
-        </div>
-      </section>
 
-      <section className="proof-chapter proof-chapter--laxity" aria-labelledby="proof-laxity-title">
-        <div className="proof-chapter__title section-shell">
-          <p>Capítulo 02</p>
-          <h3 id="proof-laxity-title">Flacidez</h3>
-        </div>
-        <div className="proof-diptych section-shell">
-          {laxity.map((asset) => <ProofFigure asset={asset} key={asset.id} />)}
-        </div>
-      </section>
+        {proofCategories.map((category) => {
+          const assets = proofAssets.filter((asset) => asset.category === category.id);
+          const activeIndex = activeByCategory[category.id];
 
-      <section className="proof-chapter proof-chapter--localized" aria-labelledby="proof-localized-title">
-        <div className="proof-chapter__title section-shell">
-          <p>Capítulo 03</p>
-          <h3 id="proof-localized-title">Gordura localizada</h3>
-        </div>
-        <div className="proof-triptych">
-          {localizedFat.map((asset) => <ProofFigure asset={asset} key={asset.id} />)}
-        </div>
-      </section>
+          return (
+            <section
+              className="proof-gallery__panel"
+              id={`proof-panel-${category.id}`}
+              key={category.id}
+              role="tabpanel"
+              aria-labelledby={`proof-tab-${category.id}`}
+              hidden={activeCategory !== category.id}
+            >
+              <div className="proof-gallery__stage">
+                {assets.map((asset, index) => (
+                  <ProofFigure asset={asset} active={index === activeIndex} key={asset.id} />
+                ))}
+
+                <div className="proof-gallery__controls">
+                  <button
+                    type="button"
+                    onClick={() => selectAsset(category.id, activeIndex - 1)}
+                    aria-label={`Imagem anterior de ${category.label.toLowerCase()}`}
+                  >
+                    <Arrow direction="left" />
+                  </button>
+                  <span aria-live="polite">
+                    {String(activeIndex + 1).padStart(2, "0")} / {String(assets.length).padStart(2, "0")}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => selectAsset(category.id, activeIndex + 1)}
+                    aria-label={`Próxima imagem de ${category.label.toLowerCase()}`}
+                  >
+                    <Arrow direction="right" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="proof-gallery__thumbs" aria-label={`Imagens de ${category.label.toLowerCase()}`}>
+                {assets.map((asset, index) => (
+                  <button
+                    key={asset.id}
+                    type="button"
+                    aria-pressed={index === activeIndex}
+                    aria-label={`Ver imagem ${String(index + 1)} de ${category.label.toLowerCase()}`}
+                    onClick={() => selectAsset(category.id, index)}
+                  >
+                    {asset.src === null ? null : (
+                      <img
+                        src={asset.src}
+                        width={asset.width}
+                        height={asset.height}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </div>
 
       <div className="proof-stories__disclaimer section-shell">
         <strong>{proofAuthorization.disclaimer}</strong>
