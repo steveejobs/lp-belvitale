@@ -45,7 +45,7 @@ Cada asset principal tem uma funcao propria. Nao repetir imagens para preencher 
 | Kits | composicoes locais em `/offers/`, feitas com o packshot real |
 | Fechamento | `/lifestyle/celuclin-hero.webp` |
 
-Nao usar a arte plana do rotulo como produto, fundo, textura, formula ou kit. As miniaturas recuperadas da Yampi nao ficam no projeto: somente seus metadados de auditoria permanecem em `artifacts/checkout-audit.json`.
+Nao usar a arte plana do rotulo como produto, fundo, textura, formula ou kit. As miniaturas recuperadas da Yampi nao ficam no projeto: somente seus metadados de auditoria permanecem em `src/data/commercialPreview.ts` e `artifacts/final-v2/after/remote-audit.json`.
 
 ## Arquitetura
 
@@ -106,3 +106,4 @@ Rodada concluida em 16/07/2026:
 - Nao versionar `dist/`, `.tmp/`, `test-results/`, logs ou capturas intermediarias.
 - Preservar os testes ativos: eles protegem comportamento real e ocupam pouco espaco.
 - Manter somente evidencias finais explicitamente liberadas no `.gitignore`.
+- Limpeza de 16/07/2026 removeu capturas antigas de `artifacts/screenshots`, `artifacts/videos`, auditorias duplicadas da raiz de `artifacts`, rodadas intermediarias em `artifacts/final-v2/round-*`, logs locais, `dist/`, `.tmp/` e `test-results/`.

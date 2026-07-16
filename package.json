@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "test:e2e": "playwright test",
     "test:production": "npm run build:production && node scripts/verify-production-assets.mjs",
-    "capture": "node scripts/capture-artifacts.mjs"
+    "capture": "node scripts/capture-final-evidence.mjs"
   },
   "dependencies": {
     "@fontsource-variable/figtree": "^5.2.10",

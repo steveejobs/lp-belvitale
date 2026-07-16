@@ -43,7 +43,7 @@ Os três links foram abertos em navegador automatizado em 14/07/2026. A estrutur
 | `41CHX4MGPX` | CeluClin 7 Meses (5 + 2 adicionais) | Miniatura PNG de 290 × 289 px | Kit confirmado; imagem preservada para revisão comercial futura |
 
 - As URLs sem o sufixo de miniatura retornaram HTTP 404; a resolução original não está disponível publicamente pelo checkout.
-- As miniaturas da Yampi foram removidas do repositorio apos a auditoria por serem pequenas e duplicadas. URLs, dimensoes e pesos permanecem em `artifacts/checkout-audit.json`.
+- As miniaturas da Yampi foram removidas do repositorio apos a auditoria por serem pequenas e duplicadas. URLs, dimensoes e pesos permanecem em `src/data/commercialPreview.ts` e `artifacts/final-v2/after/remote-audit.json`.
 - Preços são dados voláteis e permanecem fora desta rodada, mesmo tendo sido visíveis durante a auditoria.
 - O checkout exibe contador e depoimentos com alegações incompatíveis com os bloqueios editoriais do projeto. Nenhum desses textos, imagens de depoimento ou mecanismos de urgência será reutilizado.
 - O proprietario autorizou explicitamente a descricao `5 + 2 gratis` para o kit de 7 meses em 15/07/2026. Essa autorizacao nao inclui preco, desconto, economia, frete, estoque ou urgencia.

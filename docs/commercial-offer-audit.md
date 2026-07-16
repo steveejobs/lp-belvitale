@@ -22,4 +22,4 @@ Validacao realizada em navegador limpo, sem compra, cadastro ou preenchimento de
 - republicacao das miniaturas de 290 px recuperadas da Yampi;
 - publicacao comercial em producao enquanto dados institucionais, regulatorios e legais estiverem pendentes.
 
-O estado detalhado dos checkouts tambem esta em `src/data/commercialPreview.ts` e `artifacts/checkout-audit.json`.
+O estado detalhado dos checkouts tambem esta em `src/data/commercialPreview.ts` e `artifacts/final-v2/after/remote-audit.json`.
