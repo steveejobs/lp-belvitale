@@ -1,5 +1,23 @@
 # Manifesto de assets
 
+## Mapa ativo de uso - 15/07/2026
+
+O mapa abaixo substitui a distribuicao visual anterior da homepage. Uma imagem nao deve reaparecer em outra secao apenas para preencher espaco.
+
+| Funcao | Assets ativos |
+| --- | --- |
+| Hero | `product/celuclin-front-02.webp` |
+| Produto | `product/celuclin-angle.webp`, `product/celuclin-front-01.webp` |
+| Liberdade | `lifestyle/freedom-01.webp` |
+| Formula | `product/celuclin-capsules.webp` |
+| Resultados | todas as nove imagens em `proof/`, por categoria |
+| Rotulo | `label/celuclin-label-front.webp`, somente na transparencia |
+| Rotina | `lifestyle/routine-01.webp`, `product/celuclin-hand.webp` |
+| Ofertas | `offers/celuclin-one.webp`, `offers/celuclin-three.webp`, `offers/celuclin-seven.webp` |
+| Fechamento | `lifestyle/celuclin-hero.webp` |
+
+As composicoes em `offers/` repetem o packshot aprovado somente para representar a quantidade real de cada kit. Isso e uma funcao comercial, nao reutilizacao editorial da foto do hero.
+
 Auditoria visual concluída em 14/07/2026. Os arquivos-fonte permanecem preservados em `galeria belvitale/`. “Origem” descreve apenas o que foi possível comprovar com os arquivos e com as instruções recebidas; aparência visual não é tratada como prova de procedência.
 
 ## Adendo de autorização — campanha atual

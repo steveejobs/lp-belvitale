@@ -203,7 +203,12 @@ try {
     await page.locator('.campaign-hero__visual[data-media-status="approved"]').count(),
     1,
   );
-  assert.equal(await page.locator("#celuclin .product-story__media > img").count(), 6);
+  const productViews = page.locator("#celuclin .product-story__views img");
+  assert.equal(await productViews.count(), 2);
+  assert.deepEqual(
+    await productViews.evaluateAll((images) => images.map((image) => image.getAttribute("src"))),
+    ["/product/celuclin-angle.webp", "/product/celuclin-front-01.webp"],
+  );
 
   await page.locator("#rotulo").scrollIntoViewIfNeeded();
   await page.waitForTimeout(300);

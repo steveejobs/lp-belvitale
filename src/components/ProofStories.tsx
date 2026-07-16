@@ -17,24 +17,11 @@ import {
   type ProofCategoryId,
 } from "../data/proofGallery";
 import { useReducedMotion } from "../hooks/useReducedMotion";
+import { ArrowIcon } from "./ui/ArrowIcon";
+import { Reveal } from "./ui/Reveal";
 
 const autoplayDelay = 5200;
 const resumeDelay = 3200;
-
-function Arrow({ direction }: { readonly direction: "left" | "right" }) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20">
-      <path
-        d={direction === "left" ? "M15 5 8 12l7 7" : "m9 5 7 7-7 7"}
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.7"
-      />
-    </svg>
-  );
-}
 
 interface ProofFigureProps {
   readonly asset: ProofAsset;
@@ -228,37 +215,39 @@ export function ProofStories() {
       ref={sectionRef}
       aria-labelledby="proof-title"
     >
-      <div className="proof-stories__heading section-shell">
+      <Reveal className="proof-stories__heading section-shell" effect="slide-left">
         <p className="eyebrow">{proof.eyebrow}</p>
         <h2 id="proof-title">Resultados organizados para você ver com clareza.</h2>
         <p>{proof.context}</p>
-      </div>
+      </Reveal>
 
-      <div
-        className="proof-gallery section-shell"
-        ref={galleryRef}
-        data-autoplay={
-          !reducedMotion &&
-          galleryVisible &&
-          pageVisible &&
-          !interactionPaused &&
-          !hovered &&
-          !focusWithin &&
-          !dragging
-        }
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => {
-          setHovered(false);
-          resumeAfterInteraction();
-        }}
-        onFocusCapture={() => setFocusWithin(true)}
-        onBlurCapture={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget)) {
-            setFocusWithin(false);
-            resumeAfterInteraction();
+      <Reveal className="proof-gallery-reveal section-shell" effect="scale" delay={70}>
+        <div
+          className="proof-gallery"
+          ref={galleryRef}
+          data-active-index={activeIndex}
+          data-autoplay={
+            !reducedMotion &&
+            galleryVisible &&
+            pageVisible &&
+            !interactionPaused &&
+            !hovered &&
+            !focusWithin &&
+            !dragging
           }
-        }}
-      >
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => {
+            setHovered(false);
+            resumeAfterInteraction();
+          }}
+          onFocusCapture={() => setFocusWithin(true)}
+          onBlurCapture={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+              setFocusWithin(false);
+              resumeAfterInteraction();
+            }
+          }}
+        >
         <div className="proof-gallery__tabs" role="tablist" aria-label="Soluções apresentadas">
           {proofCategories.map((category) => (
             <button
@@ -300,24 +289,39 @@ export function ProofStories() {
               onClick={() => interact(activeIndex - 1)}
               aria-label={`Imagem anterior de ${proofCategories.find((item) => item.id === activeCategory)?.label ?? "resultados"}`}
             >
-              <Arrow direction="left" />
+              <ArrowIcon direction="left" />
             </button>
-            <span aria-live="polite">
-              {String(activeIndex + 1).padStart(2, "0")} / {String(categoryAssets.length).padStart(2, "0")}
+            <div className="proof-gallery__dots" role="group" aria-label="Escolher imagem da categoria">
+              {categoryAssets.map((asset, index) => (
+                <button
+                  key={asset.id}
+                  type="button"
+                  className="proof-gallery__dot"
+                  aria-label={`Ver imagem ${String(index + 1)} de ${String(categoryAssets.length)}`}
+                  aria-pressed={index === activeIndex}
+                  onClick={() => interact(index)}
+                >
+                  <span aria-hidden="true" />
+                </button>
+              ))}
+            </div>
+            <span className="sr-only" aria-live="polite">
+              Imagem {activeIndex + 1} de {categoryAssets.length}
             </span>
             <button
               type="button"
               onClick={() => interact(activeIndex + 1)}
               aria-label={`Próxima imagem de ${proofCategories.find((item) => item.id === activeCategory)?.label ?? "resultados"}`}
             >
-              <Arrow direction="right" />
+              <ArrowIcon direction="right" />
             </button>
           </div>
           <div className="proof-gallery__progress" aria-hidden="true">
             <span key={`${activeCategory}-${String(activeIndex)}`} />
           </div>
-        </section>
-      </div>
+          </section>
+        </div>
+      </Reveal>
 
       <div className="proof-stories__disclaimer section-shell">
         <strong>{proofAuthorization.disclaimer}</strong>

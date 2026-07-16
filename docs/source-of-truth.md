@@ -1,6 +1,10 @@
 # Fonte da verdade
 
-Atualizado em 14/07/2026. O rótulo foi inspecionado visualmente nas duas páginas do PDF fornecido. Informações comerciais e relatos não são promovidos a fatos sem a confirmação indicada abaixo.
+Atualizado em 15/07/2026. O rótulo foi inspecionado visualmente nas duas páginas do PDF fornecido. Informações comerciais e relatos não são promovidos a fatos sem a confirmação indicada abaixo.
+
+## Confirmação comercial desta rodada - 15/07/2026
+
+O proprietario solicitou explicitamente que o kit de 3 unidades seja apresentado como `Mais vendido`. Essa e a unica alegacao de popularidade autorizada. Ela nao autoriza inventar volume de vendas, percentual, ranking, periodo, preco, desconto, estoque ou urgencia.
 
 ## Adendo de autorização das provas — 14/07/2026
 

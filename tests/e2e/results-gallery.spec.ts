@@ -6,17 +6,16 @@ test("galeria avança visível, pausa no hover e retoma depois da interação", 
   await page.goto("/");
   await page.locator("#resultados").scrollIntoViewIfNeeded();
   const gallery = page.locator(".proof-gallery");
-  const indicator = gallery.locator(".proof-gallery__controls span");
-  const initial = await indicator.textContent();
+  const initial = await gallery.getAttribute("data-active-index");
 
   await expect(gallery).toHaveAttribute("data-autoplay", "true");
-  await expect(indicator).not.toHaveText(initial ?? "", { timeout: 6500 });
+  await expect(gallery).not.toHaveAttribute("data-active-index", initial ?? "", { timeout: 6500 });
 
   await gallery.hover();
   await expect(gallery).toHaveAttribute("data-autoplay", "false");
-  const paused = await indicator.textContent();
+  const paused = await gallery.getAttribute("data-active-index");
   await page.waitForTimeout(5500);
-  await expect(indicator).toHaveText(paused ?? "");
+  await expect(gallery).toHaveAttribute("data-active-index", paused ?? "");
 
   await page.mouse.move(1, 1);
   await expect(gallery).toHaveAttribute("data-autoplay", "true", {
@@ -29,8 +28,8 @@ test("swipe horizontal troca a prova sem bloquear o scroll vertical", async ({ p
   await page.goto("/");
   await page.locator("#resultados").scrollIntoViewIfNeeded();
   const stage = page.locator(".proof-gallery__stage");
-  const indicator = page.locator(".proof-gallery__controls span");
-  const initial = await indicator.textContent();
+  const gallery = page.locator(".proof-gallery");
+  const initial = await gallery.getAttribute("data-active-index");
   const box = await stage.boundingBox();
   expect(box).not.toBeNull();
   if (box === null) return;
@@ -41,7 +40,7 @@ test("swipe horizontal troca a prova sem bloquear o scroll vertical", async ({ p
     steps: 8,
   });
   await page.mouse.up();
-  await expect(indicator).not.toHaveText(initial ?? "");
+  await expect(gallery).not.toHaveAttribute("data-active-index", initial ?? "");
   await expect(stage).toHaveCSS("touch-action", "pan-y");
 });
 
@@ -51,11 +50,10 @@ test("reduced motion interrompe completamente o autoplay", async ({ browser }) =
   await page.goto("/");
   await page.locator("#resultados").scrollIntoViewIfNeeded();
   const gallery = page.locator(".proof-gallery");
-  const indicator = gallery.locator(".proof-gallery__controls span");
-  const initial = await indicator.textContent();
+  const initial = await gallery.getAttribute("data-active-index");
   await expect(gallery).toHaveAttribute("data-autoplay", "false");
   await page.waitForTimeout(5500);
-  await expect(indicator).toHaveText(initial ?? "");
+  await expect(gallery).toHaveAttribute("data-active-index", initial ?? "");
   await context.close();
 });
 

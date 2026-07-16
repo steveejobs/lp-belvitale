@@ -1,5 +1,18 @@
 # Ledger de requisitos
 
+## Refinamento modular e distribuicao de assets - 15/07/2026
+
+| ID | Requisito | Rota | Dispositivo | Prioridade | Status | Evidencia |
+| --- | --- | --- | --- | --- | --- | --- |
+| RQ-101 | Segunda secao sem repeticao do hero, margens artificiais ou numeracao | `/` | todos | P0 | aprovado | capturas 390/1440 + Playwright |
+| RQ-102 | Cada asset principal possui funcao editorial exclusiva | `/` | todos | P0 | aprovado | manifesto + teste de unicidade |
+| RQ-103 | Kits de 1, 3 e 7 meses com checkouts exatos | `/` | todos | P0 | aprovado no preview | Playwright + auditoria Yampi |
+| RQ-104 | Kit de 3 meses identificado como `Mais vendido` por confirmacao do proprietario | `/` | todos | P1 | aprovado | DOM + screenshot |
+| RQ-105 | Numeracao decorativa removida de imagens, provas e ofertas | `/` | todos | P1 | aprovado | DOM + screenshots |
+| RQ-106 | Tema e motion centralizados e reutilizaveis | `/` | todos | P1 | aprovado | `src/theme/` + reduced motion + Lighthouse |
+| RQ-107 | Ferramenta local de otimizacao de imagem documentada | local | n/a | P2 | concluido | `tools/` |
+| RQ-108 | Memoria operacional para contextos futuros | projeto | n/a | P0 | concluido | `PROJECT_CONTEXT.md` |
+
 ## Reconstrução de campanha — estado corrente
 
 Esta seção substitui os contratos visuais das rodadas históricas abaixo. Os registros anteriores permanecem apenas como histórico técnico.

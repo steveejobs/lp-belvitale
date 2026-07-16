@@ -234,7 +234,7 @@ async function captureHome(width, height) {
 
   await page.addStyleTag({
     content:
-      "html { scroll-behavior: auto !important; } #conteudo-principal > section, .site-footer { content-visibility: visible !important; contain-intrinsic-size: none !important; } .site-header, .choice-sequence__media, .product-story__media, .faq-section__heading { position: relative !important; top: auto !important; } .choice-sequence__story, .product-story__content { margin-top: 0 !important; }",
+      "html { scroll-behavior: auto !important; } #conteudo-principal > section, .site-footer { content-visibility: visible !important; contain-intrinsic-size: none !important; } .bv-reveal { clip-path: none !important; opacity: 1 !important; transform: none !important; transition: none !important; } .site-header, .choice-sequence__media, .product-story__showcase, .faq-section__heading { position: relative !important; top: auto !important; } .choice-sequence__story, .product-story__note { margin-top: 0 !important; }",
   });
   await page.locator("img[loading='lazy']").evaluateAll(async (images) => {
     for (const image of images) image.loading = "eager";

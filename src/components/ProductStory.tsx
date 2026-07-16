@@ -1,163 +1,97 @@
-import { useState, type KeyboardEvent } from "react";
+import { useRef, type CSSProperties, type PointerEvent } from "react";
 import { homeContent } from "../content/homeContent";
 import { campaignAssets, type CampaignAsset } from "../data/campaignAssets";
+import { useReducedMotion } from "../hooks/useReducedMotion";
+import { Reveal } from "./ui/Reveal";
 
-interface ProductScene {
+interface ProductView {
   readonly asset: CampaignAsset;
   readonly label: string;
   readonly note: string;
-  readonly fit: "contain" | "cover";
-  readonly objectPosition: string;
 }
 
-const productScenes: readonly ProductScene[] = [
-  {
-    asset: campaignAssets.productFrontPrimary,
-    label: "Frasco frontal",
-    note: "O CeluClin por inteiro, com produto, tampa e rótulo no mesmo enquadramento.",
-    fit: "contain",
-    objectPosition: "center center",
-  },
-  {
-    asset: campaignAssets.productFrontClose,
-    label: "Rótulo em detalhe",
-    note: "A identidade do CeluClin em enquadramento aproximado.",
-    fit: "contain",
-    objectPosition: "center center",
-  },
+const productViews: readonly ProductView[] = [
   {
     asset: campaignAssets.productAngle,
     label: "Vista em ângulo",
-    note: "Tampa pink, rótulo magenta e cápsulas à vista.",
-    fit: "contain",
-    objectPosition: "center center",
+    note: "Tampa pink, frasco e rótulo no enquadramento original.",
   },
   {
-    asset: campaignAssets.productInHand,
-    label: "Escala real",
-    note: "O frasco na mão, com proporção e presença claras.",
-    fit: "contain",
-    objectPosition: "center center",
-  },
-  {
-    asset: campaignAssets.capsules,
-    label: "Cápsulas",
-    note: "A apresentação visual das cápsulas que compõem a rotina.",
-    fit: "cover",
-    objectPosition: "center center",
-  },
-  {
-    asset: campaignAssets.lifestyleHero,
-    label: "Em cena",
-    note: "O produto em uma composição clara, sem competir com a informação.",
-    fit: "contain",
-    objectPosition: "center center",
+    asset: campaignAssets.productFrontClose,
+    label: "Vista frontal",
+    note: "O CeluClin de frente, sem substituir o produto pela arte plana do rótulo.",
   },
 ];
 
-function Arrow({ direction }: { readonly direction: "left" | "right" }) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20">
-      <path
-        d={direction === "left" ? "M15 5 8 12l7 7" : "m9 5 7 7-7 7"}
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.7"
-      />
-    </svg>
-  );
-}
-
 export function ProductStory() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const showcaseRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
   const product = homeContent.product;
-  const activeScene = productScenes[activeIndex] ?? productScenes[0];
 
-  function select(index: number) {
-    setActiveIndex((index + productScenes.length) % productScenes.length);
+  function moveShowcase(event: PointerEvent<HTMLDivElement>) {
+    if (reducedMotion || event.pointerType !== "mouse") return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+    showcaseRef.current?.style.setProperty("--story-pointer-x", `${String(x * 8)}px`);
+    showcaseRef.current?.style.setProperty("--story-pointer-y", `${String(y * 6)}px`);
   }
 
-  function moveWithKeyboard(event: KeyboardEvent<HTMLButtonElement>, index: number) {
-    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-    event.preventDefault();
-    select(index + (event.key === "ArrowRight" ? 1 : -1));
+  function resetShowcase() {
+    showcaseRef.current?.style.setProperty("--story-pointer-x", "0px");
+    showcaseRef.current?.style.setProperty("--story-pointer-y", "0px");
   }
 
   return (
     <section className="product-story" id="celuclin" aria-labelledby="product-title">
-      <div className="product-story__intro section-shell">
+      <Reveal className="product-story__intro section-shell" effect="slide-left">
         <div>
           <p className="eyebrow">{product.eyebrow}</p>
           <h2 id="product-title">CeluClin, visto por inteiro.</h2>
         </div>
         <p>{product.body}</p>
-      </div>
+      </Reveal>
 
-      <div className="product-story__gallery section-shell">
-        <div className="product-story__media" aria-live="polite">
-          {productScenes.map((scene, index) => (
-            <img
-              key={scene.asset.id}
-              src={scene.asset.src}
-              width={scene.asset.width}
-              height={scene.asset.height}
-              alt={index === activeIndex ? scene.asset.alt : ""}
-              aria-hidden={index !== activeIndex}
-              data-active={index === activeIndex}
-              loading="lazy"
-              decoding="async"
-              style={{
-                objectFit: scene.fit,
-                objectPosition: scene.objectPosition,
-              }}
-            />
-          ))}
-          <div className="product-story__counter" aria-hidden="true">
-            {String(activeIndex + 1).padStart(2, "0")} / {String(productScenes.length).padStart(2, "0")}
-          </div>
-          <div className="product-story__arrows">
-            <button type="button" onClick={() => select(activeIndex - 1)} aria-label="Imagem anterior do produto">
-              <Arrow direction="left" />
-            </button>
-            <button type="button" onClick={() => select(activeIndex + 1)} aria-label="Próxima imagem do produto">
-              <Arrow direction="right" />
-            </button>
-          </div>
-        </div>
-
-        <div className="product-story__details">
-          <div className="product-story__scene-copy" key={activeScene?.asset.id}>
-            <span>Detalhe {String(activeIndex + 1).padStart(2, "0")}</span>
-            <h3>{activeScene?.label}</h3>
-            <p>{activeScene?.note}</p>
-          </div>
-
-          <div className="product-story__thumbs" role="tablist" aria-label="Imagens do CeluClin">
-            {productScenes.map((scene, index) => (
-              <button
-                key={scene.asset.id}
-                type="button"
-                role="tab"
-                aria-selected={index === activeIndex}
-                aria-label={`Ver ${scene.label.toLowerCase()}`}
-                onClick={() => select(index)}
-                onKeyDown={(event) => moveWithKeyboard(event, index)}
-              >
+      <Reveal className="product-story__showcase section-shell" effect="clip" delay={80}>
+        <div
+          className="product-story__views"
+          ref={showcaseRef}
+          onPointerMove={moveShowcase}
+          onPointerLeave={resetShowcase}
+        >
+          {productViews.map((view, index) => (
+            <figure
+              className="product-story__view"
+              key={view.asset.id}
+              style={{ "--story-direction": index === 0 ? 1 : -1 } as CSSProperties}
+            >
+              <div className="product-story__image-frame">
                 <img
-                  src={scene.asset.src}
-                  width={scene.asset.width}
-                  height={scene.asset.height}
-                  alt=""
+                  src={view.asset.src}
+                  width={view.asset.width}
+                  height={view.asset.height}
+                  alt={view.asset.alt}
                   loading="lazy"
                   decoding="async"
                 />
-              </button>
-            ))}
-          </div>
+              </div>
+              <figcaption>
+                <strong>{view.label}</strong>
+                <span>{view.note}</span>
+              </figcaption>
+            </figure>
+          ))}
         </div>
-      </div>
+
+        <aside className="product-story__note" aria-label="Apresentação do produto">
+          <p className="eyebrow">Duas vistas reais</p>
+          <h3>O produto aparece antes de qualquer promessa.</h3>
+          <p>
+            As imagens têm papéis próprios: o hero apresenta o frasco principal; aqui,
+            ângulo e detalhe frontal deixam forma, tampa e identidade fáceis de observar.
+          </p>
+        </aside>
+      </Reveal>
 
       <dl className="product-story__facts section-shell">
         {product.facts.map((fact) => (

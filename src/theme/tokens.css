@@ -1,0 +1,38 @@
+.site {
+  /* Primitive colors sampled from the approved CeluClin photography. */
+  --bv-color-warm-white: #fbf8f5;
+  --bv-color-white: #ffffff;
+  --bv-color-ink: #171216;
+  --bv-color-muted: #6d6469;
+  --bv-color-line: #e7ded9;
+  --bv-color-pink: #e50073;
+  --bv-color-magenta: #a70b58;
+  --bv-color-plum: #25111f;
+  --bv-color-rose: #f3e4e7;
+  --bv-color-capsule: #a91b31;
+
+  /* Semantic aliases retained for the existing component surface. */
+  --bv-paper: var(--bv-color-warm-white);
+  --bv-white: var(--bv-color-white);
+  --bv-ink: var(--bv-color-ink);
+  --bv-muted: var(--bv-color-muted);
+  --bv-line: var(--bv-color-line);
+  --bv-pink: var(--bv-color-pink);
+  --bv-magenta: var(--bv-color-magenta);
+  --bv-plum: var(--bv-color-plum);
+  --bv-rose: var(--bv-color-rose);
+  --bv-capsule: var(--bv-color-capsule);
+
+  --bv-shell: min(100% - 2.5rem, 82rem);
+  --bv-radius-control: 4px;
+  --bv-radius-media: 6px;
+  --bv-radius-round: 999px;
+  --bv-shadow-header: 0 8px 30px rgba(31, 18, 26, 0.05);
+  --bv-shadow-floating: 0 12px 34px rgba(23, 18, 22, 0.14);
+
+  --bv-motion-fast: 180ms;
+  --bv-motion-medium: 320ms;
+  --bv-motion-slow: 620ms;
+  --bv-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --bv-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+}

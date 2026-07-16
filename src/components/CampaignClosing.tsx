@@ -7,7 +7,7 @@ import { commercialNavigationReady } from "../data/commercialPreview";
 
 export function CampaignClosing() {
   const { closing } = homeContent;
-  const media = campaignAssets.lifestyleFreedom;
+  const media = campaignAssets.lifestyleHero;
   const canShowMedia = canRenderCampaignAsset(media);
 
   return (

@@ -1,22 +1,22 @@
 import { homeContent } from "../content/homeContent";
 import { campaignAssets } from "../data/campaignAssets";
+import { Reveal } from "./ui/Reveal";
 
 export function ChoiceSequence() {
   const { emotional } = homeContent;
   const freedom = campaignAssets.lifestyleFreedom;
-  const routine = campaignAssets.lifestyleRoutine;
 
   return (
     <section className="choice-sequence" id="liberdade" aria-labelledby="choice-title">
-      <div className="choice-sequence__heading section-shell">
+      <Reveal className="choice-sequence__heading section-shell" effect="slide-right">
         <p className="eyebrow">{emotional.eyebrow}</p>
         <h2 id="choice-title">
           Não é sobre esconder.
           <em>É sobre voltar a escolher.</em>
         </h2>
-      </div>
+      </Reveal>
 
-      <div className="choice-sequence__composition section-shell">
+      <Reveal className="choice-sequence__composition section-shell" effect="clip" delay={70}>
         <figure className="choice-sequence__media choice-sequence__media--primary">
           <img
             src={freedom.src}
@@ -30,30 +30,22 @@ export function ChoiceSequence() {
         </figure>
 
         <div className="choice-sequence__story">
-          <ol className="choice-sequence__beats">
+          <ul className="choice-sequence__beats">
             {emotional.beats.map((beat) => (
-              <li key={beat.number}>
-                <span>{beat.number}</span>
+              <li key={beat.thought}>
                 <div>
                   <p>{beat.thought}</p>
                   <small>{beat.release}</small>
                 </div>
               </li>
             ))}
-          </ol>
-
-          <figure className="choice-sequence__media choice-sequence__media--secondary">
-            <img
-              src={routine.src}
-              width={routine.width}
-              height={routine.height}
-              alt={routine.alt}
-              loading="lazy"
-              decoding="async"
-            />
-          </figure>
+          </ul>
+          <p className="choice-sequence__aside">
+            Vestir um short, aparecer em uma foto ou olhar no espelho podem voltar a ser
+            escolhas simples.
+          </p>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

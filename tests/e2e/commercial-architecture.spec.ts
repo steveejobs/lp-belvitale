@@ -178,6 +178,11 @@ test("preview validado exibe as três opções sem linguagem interna ou preço i
   await expect(section).toHaveAttribute("data-preview-ready", "true");
   await expect(section.locator("[data-offer-id]")).toHaveCount(3);
   await expect(section.locator('a[href*="belvitale.pay.yampi.com.br"]')).toHaveCount(3);
+  await expect(section.locator('[data-offer-id="three-months"]')).toHaveAttribute(
+    "data-featured",
+    "true",
+  );
+  await expect(section.getByText("Mais vendido", { exact: true })).toHaveCount(1);
   await expect(section).not.toContainText(/gate|fixture|validação|direção interna/i);
   await expect(section).not.toContainText(/R\$|parcelas|economia|desconto/i);
 });

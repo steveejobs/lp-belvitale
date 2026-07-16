@@ -25,7 +25,7 @@
 - Gerenciador: npm, com `package-lock.json` como lockfile.
 - Componentes React em `src/components/`.
 - Dados tipados e centralizados em `src/data/`.
-- Tokens visuais em propriedades customizadas CSS no início de `src/styles.css`.
+- Tokens visuais e motion compartilhado em `src/theme/`; composição específica permanece em `src/home.css`.
 - Assets-fonte preservados; derivados normalizados ficam em `public/`.
 - As nove provas autorizadas entram no artefato `dist/`. A autorização explícita de 15/07/2026 também libera produto, lifestyle e logos fornecidos para a homepage; kits e checkout continuam removidos do build normal.
 - Metadados estáticos incluem apenas fatos confirmados e schema `Organization` mínimo; o canonical depende de `VITE_CANONICAL_URL` válido e não há schema `Product`.

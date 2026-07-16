@@ -99,6 +99,50 @@ test("assets reais cumprem funções distintas e o rótulo só aparece na transp
   expect(labelLocations.every(Boolean)).toBe(true);
   await expect(page.locator('.campaign-hero img[src*="/label/"]')).toHaveCount(0);
   await expect(page.locator('#composicao img[src*="/label/"]')).toHaveCount(0);
+
+  for (const uniqueSource of [
+    "/product/celuclin-front-02.webp",
+    "/product/celuclin-front-01.webp",
+    "/product/celuclin-angle.webp",
+    "/product/celuclin-hand.webp",
+    "/product/celuclin-capsules.webp",
+    "/lifestyle/freedom-01.webp",
+    "/lifestyle/routine-01.webp",
+    "/lifestyle/celuclin-hero.webp",
+  ]) {
+    await expect(page.locator(`img[src="${uniqueSource}"]`)).toHaveCount(1);
+  }
+});
+
+test("imagens editoriais e ofertas não exibem numeração decorativa", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#ofertas").scrollIntoViewIfNeeded();
+  await expect(
+    page.locator(
+      ".campaign-hero__index, .product-story__counter, .product-story__scene-copy > span, .offer-card__heading > span:not(.offer-card__badge)",
+    ),
+  ).toHaveCount(0);
+  await expect(page.locator(".proof-gallery__dots")).toBeVisible();
+  await expect(page.locator(".product-story__views img")).toHaveCount(2);
+});
+
+test("seção de liberdade mantém imagem e texto em fluxo compacto no mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const section = page.locator("#liberdade");
+  await section.scrollIntoViewIfNeeded();
+  const metrics = await section.evaluate((element) => {
+    const story = element.querySelector<HTMLElement>(".choice-sequence__story");
+    const beats = [...element.querySelectorAll<HTMLElement>(".choice-sequence__beats li")];
+    return {
+      sectionHeight: element.getBoundingClientRect().height,
+      storyMarginTop: story === null ? null : getComputedStyle(story).marginTop,
+      beatMinHeights: beats.map((beat) => getComputedStyle(beat).minHeight),
+    };
+  });
+  expect(metrics.sectionHeight).toBeLessThan(1900);
+  expect(metrics.storyMarginTop).toBe("0px");
+  expect(metrics.beatMinHeights).toEqual(["0px", "0px", "0px"]);
 });
 
 test("imagem de rótulo ausente mantém mensagem factual e acesso ao PDF", async ({ page }) => {

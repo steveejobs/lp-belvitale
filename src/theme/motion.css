@@ -1,0 +1,47 @@
+.site .bv-reveal {
+  --bv-reveal-delay: 0ms;
+  transition-delay: var(--bv-reveal-delay);
+  transition-duration: var(--bv-motion-slow);
+  transition-property: clip-path, transform;
+  transition-timing-function: var(--bv-ease-standard);
+}
+
+.site .bv-reveal[data-visible="false"] {
+  transition-duration: var(--bv-motion-medium);
+  transition-timing-function: var(--bv-ease-exit);
+}
+
+.site .bv-reveal[data-effect="clip"] {
+  clip-path: inset(0 0 0 0 round var(--bv-radius-media));
+}
+
+.site .bv-reveal[data-effect="clip"][data-visible="false"] {
+  clip-path: inset(0 0 18% 0 round var(--bv-radius-media));
+  transform: scale(0.985);
+}
+
+.site .bv-reveal[data-effect="slide-left"][data-visible="false"] {
+  transform: translate3d(-2.25rem, 0, 0);
+}
+
+.site .bv-reveal[data-effect="slide-right"][data-visible="false"] {
+  transform: translate3d(2.25rem, 0, 0);
+}
+
+.site .bv-reveal[data-effect="scale"][data-visible="false"] {
+  transform: scale(0.975);
+}
+
+.site .bv-reveal[data-visible="true"] {
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site .bv-reveal,
+  .site .bv-reveal[data-visible="false"],
+  .site .bv-reveal[data-visible="true"] {
+    clip-path: none;
+    transform: none;
+    transition: none;
+  }
+}

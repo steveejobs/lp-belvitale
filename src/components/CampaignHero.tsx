@@ -83,7 +83,6 @@ export function CampaignHero() {
             />
           </picture>
           <span className="campaign-hero__category">CeluClin</span>
-          <span className="campaign-hero__index" aria-hidden="true">Belvitale / 01</span>
         </div>
       </div>
     </section>

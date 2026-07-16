@@ -15,17 +15,14 @@ export const homeContent = {
     title: "A escolha já era sua.",
     beats: [
       {
-        number: "01",
         thought: "O short já estava na mão.",
         release: "Ele pode continuar ali — ou ir com você.",
       },
       {
-        number: "02",
         thought: "A foto podia ter sido só uma foto.",
         release: "Sem procurar primeiro o ângulo que esconde.",
       },
       {
-        number: "03",
         thought: "O espelho não precisava votar.",
         release: "Você pode escolher por vontade, não por negociação.",
       },
