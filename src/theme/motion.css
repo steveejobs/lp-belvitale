@@ -17,7 +17,6 @@
 
 .site .bv-reveal[data-effect="clip"][data-visible="false"] {
   clip-path: inset(0 0 18% 0 round var(--bv-radius-media));
-  transform: scale(0.985);
 }
 
 .site .bv-reveal[data-effect="slide-left"][data-visible="false"] {

@@ -26,7 +26,6 @@ const answersByProfile = {
     "perfect-start",
     "make-it-smaller",
     "direct-to-essential",
-    "notice-last-minute",
     "light-enough-to-return",
   ],
   "gradual-consistency": [
@@ -34,7 +33,6 @@ const answersByProfile = {
     "one-day-break",
     "resume-without-compensating",
     "show-next-days",
-    "note-but-miss",
     "return-without-failure",
   ],
   "conscious-continuity": [
@@ -42,7 +40,6 @@ const answersByProfile = {
     "replacement-late",
     "reorganize-week",
     "support-planning",
-    "next-step-ready",
     "organized-through-change",
   ],
 } as const;
@@ -59,7 +56,7 @@ function toAnswers(optionIds: readonly string[]): QuizAnswer[] {
 
 async function startQuiz(page: Page) {
   await page.goto("/quiz");
-  const button = page.getByRole("button", { name: "Entrar na experiência" });
+  const button = page.getByRole("button", { name: "Começar", exact: true });
   await expect(button).toBeVisible();
   await button.click();
 }
@@ -86,13 +83,13 @@ async function completeQuiz(
   }
 }
 
-test("quiz tem seis ângulos, vinte opções e quatro composições", () => {
-  expect(quizQuestions).toHaveLength(6);
-  expect(quizQuestions.flatMap((question) => question.options)).toHaveLength(20);
+test("quiz tem cinco ângulos, dezesseis opções e quatro composições", () => {
+  expect(quizQuestions).toHaveLength(5);
+  expect(quizQuestions.flatMap((question) => question.options)).toHaveLength(16);
   expect(new Set(quizQuestions.map((question) => question.presentation))).toEqual(
     new Set(["cards", "scale", "split", "sentence"]),
   );
-  expect(new Set(quizQuestions.map((question) => question.id)).size).toBe(6);
+  expect(new Set(quizQuestions.map((question) => question.id)).size).toBe(5);
   for (const question of quizQuestions) {
     expect(question.options.length).toBeGreaterThanOrEqual(3);
     expect(question.title).not.toMatch(/por quanto tempo|quantos potes/i);
@@ -192,7 +189,7 @@ test("início comunica duração, privacidade e ausência de diagnóstico", asyn
 }) => {
   await page.goto("/quiz");
   await expect(
-    page.getByRole("heading", { name: "Onde o seu cuidado encontra ritmo?" }),
+    page.getByRole("heading", { name: "Seu cuidado cabe na vida real?" }),
   ).toBeVisible();
   await expect(page.getByText(/Menos de 2 minutos/)).toBeVisible();
   await expect(page.getByText(/Sem diagnóstico, sem dados pessoais/)).toBeVisible();
@@ -243,7 +240,10 @@ test("fluxo completo cria revelação retomável e não coloca respostas na URL"
   await expect(page.getByText(/não é diagnóstico/i)).toBeVisible();
   await expect(
     page.locator('a[href*="belvitale.pay.yampi.com.br"]'),
-  ).toHaveCount(0);
+  ).toHaveCount(1);
+  await expect(
+    page.getByRole("link", { name: "Ver opção de 30 dias" }),
+  ).toHaveAttribute("href", /PWJOI4I112/);
   await expect(
     page.getByRole("link", { name: "Abrir a composição" }),
   ).toHaveAttribute("href", "/#composicao");
@@ -260,7 +260,7 @@ test("fluxo completo cria revelação retomável e não coloca respostas na URL"
 test("resultado direto inválido não inventa perfil", async ({ page }) => {
   await page.goto("/quiz/resultado");
   await expect(
-    page.getByRole("heading", { name: /Seu ritmo precisa das seis escolhas/ }),
+    page.getByRole("heading", { name: /Seu ritmo precisa das cinco escolhas/ }),
   ).toBeVisible();
   for (const profile of Object.values(quizProfiles)) {
     await expect(

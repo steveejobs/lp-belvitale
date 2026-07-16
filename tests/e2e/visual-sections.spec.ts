@@ -81,7 +81,6 @@ test("assets reais cumprem funções distintas e o rótulo só aparece na transp
   expect(sources).toEqual(
     expect.arrayContaining([
       "/product/celuclin-front-02.webp",
-      "/product/celuclin-front-01.webp",
       "/product/celuclin-angle.webp",
       "/product/celuclin-hand.webp",
       "/product/celuclin-capsules.webp",
@@ -102,7 +101,6 @@ test("assets reais cumprem funções distintas e o rótulo só aparece na transp
 
   for (const uniqueSource of [
     "/product/celuclin-front-02.webp",
-    "/product/celuclin-front-01.webp",
     "/product/celuclin-angle.webp",
     "/product/celuclin-hand.webp",
     "/product/celuclin-capsules.webp",
@@ -112,6 +110,9 @@ test("assets reais cumprem funções distintas e o rótulo só aparece na transp
   ]) {
     await expect(page.locator(`img[src="${uniqueSource}"]`)).toHaveCount(1);
   }
+  await page.getByRole("tab", { name: "De frente" }).click();
+  await expect(page.locator('img[src="/product/celuclin-front-01.webp"]')).toHaveCount(1);
+  await expect(page.locator('img[src="/product/celuclin-angle.webp"]')).toHaveCount(0);
 });
 
 test("imagens editoriais e ofertas não exibem numeração decorativa", async ({ page }) => {
@@ -123,7 +124,8 @@ test("imagens editoriais e ofertas não exibem numeração decorativa", async ({
     ),
   ).toHaveCount(0);
   await expect(page.locator(".proof-gallery__dots")).toBeVisible();
-  await expect(page.locator(".product-story__views img")).toHaveCount(2);
+  await expect(page.locator(".product-story__media img")).toHaveCount(1);
+  await expect(page.locator(".product-story__switch [role='tab']")).toHaveCount(2);
 });
 
 test("seção de liberdade mantém imagem e texto em fluxo compacto no mobile", async ({ page }) => {
@@ -226,13 +228,15 @@ test("reduced motion preserva a campanha e reduz transições a um frame", async
   await context.close();
 });
 
-test("HTML inicial não depende de mídia restrita e preserva conteúdo crítico", async () => {
+test("HTML inicial prioriza apenas marca e produto aprovados", async () => {
   const html = await fs.readFile("index.html", "utf8");
-  expect(html).not.toMatch(/\/product\/|\/proof\/|\/lifestyle\/|\/brand\//);
+  expect(html).toContain("/brand/belvitale-wordmark-dark.webp");
+  expect(html).toContain("/product/celuclin-front-02-hero-mobile.webp");
+  expect(html).not.toMatch(/\/proof\/|\/lifestyle\/|\/label\//);
   expect(html).not.toContain("celuclin-label-front-hero");
   expect(html).not.toContain("example.test");
   expect(html).toContain("A celulite não precisa");
-  expect(html).toContain("Histórias que a pele conta");
+  expect(html).toContain("Escolher meu CeluClin");
   expect(html).toContain("noindex, nofollow");
 });
 

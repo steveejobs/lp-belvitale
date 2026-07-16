@@ -94,11 +94,11 @@ export const ingredientFacts: readonly IngredientFact[] = [
   },
   {
     id: "turmeric",
-    name: "Extrato de cúrcuma",
+    name: "Extrato de Rizoma de Cúrcuma (Curcumina)",
     amount: "130 mg",
     labelName: "Extrato de Rizoma de Cúrcuma (Curcumina)",
-    status: "conflicting",
-    source: "both",
+    status: "confirmed",
+    source: "label",
   },
   {
     id: "chlorella",

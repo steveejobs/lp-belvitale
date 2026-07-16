@@ -17,6 +17,15 @@ artifacts/videos/*
 artifacts/videos/refinement/*
 !artifacts/videos/refinement/gallery-mobile.webm
 !artifacts/videos/refinement/mouse-motion-desktop.webm
+!artifacts/final-v2/
+artifacts/final-v2/*
+!artifacts/final-v2/before/
+!artifacts/final-v2/before/**
+!artifacts/final-v2/after/
+!artifacts/final-v2/after/**
+!artifacts/final-v2/scorecard.md
+!artifacts/final-v2/consumer-test-protocol.md
+!artifacts/final-v2/lighthouse-preview.json
 design-system/
 .preview.*.log
 .vite.*.log

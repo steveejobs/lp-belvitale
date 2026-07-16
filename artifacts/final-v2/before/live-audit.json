@@ -1,0 +1,1134 @@
+[
+  {
+    "viewport": {
+      "name": "390x844",
+      "width": 390,
+      "height": 844
+    },
+    "status": 200,
+    "url": "https://lp-belvitale.vercel.app/",
+    "consoleErrors": [],
+    "failed": [],
+    "responses": [],
+    "dom": {
+      "title": "Belvitale | CeluClin — a escolha continua sua",
+      "robots": "noindex, nofollow",
+      "sections": [
+        {
+          "id": "inicio",
+          "class": "campaign-hero",
+          "height": 857
+        },
+        {
+          "id": "celuclin",
+          "class": "product-story",
+          "height": 1561
+        },
+        {
+          "id": "liberdade",
+          "class": "choice-sequence",
+          "height": 1227
+        },
+        {
+          "id": "",
+          "class": "skin-context",
+          "height": 411
+        },
+        {
+          "id": "composicao",
+          "class": "formula-section",
+          "height": 1678
+        },
+        {
+          "id": "resultados",
+          "class": "proof-stories",
+          "height": 1122
+        },
+        {
+          "id": "rotulo",
+          "class": "label-transparency",
+          "height": 959
+        },
+        {
+          "id": "rotina",
+          "class": "routine-section",
+          "height": 1257
+        },
+        {
+          "id": "faq",
+          "class": "faq-section",
+          "height": 1069
+        },
+        {
+          "id": "belvitale",
+          "class": "campaign-closing",
+          "height": 743
+        }
+      ],
+      "ctas": [
+        {
+          "text": "Resultados",
+          "href": "#resultados",
+          "visible": true,
+          "w": 84,
+          "h": 44
+        },
+        {
+          "text": "Ler o rótulo",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 177,
+          "h": 56
+        },
+        {
+          "text": "Consultar o rótulo original↘",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 186,
+          "h": 44
+        },
+        {
+          "text": "Consultar rótulo original",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 178,
+          "h": 46
+        },
+        {
+          "text": "Ler o rótulo completo",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 191,
+          "h": 50
+        },
+        {
+          "text": "Resultados",
+          "href": "#resultados",
+          "visible": true,
+          "w": 79,
+          "h": 45
+        },
+        {
+          "text": "Rótulo",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 47,
+          "h": 45
+        }
+      ],
+      "offers": {
+        "present": false,
+        "cards": 0
+      },
+      "images": [
+        {
+          "src": "/brand/belvitale-wordmark-dark.webp",
+          "alt": "",
+          "natural": [
+            496,
+            369
+          ],
+          "rendered": [
+            144,
+            107
+          ],
+          "loading": "auto",
+          "top": -24
+        },
+        {
+          "src": "/brand/belvitale-wordmark-dark.webp",
+          "alt": "",
+          "natural": [
+            496,
+            369
+          ],
+          "rendered": [
+            0,
+            0
+          ],
+          "loading": "auto",
+          "top": 0
+        },
+        {
+          "src": "/product/celuclin-front-02-640.avif",
+          "alt": "Frasco CeluClin em vista frontal, sobre fundo claro.",
+          "natural": [
+            640,
+            800
+          ],
+          "rendered": [
+            368,
+            324
+          ],
+          "loading": "auto",
+          "top": 502
+        },
+        {
+          "src": "/product/celuclin-angle.webp",
+          "alt": "Frasco CeluClin em ângulo, iluminado sobre fundo ameixa.",
+          "natural": [
+            1122,
+            1402
+          ],
+          "rendered": [
+            301,
+            376
+          ],
+          "loading": "lazy",
+          "top": 1204
+        },
+        {
+          "src": "/product/celuclin-front-01.webp",
+          "alt": "Frasco CeluClin em enquadramento frontal aproximado.",
+          "natural": [
+            1122,
+            1402
+          ],
+          "rendered": [
+            301,
+            376
+          ],
+          "loading": "lazy",
+          "top": 1204
+        },
+        {
+          "src": "/lifestyle/freedom-01.webp",
+          "alt": "Cena editorial de uma mulher adulta junto a uma janela iluminada.",
+          "natural": [
+            1122,
+            1402
+          ],
+          "rendered": [
+            361,
+            451
+          ],
+          "loading": "lazy",
+          "top": 2728
+        },
+        {
+          "src": "/product/celuclin-capsules.webp",
+          "alt": "Cápsulas avermelhadas sobre uma superfície mineral clara.",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            366,
+            458
+          ],
+          "loading": "lazy",
+          "top": 4467
+        },
+        {
+          "src": "/proof/cellulite/cellulite-01.webp",
+          "alt": "Montagem fotográfica em duas partes com enquadramento de glúteos e coxas.",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            357,
+            268
+          ],
+          "loading": "lazy",
+          "top": 6229
+        },
+        {
+          "src": "/proof/cellulite/cellulite-02.webp",
+          "alt": "",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            357,
+            268
+          ],
+          "loading": "lazy",
+          "top": 6229
+        },
+        {
+          "src": "/proof/cellulite/cellulite-04.webp",
+          "alt": "",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            357,
+            268
+          ],
+          "loading": "lazy",
+          "top": 6229
+        },
+        {
+          "src": "/brand/belvitale-monogram-light.webp",
+          "alt": "",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            0,
+            0
+          ],
+          "loading": "lazy",
+          "top": 0
+        },
+        {
+          "src": "/label/celuclin-label-front.webp",
+          "alt": "Arte plana completa do rótulo do suplemento alimentar CeluClin",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            351,
+            236
+          ],
+          "loading": "lazy",
+          "top": 7350
+        },
+        {
+          "src": "/label/celuclin-label-front.webp",
+          "alt": "Arte plana completa do rótulo do suplemento alimentar CeluClin",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            0,
+            0
+          ],
+          "loading": "lazy",
+          "top": 0
+        },
+        {
+          "src": "/lifestyle/routine-01.webp",
+          "alt": "Cena editorial de uma mulher servindo água em um copo.",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            175,
+            219
+          ],
+          "loading": "lazy",
+          "top": 7884
+        },
+        {
+          "src": "/product/celuclin-hand.webp",
+          "alt": "Mão segurando um frasco CeluClin em ambiente iluminado.",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            175,
+            219
+          ],
+          "loading": "lazy",
+          "top": 7884
+        },
+        {
+          "src": "/lifestyle/celuclin-hero.webp",
+          "alt": "",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            390,
+            743
+          ],
+          "loading": "lazy",
+          "top": 10141
+        },
+        {
+          "src": "/brand/belvitale-wordmark-light.webp",
+          "alt": "Belvitale",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            160,
+            40
+          ],
+          "loading": "lazy",
+          "top": 10956
+        }
+      ],
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "scrollWidth": 390,
+        "scrollHeight": 11980
+      },
+      "nav": {
+        "domContentLoaded": 927,
+        "load": 1173,
+        "transferSize": 3172,
+        "encodedBodySize": 2872
+      }
+    }
+  },
+  {
+    "viewport": {
+      "name": "430x932",
+      "width": 430,
+      "height": 932
+    },
+    "status": 200,
+    "url": "https://lp-belvitale.vercel.app/",
+    "consoleErrors": [],
+    "failed": [],
+    "responses": [],
+    "dom": {
+      "title": "Belvitale | CeluClin — a escolha continua sua",
+      "robots": "noindex, nofollow",
+      "sections": [
+        {
+          "id": "inicio",
+          "class": "campaign-hero",
+          "height": 932
+        },
+        {
+          "id": "celuclin",
+          "class": "product-story",
+          "height": 1559
+        },
+        {
+          "id": "liberdade",
+          "class": "choice-sequence",
+          "height": 1294
+        },
+        {
+          "id": "",
+          "class": "skin-context",
+          "height": 411
+        },
+        {
+          "id": "composicao",
+          "class": "formula-section",
+          "height": 1796
+        },
+        {
+          "id": "resultados",
+          "class": "proof-stories",
+          "height": 1150
+        },
+        {
+          "id": "rotulo",
+          "class": "label-transparency",
+          "height": 989
+        },
+        {
+          "id": "rotina",
+          "class": "routine-section",
+          "height": 1295
+        },
+        {
+          "id": "faq",
+          "class": "faq-section",
+          "height": 1069
+        },
+        {
+          "id": "belvitale",
+          "class": "campaign-closing",
+          "height": 820
+        }
+      ],
+      "ctas": [
+        {
+          "text": "Resultados",
+          "href": "#resultados",
+          "visible": true,
+          "w": 84,
+          "h": 44
+        },
+        {
+          "text": "Ler o rótulo",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 197,
+          "h": 56
+        },
+        {
+          "text": "Consultar o rótulo original↘",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 186,
+          "h": 44
+        },
+        {
+          "text": "Consultar rótulo original",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 178,
+          "h": 46
+        },
+        {
+          "text": "Ler o rótulo completo",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 191,
+          "h": 50
+        },
+        {
+          "text": "Resultados",
+          "href": "#resultados",
+          "visible": true,
+          "w": 79,
+          "h": 45
+        },
+        {
+          "text": "Rótulo",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 47,
+          "h": 45
+        }
+      ],
+      "offers": {
+        "present": false,
+        "cards": 0
+      },
+      "images": [
+        {
+          "src": "/brand/belvitale-wordmark-dark.webp",
+          "alt": "",
+          "natural": [
+            496,
+            369
+          ],
+          "rendered": [
+            144,
+            107
+          ],
+          "loading": "auto",
+          "top": -24
+        },
+        {
+          "src": "/brand/belvitale-wordmark-dark.webp",
+          "alt": "",
+          "natural": [
+            496,
+            369
+          ],
+          "rendered": [
+            0,
+            0
+          ],
+          "loading": "auto",
+          "top": 0
+        },
+        {
+          "src": "/product/celuclin-front-02-640.avif",
+          "alt": "Frasco CeluClin em vista frontal, sobre fundo claro.",
+          "natural": [
+            640,
+            800
+          ],
+          "rendered": [
+            408,
+            359
+          ],
+          "loading": "auto",
+          "top": 516
+        },
+        {
+          "src": "/product/celuclin-angle.webp",
+          "alt": "Frasco CeluClin em ângulo, iluminado sobre fundo ameixa.",
+          "natural": [
+            1122,
+            1402
+          ],
+          "rendered": [
+            334,
+            417
+          ],
+          "loading": "lazy",
+          "top": 1262
+        },
+        {
+          "src": "/product/celuclin-front-01.webp",
+          "alt": "Frasco CeluClin em enquadramento frontal aproximado.",
+          "natural": [
+            1122,
+            1402
+          ],
+          "rendered": [
+            334,
+            417
+          ],
+          "loading": "lazy",
+          "top": 1262
+        },
+        {
+          "src": "/lifestyle/freedom-01.webp",
+          "alt": "Cena editorial de uma mulher adulta junto a uma janela iluminada.",
+          "natural": [
+            1122,
+            1402
+          ],
+          "rendered": [
+            400,
+            500
+          ],
+          "loading": "lazy",
+          "top": 2819
+        },
+        {
+          "src": "/product/celuclin-capsules.webp",
+          "alt": "Cápsulas avermelhadas sobre uma superfície mineral clara.",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            406,
+            508
+          ],
+          "loading": "lazy",
+          "top": 4624
+        },
+        {
+          "src": "/proof/cellulite/cellulite-01.webp",
+          "alt": "Montagem fotográfica em duas partes com enquadramento de glúteos e coxas.",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            396,
+            297
+          ],
+          "loading": "lazy",
+          "top": 6504
+        },
+        {
+          "src": "/proof/cellulite/cellulite-02.webp",
+          "alt": "",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            396,
+            297
+          ],
+          "loading": "lazy",
+          "top": 6504
+        },
+        {
+          "src": "/proof/cellulite/cellulite-04.webp",
+          "alt": "",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            396,
+            297
+          ],
+          "loading": "lazy",
+          "top": 6504
+        },
+        {
+          "src": "/brand/belvitale-monogram-light.webp",
+          "alt": "",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            0,
+            0
+          ],
+          "loading": "lazy",
+          "top": 0
+        },
+        {
+          "src": "/label/celuclin-label-front.webp",
+          "alt": "Arte plana completa do rótulo do suplemento alimentar CeluClin",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            386,
+            250
+          ],
+          "loading": "lazy",
+          "top": 7652
+        },
+        {
+          "src": "/label/celuclin-label-front.webp",
+          "alt": "Arte plana completa do rótulo do suplemento alimentar CeluClin",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            0,
+            0
+          ],
+          "loading": "lazy",
+          "top": 0
+        },
+        {
+          "src": "/lifestyle/routine-01.webp",
+          "alt": "Cena editorial de uma mulher servindo água em um copo.",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            195,
+            244
+          ],
+          "loading": "lazy",
+          "top": 8198
+        },
+        {
+          "src": "/product/celuclin-hand.webp",
+          "alt": "Mão segurando um frasco CeluClin em ambiente iluminado.",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            195,
+            244
+          ],
+          "loading": "lazy",
+          "top": 8198
+        },
+        {
+          "src": "/lifestyle/celuclin-hero.webp",
+          "alt": "",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            430,
+            820
+          ],
+          "loading": "lazy",
+          "top": 10494
+        },
+        {
+          "src": "/brand/belvitale-wordmark-light.webp",
+          "alt": "Belvitale",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            160,
+            40
+          ],
+          "loading": "lazy",
+          "top": 11386
+        }
+      ],
+      "viewport": {
+        "width": 430,
+        "height": 932,
+        "scrollWidth": 430,
+        "scrollHeight": 12410
+      },
+      "nav": {
+        "domContentLoaded": 364,
+        "load": 410,
+        "transferSize": 3172,
+        "encodedBodySize": 2872
+      }
+    }
+  },
+  {
+    "viewport": {
+      "name": "1440x900",
+      "width": 1440,
+      "height": 900
+    },
+    "status": 200,
+    "url": "https://lp-belvitale.vercel.app/",
+    "consoleErrors": [],
+    "failed": [],
+    "responses": [],
+    "dom": {
+      "title": "Belvitale | CeluClin — a escolha continua sua",
+      "robots": "noindex, nofollow",
+      "sections": [
+        {
+          "id": "inicio",
+          "class": "campaign-hero",
+          "height": 988
+        },
+        {
+          "id": "celuclin",
+          "class": "product-story",
+          "height": 1338
+        },
+        {
+          "id": "liberdade",
+          "class": "choice-sequence",
+          "height": 1436
+        },
+        {
+          "id": "",
+          "class": "skin-context",
+          "height": 305
+        },
+        {
+          "id": "composicao",
+          "class": "formula-section",
+          "height": 1090
+        },
+        {
+          "id": "resultados",
+          "class": "proof-stories",
+          "height": 1369
+        },
+        {
+          "id": "rotulo",
+          "class": "label-transparency",
+          "height": 1060
+        },
+        {
+          "id": "rotina",
+          "class": "routine-section",
+          "height": 1442
+        },
+        {
+          "id": "faq",
+          "class": "faq-section",
+          "height": 801
+        },
+        {
+          "id": "belvitale",
+          "class": "campaign-closing",
+          "height": 900
+        }
+      ],
+      "ctas": [
+        {
+          "text": "Resultados",
+          "href": "#resultados",
+          "visible": true,
+          "w": 69,
+          "h": 44
+        },
+        {
+          "text": "Ver o rótulo",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 105,
+          "h": 44
+        },
+        {
+          "text": "Ler o rótulo",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 123,
+          "h": 50
+        },
+        {
+          "text": "Consultar o rótulo original↘",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 186,
+          "h": 44
+        },
+        {
+          "text": "Consultar rótulo original",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 178,
+          "h": 46
+        },
+        {
+          "text": "Ler o rótulo completo",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 191,
+          "h": 50
+        },
+        {
+          "text": "Resultados",
+          "href": "#resultados",
+          "visible": true,
+          "w": 79,
+          "h": 45
+        },
+        {
+          "text": "Rótulo",
+          "href": "#rotulo",
+          "visible": true,
+          "w": 47,
+          "h": 45
+        }
+      ],
+      "offers": {
+        "present": false,
+        "cards": 0
+      },
+      "images": [
+        {
+          "src": "/brand/belvitale-wordmark-dark.webp",
+          "alt": "",
+          "natural": [
+            496,
+            369
+          ],
+          "rendered": [
+            144,
+            107
+          ],
+          "loading": "auto",
+          "top": -20
+        },
+        {
+          "src": "/brand/belvitale-wordmark-dark.webp",
+          "alt": "",
+          "natural": [
+            496,
+            369
+          ],
+          "rendered": [
+            0,
+            0
+          ],
+          "loading": "auto",
+          "top": 0
+        },
+        {
+          "src": "/product/celuclin-front-02.webp",
+          "alt": "Frasco CeluClin em vista frontal, sobre fundo claro.",
+          "natural": [
+            1122,
+            1402
+          ],
+          "rendered": [
+            674,
+            805
+          ],
+          "loading": "auto",
+          "top": 90
+        },
+        {
+          "src": "/product/celuclin-angle.webp",
+          "alt": "Frasco CeluClin em ângulo, iluminado sobre fundo ameixa.",
+          "natural": [
+            1122,
+            1402
+          ],
+          "rendered": [
+            476,
+            595
+          ],
+          "loading": "lazy",
+          "top": 1227
+        },
+        {
+          "src": "/product/celuclin-front-01.webp",
+          "alt": "Frasco CeluClin em enquadramento frontal aproximado.",
+          "natural": [
+            1122,
+            1402
+          ],
+          "rendered": [
+            476,
+            595
+          ],
+          "loading": "lazy",
+          "top": 1227
+        },
+        {
+          "src": "/lifestyle/freedom-01.webp",
+          "alt": "Cena editorial de uma mulher adulta junto a uma janela iluminada.",
+          "natural": [
+            1122,
+            1402
+          ],
+          "rendered": [
+            793,
+            991
+          ],
+          "loading": "lazy",
+          "top": 2655
+        },
+        {
+          "src": "/product/celuclin-capsules.webp",
+          "alt": "Cápsulas avermelhadas sobre uma superfície mineral clara.",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            465,
+            582
+          ],
+          "loading": "lazy",
+          "top": 4399
+        },
+        {
+          "src": "/proof/cellulite/cellulite-01.webp",
+          "alt": "Montagem fotográfica em duas partes com enquadramento de glúteos e coxas.",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            1279,
+            608
+          ],
+          "loading": "lazy",
+          "top": 5580
+        },
+        {
+          "src": "/proof/cellulite/cellulite-02.webp",
+          "alt": "",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            1279,
+            608
+          ],
+          "loading": "lazy",
+          "top": 5580
+        },
+        {
+          "src": "/proof/cellulite/cellulite-04.webp",
+          "alt": "",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            1279,
+            608
+          ],
+          "loading": "lazy",
+          "top": 5580
+        },
+        {
+          "src": "/brand/belvitale-monogram-light.webp",
+          "alt": "",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            72,
+            72
+          ],
+          "loading": "lazy",
+          "top": 6690
+        },
+        {
+          "src": "/label/celuclin-label-front.webp",
+          "alt": "Arte plana completa do rótulo do suplemento alimentar CeluClin",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            735,
+            473
+          ],
+          "loading": "lazy",
+          "top": 6951
+        },
+        {
+          "src": "/label/celuclin-label-front.webp",
+          "alt": "Arte plana completa do rótulo do suplemento alimentar CeluClin",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            0,
+            0
+          ],
+          "loading": "lazy",
+          "top": 0
+        },
+        {
+          "src": "/lifestyle/routine-01.webp",
+          "alt": "Cena editorial de uma mulher servindo água em um copo.",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            875,
+            480
+          ],
+          "loading": "lazy",
+          "top": 7693
+        },
+        {
+          "src": "/product/celuclin-hand.webp",
+          "alt": "Mão segurando um frasco CeluClin em ambiente iluminado.",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            421,
+            480
+          ],
+          "loading": "lazy",
+          "top": 7693
+        },
+        {
+          "src": "/lifestyle/celuclin-hero.webp",
+          "alt": "",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            1440,
+            900
+          ],
+          "loading": "lazy",
+          "top": 9829
+        },
+        {
+          "src": "/brand/belvitale-wordmark-light.webp",
+          "alt": "Belvitale",
+          "natural": [
+            0,
+            0
+          ],
+          "rendered": [
+            160,
+            40
+          ],
+          "loading": "lazy",
+          "top": 10801
+        }
+      ],
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 11825
+      },
+      "nav": {
+        "domContentLoaded": 218,
+        "load": 268,
+        "transferSize": 3172,
+        "encodedBodySize": 2872
+      }
+    }
+  }
+]

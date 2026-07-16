@@ -52,11 +52,7 @@ export function FaqSection() {
           <p className="institutional-eyebrow">Dúvidas</p>
           <h2 id="faq-title">Dúvidas comuns, respostas sem rodeios.</h2>
           <p>
-            As respostas abaixo usam apenas informações confirmadas na embalagem
-            e na documentação disponível.
-          </p>
-          <p className="faq-section__policy">
-            Você pode abrir mais de uma resposta ao mesmo tempo.
+            O essencial para entender o uso, observar o rótulo e concluir a compra.
           </p>
         </div>
 

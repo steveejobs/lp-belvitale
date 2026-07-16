@@ -5,7 +5,7 @@ Os originais permanecem em `galeria belvitale/`. A interface usa somente derivad
 | Funcao | Arquivos publicados |
 | --- | --- |
 | Marca | `brand/belvitale-wordmark-dark.webp`, `brand/belvitale-wordmark-light.webp`, `brand/belvitale-monogram-light.webp` |
-| Hero | `product/celuclin-front-02.webp` e variantes mobile |
+| Hero | `product/celuclin-front-02.webp`, `product/celuclin-front-02-hero-mobile.webp` |
 | Produto | `product/celuclin-angle.webp`, `product/celuclin-front-01.webp` |
 | Formula | `product/celuclin-capsules.webp` |
 | Liberdade | `lifestyle/freedom-01.webp` |

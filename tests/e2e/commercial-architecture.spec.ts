@@ -182,7 +182,7 @@ test("preview validado exibe as três opções sem linguagem interna ou preço i
     "data-featured",
     "true",
   );
-  await expect(section.getByText("Mais vendido", { exact: true })).toHaveCount(1);
+  await expect(section.getByText("Mais vendido", { exact: true })).toHaveCount(0);
   await expect(section).not.toContainText(/gate|fixture|validação|direção interna/i);
   await expect(section).not.toContainText(/R\$|parcelas|economia|desconto/i);
 });
@@ -285,7 +285,7 @@ test("CTA fixo mobile surge após o hero e some ao chegar nas ofertas", async ({
   await page.goto("/");
   const sticky = page.locator(".mobile-offer-cta");
   await expect(sticky).toHaveAttribute("data-visible", "false");
-  await page.locator("#celuclin").scrollIntoViewIfNeeded();
+  await page.evaluate(() => scrollTo({ top: 950, behavior: "instant" }));
   await expect(sticky).toHaveAttribute("data-visible", "true");
   const box = await sticky.boundingBox();
   expect(box?.height).toBeGreaterThanOrEqual(48);

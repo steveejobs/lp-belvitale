@@ -12,13 +12,13 @@ test("duração e fórmula usam somente fatos confirmados", () => {
   expect(calculateBottleDuration(60, 2)).toBe(30);
   expect(calculateBottleDuration(61, 2)).toBeNull();
   expect(calculateBottleDuration(60, 0)).toBeNull();
-  expect(formulaPublicationState).toBe("partial");
-  expect(getPublishableIngredients(ingredientFacts)).toHaveLength(7);
+  expect(formulaPublicationState).toBe("confirmed");
+  expect(getPublishableIngredients(ingredientFacts)).toHaveLength(8);
   expect(
     getPublishableIngredients(ingredientFacts).some(
       (ingredient) => ingredient.id === "turmeric",
     ),
-  ).toBe(false);
+  ).toBe(true);
   expect(usageFact).toMatchObject({
     totalCapsules: 60,
     capsulesPerDay: 2,
@@ -26,14 +26,14 @@ test("duração e fórmula usam somente fatos confirmados", () => {
   });
 });
 
-test("fórmula é uma exploração por toque e teclado, não sete cards", async ({
+test("fórmula é uma exploração por toque e teclado, não uma grade de cards", async ({
   page,
 }) => {
   await page.goto("/");
   const formula = page.locator("#composicao");
   await formula.scrollIntoViewIfNeeded();
   const tabs = formula.getByRole("tab");
-  await expect(tabs).toHaveCount(7);
+  await expect(tabs).toHaveCount(8);
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
   await tabs.nth(3).click();
   await expect(tabs.nth(3)).toHaveAttribute("aria-selected", "true");
@@ -44,14 +44,13 @@ test("fórmula é uma exploração por toque e teclado, não sete cards", async 
   await expect(formula.getByRole("tabpanel")).toContainText("11 mg");
 });
 
-test("conflito de cúrcuma e benefícios não são publicados", async ({ page }) => {
+test("cúrcuma usa a nomenclatura oficial e benefícios não são inventados", async ({ page }) => {
   await page.goto("/");
   const formula = page.locator("#composicao");
-  await expect(formula).toHaveAttribute("data-publication-state", "partial");
-  await expect(formula).toContainText(/consultar todos os itens e avisos/i);
+  await expect(formula).toHaveAttribute("data-publication-state", "confirmed");
+  await expect(formula).toContainText(/Quantidade por porção · rótulo oficial/i);
   await expect(formula).not.toContainText(/validação|divergir entre as fontes/i);
-  await expect(formula).not.toContainText("Extrato de cúrcuma");
-  await expect(formula).not.toContainText("Curcumina");
+  await expect(formula).toContainText("Extrato de Rizoma de Cúrcuma (Curcumina)");
   await expect(formula).not.toContainText(/imun|colágeno|antioxidante|benefício/i);
 });
 
@@ -112,7 +111,7 @@ test("âncora da fórmula leva ao rótulo e transfere foco ao título", async ({
 test("HTML inicial contém os fatos críticos sem oferta ou claim", async () => {
   const html = await fs.readFile("index.html", "utf8");
   expect(html).toContain("A celulite não precisa");
-  expect(html).toContain("Fibra da casca da maçã");
+  expect(html).toContain("Escolher meu CeluClin");
   expect(html).toContain("60 cápsulas · 2 ao dia · 30 dias");
   expect(html).toContain("noindex, nofollow");
   expect(html).not.toMatch(/R\$|checkout|Yampi|cura|elimina/i);

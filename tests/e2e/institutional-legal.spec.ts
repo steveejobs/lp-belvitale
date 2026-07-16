@@ -27,7 +27,7 @@ test("identidade confirmada e gates pendentes permanecem separados", () => {
 
 test("FAQ publica oito fatos e mantém assuntos bloqueados fora", () => {
   expect(publishedFaqFacts).toHaveLength(8);
-  expect(faqFacts.filter((fact) => fact.status === "blocked")).toHaveLength(3);
+  expect(faqFacts.filter((fact) => fact.status === "blocked")).toHaveLength(0);
   expect(publishedFaqFacts.every((fact) => fact.status === "confirmed")).toBe(true);
 });
 
@@ -86,7 +86,7 @@ test("home reduz culpa e encerra com liberdade sem inventar história", async ({
   await page.goto("/");
   await expect(
     page.getByRole("heading", {
-      name: "Celulite não mede peso, disciplina ou cuidado.",
+      name: "Celulite não mede disciplina, cuidado ou valor.",
     }),
   ).toBeVisible();
   await expect(page.locator(".skin-context")).toContainText(

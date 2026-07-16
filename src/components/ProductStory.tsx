@@ -1,110 +1,122 @@
-import { useRef, type CSSProperties, type PointerEvent } from "react";
+import { useRef, useState, type PointerEvent } from "react";
 import { homeContent } from "../content/homeContent";
 import { campaignAssets, type CampaignAsset } from "../data/campaignAssets";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 import { Reveal } from "./ui/Reveal";
 
 interface ProductView {
+  readonly id: "angle" | "front";
   readonly asset: CampaignAsset;
   readonly label: string;
   readonly note: string;
+  readonly responsiveSrc: string;
 }
 
-const productViews: readonly ProductView[] = [
+const productViews = [
   {
+    id: "angle",
     asset: campaignAssets.productAngle,
-    label: "Vista em ângulo",
-    note: "Tampa pink, frasco e rótulo no enquadramento original.",
+    label: "Em ângulo",
+    note: "Tampa pink, frasco vinho e cápsulas visíveis na base.",
+    responsiveSrc: "/product/celuclin-angle-768.webp",
   },
   {
+    id: "front",
     asset: campaignAssets.productFrontClose,
-    label: "Vista frontal",
-    note: "O CeluClin de frente, sem substituir o produto pela arte plana do rótulo.",
+    label: "De frente",
+    note: "Nome, categoria e quantidade fáceis de observar.",
+    responsiveSrc: "/product/celuclin-front-01-768.webp",
   },
-];
+] as const satisfies readonly ProductView[];
 
 export function ProductStory() {
-  const showcaseRef = useRef<HTMLDivElement>(null);
+  const [activeId, setActiveId] = useState<ProductView["id"]>("angle");
+  const mediaRef = useRef<HTMLElement>(null);
   const reducedMotion = useReducedMotion();
   const product = homeContent.product;
+  const activeView =
+    productViews.find((view) => view.id === activeId) ?? productViews[0];
 
-  function moveShowcase(event: PointerEvent<HTMLDivElement>) {
+  function moveProduct(event: PointerEvent<HTMLElement>) {
     if (reducedMotion || event.pointerType !== "mouse") return;
     const bounds = event.currentTarget.getBoundingClientRect();
     const x = (event.clientX - bounds.left) / bounds.width - 0.5;
     const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-    showcaseRef.current?.style.setProperty("--story-pointer-x", `${String(x * 8)}px`);
-    showcaseRef.current?.style.setProperty("--story-pointer-y", `${String(y * 6)}px`);
+    mediaRef.current?.style.setProperty("--story-pointer-x", `${String(x * 7)}px`);
+    mediaRef.current?.style.setProperty("--story-pointer-y", `${String(y * 5)}px`);
   }
 
-  function resetShowcase() {
-    showcaseRef.current?.style.setProperty("--story-pointer-x", "0px");
-    showcaseRef.current?.style.setProperty("--story-pointer-y", "0px");
+  function resetProduct() {
+    mediaRef.current?.style.setProperty("--story-pointer-x", "0px");
+    mediaRef.current?.style.setProperty("--story-pointer-y", "0px");
   }
 
   return (
     <section className="product-story" id="celuclin" aria-labelledby="product-title">
       <Reveal className="product-story__intro section-shell" effect="slide-left">
-        <div>
-          <p className="eyebrow">{product.eyebrow}</p>
-          <h2 id="product-title">CeluClin, visto por inteiro.</h2>
-        </div>
+        <p className="eyebrow">{product.eyebrow}</p>
+        <h2 id="product-title">{product.title}</h2>
         <p>{product.body}</p>
       </Reveal>
 
-      <Reveal className="product-story__showcase section-shell" effect="clip" delay={80}>
-        <div
-          className="product-story__views"
-          ref={showcaseRef}
-          onPointerMove={moveShowcase}
-          onPointerLeave={resetShowcase}
-        >
-          {productViews.map((view, index) => (
-            <figure
-              className="product-story__view"
-              key={view.asset.id}
-              style={{ "--story-direction": index === 0 ? 1 : -1 } as CSSProperties}
-            >
-              <div className="product-story__image-frame">
-                <img
-                  src={view.asset.src}
-                  width={view.asset.width}
-                  height={view.asset.height}
-                  alt={view.asset.alt}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <figcaption>
-                <strong>{view.label}</strong>
-                <span>{view.note}</span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
+      <div className="product-story__experience section-shell">
+        <Reveal className="product-story__media" effect="clip" delay={60}>
+          <figure
+            id="product-view-panel"
+            ref={mediaRef}
+            data-view={activeView.id}
+            onPointerMove={moveProduct}
+            onPointerLeave={resetProduct}
+          >
+            <img
+              key={activeView.id}
+              src={activeView.asset.src}
+              srcSet={`${activeView.responsiveSrc} 768w, ${activeView.asset.src} 1122w`}
+              sizes="(min-width: 56rem) 52vw, calc(100vw - 2rem)"
+              width={activeView.asset.width}
+              height={activeView.asset.height}
+              alt={activeView.asset.alt}
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>
+              <strong>{activeView.label}</strong>
+              <span>{activeView.note}</span>
+            </figcaption>
+          </figure>
+        </Reveal>
 
-        <aside className="product-story__note" aria-label="Apresentação do produto">
-          <p className="eyebrow">Duas vistas reais</p>
-          <h3>O produto aparece antes de qualquer promessa.</h3>
-          <p>
-            As imagens têm papéis próprios: o hero apresenta o frasco principal; aqui,
-            ângulo e detalhe frontal deixam forma, tampa e identidade fáceis de observar.
-          </p>
-        </aside>
-      </Reveal>
-
-      <dl className="product-story__facts section-shell">
-        {product.facts.map((fact) => (
-          <div key={fact.value}>
-            <dd>{fact.value}</dd>
-            <dt>{fact.label}</dt>
+        <div className="product-story__details">
+          <div className="product-story__switch" role="tablist" aria-label="Ângulos do produto">
+            {productViews.map((view) => (
+              <button
+                key={view.id}
+                type="button"
+                role="tab"
+                aria-selected={activeView.id === view.id}
+                aria-controls="product-view-panel"
+                onClick={() => setActiveId(view.id)}
+              >
+                {view.label}
+              </button>
+            ))}
           </div>
-        ))}
-        <div className="product-story__fact-note">
-          <dd>Suplemento alimentar</dd>
-          <dt>Não é medicamento.</dt>
+
+          <dl className="product-story__facts">
+            {product.facts.map((fact) => (
+              <div key={fact.value}>
+                <dd>{fact.value}</dd>
+                <dt>{fact.label}</dt>
+              </div>
+            ))}
+          </dl>
+
+          <p className="product-story__category">
+            <strong>Suplemento alimentar em cápsulas.</strong>
+            <span>Não é medicamento.</span>
+          </p>
         </div>
-      </dl>
+      </div>
     </section>
   );
 }

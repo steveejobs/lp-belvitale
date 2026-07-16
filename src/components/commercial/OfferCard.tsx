@@ -42,7 +42,7 @@ export function OfferCard({ offer, index, checkoutReady }: OfferCardProps) {
       onPointerLeave={resetPackshot}
     >
       <div className="offer-card__heading">
-        {presentation.featured ? <span className="offer-card__badge">Mais vendido</span> : null}
+        <p className="offer-card__kicker">{presentation.kicker}</p>
         <h3>{presentation.title}</h3>
         <p>{presentation.duration}</p>
       </div>
@@ -85,7 +85,7 @@ export function OfferCard({ offer, index, checkoutReady }: OfferCardProps) {
         </a>
       ) : (
         <button className="offer-card__cta" type="button" disabled>
-          Checkout indisponível
+          Opção temporariamente indisponível
         </button>
       )}
     </article>

@@ -136,35 +136,6 @@ export const quizQuestions: readonly QuizQuestion[] = [
     ],
   },
   {
-    id: "replacement-pattern",
-    eyebrow: "Continuidade",
-    title: "Quando algo da rotina está perto de acabar, o que costuma acontecer?",
-    hint: "Pense no seu cotidiano, não apenas em suplementos.",
-    presentation: "scale",
-    options: [
-      {
-        id: "notice-last-minute",
-        label: "Eu percebo no último momento.",
-        profileWeights: weights(2, 1, 0),
-      },
-      {
-        id: "note-but-miss",
-        label: "Eu anoto, mas às vezes passa.",
-        profileWeights: weights(1, 3, 1),
-      },
-      {
-        id: "next-step-ready",
-        label: "Eu já deixo a próxima etapa encaminhada.",
-        profileWeights: weights(0, 1, 3),
-      },
-      {
-        id: "depends-on-week",
-        label: "Depende totalmente da semana.",
-        profileWeights: weights(2, 2, 1),
-      },
-    ],
-  },
-  {
     id: "realistic-commitment",
     eyebrow: "O que permanece",
     title: "Uma rotina possível para mim é aquela que…",

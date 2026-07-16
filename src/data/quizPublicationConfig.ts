@@ -4,16 +4,22 @@ import {
 } from "./quizPublication";
 import { regulatoryPublicationReady } from "./regulatoryFacts";
 
+const quizEnvironment = import.meta.env as ImportMetaEnv | undefined;
+
 export const quizPublicationApproved =
-  import.meta.env.VITE_QUIZ_PUBLICATION_STATUS === "approved" &&
+  quizEnvironment?.VITE_QUIZ_PUBLICATION_STATUS === "approved" &&
   regulatoryPublicationReady;
+
+export const quizPreviewEnabled =
+  quizEnvironment?.DEV === true ||
+  quizEnvironment?.VITE_QUIZ_PREVIEW === "enabled";
 
 export const quizPublicationStatus: QuizPublicationStatus =
   regulatoryPublicationReady
     ? resolveQuizPublicationStatus(
-        import.meta.env.VITE_QUIZ_PUBLICATION_STATUS,
-        import.meta.env.DEV,
+        quizEnvironment?.VITE_QUIZ_PUBLICATION_STATUS,
+        quizEnvironment?.DEV === true,
       )
-    : import.meta.env.DEV
+    : quizPreviewEnabled
       ? "development"
       : "blocked";

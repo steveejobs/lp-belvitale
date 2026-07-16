@@ -11,8 +11,8 @@ export function ChoiceSequence() {
       <Reveal className="choice-sequence__heading section-shell" effect="slide-right">
         <p className="eyebrow">{emotional.eyebrow}</p>
         <h2 id="choice-title">
-          Não é sobre esconder.
-          <em>É sobre voltar a escolher.</em>
+          Uma roupa não deveria
+          <em>virar uma negociação inteira.</em>
         </h2>
       </Reveal>
 
@@ -20,6 +20,8 @@ export function ChoiceSequence() {
         <figure className="choice-sequence__media choice-sequence__media--primary">
           <img
             src={freedom.src}
+            srcSet="/lifestyle/freedom-01-768.webp 768w, /lifestyle/freedom-01.webp 1122w"
+            sizes="(min-width: 56rem) 48vw, calc(100vw - 2rem)"
             width={freedom.width}
             height={freedom.height}
             alt={freedom.alt}
@@ -41,8 +43,7 @@ export function ChoiceSequence() {
             ))}
           </ul>
           <p className="choice-sequence__aside">
-            Vestir um short, aparecer em uma foto ou olhar no espelho podem voltar a ser
-            escolhas simples.
+            Escolher por vontade, não por insegurança.
           </p>
         </div>
       </Reveal>

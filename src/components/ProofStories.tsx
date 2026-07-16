@@ -76,6 +76,9 @@ export function ProofStories() {
     [activeCategory],
   );
   const activeIndex = activeByCategory[activeCategory];
+  const activeCategoryLabel =
+    proofCategories.find((category) => category.id === activeCategory)?.label ??
+    "Resultados";
 
   const selectAsset = useCallback((category: ProofCategoryId, index: number) => {
     const assets = proofAssets.filter((asset) => asset.category === category);
@@ -217,11 +220,11 @@ export function ProofStories() {
     >
       <Reveal className="proof-stories__heading section-shell" effect="slide-left">
         <p className="eyebrow">{proof.eyebrow}</p>
-        <h2 id="proof-title">Resultados organizados para você ver com clareza.</h2>
+        <h2 id="proof-title">Resultados reais, para observar com calma.</h2>
         <p>{proof.context}</p>
       </Reveal>
 
-      <Reveal className="proof-gallery-reveal section-shell" effect="scale" delay={70}>
+      <Reveal className="proof-gallery-reveal section-shell" effect="clip" delay={70}>
         <div
           className="proof-gallery"
           ref={galleryRef}
@@ -259,7 +262,10 @@ export function ProofStories() {
               aria-controls="proof-active-panel"
               onClick={() => changeCategory(category.id)}
             >
-              {category.label}
+              <span>{category.label}</span>
+              <small>
+                {proofAssets.filter((asset) => asset.category === category.id).length}
+              </small>
             </button>
           ))}
         </div>
@@ -270,6 +276,10 @@ export function ProofStories() {
           role="tabpanel"
           aria-labelledby={`proof-tab-${activeCategory}`}
         >
+          <div className="proof-gallery__meta">
+            <strong>{activeCategoryLabel}</strong>
+            <span>{String(activeIndex + 1).padStart(2, "0")} / {String(categoryAssets.length).padStart(2, "0")}</span>
+          </div>
           <div
             className="proof-gallery__stage"
             style={{ "--proof-drag": `${String(dragOffset)}px` } as CSSProperties}
@@ -325,7 +335,6 @@ export function ProofStories() {
 
       <div className="proof-stories__disclaimer section-shell">
         <strong>{proofAuthorization.disclaimer}</strong>
-        <span>As séries não informam pessoa, período ou duração.</span>
       </div>
 
       {commercialNavigationReady ? (

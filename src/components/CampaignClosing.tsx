@@ -23,12 +23,11 @@ export function CampaignClosing() {
           <em>{closing.titleAccent}</em>
         </h2>
         <p>{closing.body}</p>
-        <a
-          className="button button--light"
-          href={commercialNavigationReady ? "#ofertas" : "#rotulo"}
-        >
-          {commercialNavigationReady ? "Ver opções do CeluClin" : "Ler o rótulo completo"}
-        </a>
+        {commercialNavigationReady ? (
+          <a className="button button--light" href="#ofertas">
+            {closing.action}
+          </a>
+        ) : null}
       </div>
     </section>
   );

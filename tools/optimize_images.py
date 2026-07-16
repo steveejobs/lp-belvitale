@@ -1,108 +1,53 @@
-"""Convert a local image to an optimized WebP without upscaling it."""
+"""Create optimized derivatives from approved source images.
+
+The tool never modifies the source file. Cropping is explicit so product and
+proof framing can be reviewed before a derivative is published.
+"""
 
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import Final
 
-from PIL import Image, ImageOps
-
-
-DEFAULT_MAX_SIZE: Final = 1600
-DEFAULT_QUALITY: Final = 84
+from PIL import Image
 
 
-def positive_integer(value: str) -> int:
-    parsed = int(value)
-    if parsed <= 0:
-        raise argparse.ArgumentTypeError("o valor precisa ser maior que zero")
-    return parsed
+def parse_crop(value: str) -> tuple[int, int, int, int]:
+    parts = tuple(int(part) for part in value.split(","))
+    if len(parts) != 4:
+        raise argparse.ArgumentTypeError("crop must use x,y,width,height")
+    x, y, width, height = parts
+    if min(x, y) < 0 or min(width, height) <= 0:
+        raise argparse.ArgumentTypeError("crop values must describe a positive area")
+    return x, y, width, height
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Otimiza uma imagem para WebP, preservando proporcao e transparencia."
-    )
-    parser.add_argument("input", type=Path, help="Arquivo-fonte")
-    parser.add_argument("output", type=Path, help="Arquivo .webp de destino")
-    parser.add_argument(
-        "--max-size",
-        type=positive_integer,
-        default=DEFAULT_MAX_SIZE,
-        help="Maior dimensao permitida em pixels (padrao: 1600)",
-    )
-    parser.add_argument(
-        "--quality",
-        type=positive_integer,
-        default=DEFAULT_QUALITY,
-        help="Qualidade WebP de 1 a 100 (padrao: 84)",
-    )
-    parser.add_argument(
-        "--overwrite",
-        action="store_true",
-        help="Permite substituir o destino existente",
-    )
-    return parser.parse_args()
-
-
-def optimize_image(
-    source: Path,
-    destination: Path,
-    max_size: int,
-    quality: int,
-    overwrite: bool,
-) -> tuple[tuple[int, int], tuple[int, int]]:
-    if not source.is_file():
-        raise FileNotFoundError(f"arquivo-fonte nao encontrado: {source}")
-    if destination.suffix.lower() != ".webp":
-        raise ValueError("o destino precisa usar a extensao .webp")
-    if destination.exists() and not overwrite:
-        raise FileExistsError(
-            f"destino ja existe: {destination}. Use --overwrite para substituir."
-        )
-    if quality > 100:
-        raise ValueError("quality precisa estar entre 1 e 100")
-
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    with Image.open(source) as opened:
-        image = ImageOps.exif_transpose(opened)
-        original_size = image.size
-        image.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
-        optimized_size = image.size
-
-        has_alpha = "A" in image.getbands() or "transparency" in image.info
-        target_mode = "RGBA" if has_alpha else "RGB"
-        if image.mode != target_mode:
-            image = image.convert(target_mode)
-
-        image.save(
-            destination,
-            format="WEBP",
-            quality=quality,
-            method=6,
-            optimize=True,
-            exact=has_alpha,
-        )
-
-    return original_size, optimized_size
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("input", type=Path)
+    parser.add_argument("output", type=Path)
+    parser.add_argument("--crop", type=parse_crop)
+    parser.add_argument("--max-width", type=int)
+    parser.add_argument("--quality", type=int, default=86)
+    return parser
 
 
 def main() -> None:
-    args = parse_args()
-    original, optimized = optimize_image(
-        source=args.input,
-        destination=args.output,
-        max_size=args.max_size,
-        quality=args.quality,
-        overwrite=args.overwrite,
-    )
-    source_bytes = args.input.stat().st_size
-    output_bytes = args.output.stat().st_size
-    print(
-        f"{args.input} {original[0]}x{original[1]} ({source_bytes} bytes) -> "
-        f"{args.output} {optimized[0]}x{optimized[1]} ({output_bytes} bytes)"
-    )
+    args = build_parser().parse_args()
+    with Image.open(args.input) as source:
+        image = source.convert("RGB")
+        if args.crop is not None:
+            x, y, width, height = args.crop
+            if x + width > image.width or y + height > image.height:
+                raise ValueError("crop exceeds source dimensions")
+            image = image.crop((x, y, x + width, y + height))
+        if args.max_width is not None and image.width > args.max_width:
+            height = round(image.height * args.max_width / image.width)
+            image = image.resize((args.max_width, height), Image.Resampling.LANCZOS)
+
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        image.save(args.output, format="WEBP", quality=args.quality, method=6)
+        print(f"{args.output}: {image.width}x{image.height}")
 
 
 if __name__ == "__main__":

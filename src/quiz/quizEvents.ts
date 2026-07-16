@@ -6,7 +6,8 @@ export type QuizEvent =
   | "quiz_step_complete"
   | "quiz_complete"
   | "quiz_restart"
-  | "quiz_composition_click";
+  | "quiz_composition_click"
+  | "quiz_checkout_click";
 
 export interface QuizEventPayload {
   readonly step?: number;
@@ -36,7 +37,7 @@ function sanitizePayload(payload: QuizEventPayload): QuizEventPayload {
     ...(typeof payload.step === "number" &&
     Number.isInteger(payload.step) &&
     payload.step >= 1 &&
-    payload.step <= 6
+    payload.step <= 5
       ? { step: payload.step }
       : {}),
     ...(isQuizProfile(payload.profile) ? { profile: payload.profile } : {}),

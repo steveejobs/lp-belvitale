@@ -70,7 +70,13 @@ const checkoutAuditReady = commercialOffers.every((offer) => {
   );
 });
 
-export const commercialPreviewReady = import.meta.env.DEV && checkoutAuditReady;
+const commercialEnvironment = import.meta.env as ImportMetaEnv | undefined;
+const commercialPreviewEnabled =
+  commercialEnvironment?.DEV === true ||
+  commercialEnvironment?.VITE_COMMERCIAL_PREVIEW === "enabled";
+
+export const commercialPreviewReady =
+  commercialPreviewEnabled && checkoutAuditReady;
 export const commercialNavigationReady =
   commercialPublicationReady || commercialPreviewReady;
 

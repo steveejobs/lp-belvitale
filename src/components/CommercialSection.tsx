@@ -13,6 +13,7 @@ import { commercialSurfaceReady } from "../data/commercialPublicationGate";
 import { regulatoryPublicationReady } from "../data/regulatoryFacts";
 import { OfferCard } from "./commercial/OfferCard";
 import { Reveal } from "./ui/Reveal";
+import { homeContent } from "../content/homeContent";
 
 interface CommercialDevelopmentFixture {
   readonly name: "commercial-ready";
@@ -30,6 +31,7 @@ function getDevelopmentFixture(): CommercialDevelopmentFixture | null {
 }
 
 export function CommercialSection() {
+  const { commercial } = homeContent;
   const fixture = getDevelopmentFixture();
   const offers = fixture?.offers ?? commercialOffers;
   const dependencies = fixture?.dependencies ?? commercialPublicationDependencies;
@@ -60,12 +62,9 @@ export function CommercialSection() {
         data-preview-ready={previewReady || fixtureReady}
       >
         <Reveal className="commercial-section__heading section-shell" effect="slide-left">
-          <p className="eyebrow">Kits CeluClin</p>
-          <h2 id="commercial-title">Escolha seu kit CeluClin.</h2>
-          <p>
-            Compare pela duração que cabe na sua rotina. A condição comercial atual
-            aparece no checkout da Belvitale.
-          </p>
+          <p className="eyebrow">{commercial.eyebrow}</p>
+          <h2 id="commercial-title">{commercial.title}</h2>
+          <p>{commercial.body}</p>
         </Reveal>
 
         <Reveal className="offer-cards section-shell" effect="clip" delay={80}>

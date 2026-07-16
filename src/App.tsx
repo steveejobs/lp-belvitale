@@ -52,18 +52,20 @@ export function App() {
       <SiteHeader />
       <main id="conteudo-principal">
         <CampaignHero />
-        <ProductStory />
         <ChoiceSequence />
         <EducationSection />
+        <ProductStory />
         <FormulaSection />
+        <RoutineSection />
         <Suspense fallback={<div className="section-placeholder section-placeholder--proof" aria-hidden="true" />}>
           <ProofStories />
         </Suspense>
         <Suspense fallback={<div className="section-placeholder" aria-hidden="true" />}>
+          <CommercialSection />
+        </Suspense>
+        <Suspense fallback={<div className="section-placeholder" aria-hidden="true" />}>
           <LabelTransparency />
         </Suspense>
-        <RoutineSection />
-        <Suspense fallback={null}><CommercialSection /></Suspense>
         <FaqSection />
         <CampaignClosing />
       </main>

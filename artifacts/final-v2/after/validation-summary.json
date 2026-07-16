@@ -1,0 +1,41 @@
+{
+  "validatedAt": "2026-07-16T04:49:37.000Z",
+  "commands": {
+    "npm run lint": "passed",
+    "npm run typecheck": "passed",
+    "npm run build": "passed",
+    "npm run test:e2e": "57 passed",
+    "npx playwright test tests/e2e/visual-sections.spec.ts (final manifest retest)": "12 passed",
+    "npm run test:production": "passed"
+  },
+  "bundle": {
+    "initialJavaScriptGzipKb": 8.88,
+    "previewBuildModules": 65,
+    "codeSplitting": [
+      "app",
+      "quiz",
+      "proof-gallery",
+      "offers",
+      "label-modal"
+    ]
+  },
+  "lighthouseLocal": {
+    "performance": 97,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "lcpSeconds": 2.1,
+    "tbtMilliseconds": 160,
+    "cls": 0
+  },
+  "lighthouseRemotePreview": {
+    "performance": 95,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 69,
+    "lcpSeconds": 2.1,
+    "tbtMilliseconds": 210,
+    "cls": 0,
+    "seoConstraint": "Vercel preview response injects X-Robots-Tag: noindex"
+  }
+}

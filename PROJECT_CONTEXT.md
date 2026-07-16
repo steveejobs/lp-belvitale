@@ -11,11 +11,13 @@ O projeto e mobile-first, mas deve funcionar com a mesma hierarquia em desktop. 
 ## Estado de publicacao
 
 - Trabalhar sempre em preview. Nao fazer deploy direto em producao.
+- Preview visual validado em 16/07/2026: `lp-belvitale-dlsx5nojt-bandeirargabriel-6963s-projects.vercel.app` (protegido; usar o share link da entrega enquanto valido).
 - A secao de kits e os CTAs Yampi aparecem em desenvolvimento porque os tres checkouts foram auditados em navegador limpo.
+- `npm run build` gera o preview comercial com os kits; `npm run build:production` aplica os gates finais e oculta o comercio ainda nao liberado.
 - O gate comercial de producao continua fechado por dependencias institucionais, regulatorias, precos e direitos das miniaturas oficiais.
 - Nao remover nem contornar `commercialPublicationGate`, `commercialPreviewReady` ou os gates regulatorios.
 - Nao inventar preco, desconto, parcela, frete, urgencia, estoque ou garantia.
-- O proprietario confirmou nesta rodada o destaque `Mais vendido` somente para o kit de 3 meses.
+- O kit de 3 meses recebe maior presenca visual, mas nenhum selo de popularidade e publicado sem evidencia comercial verificavel.
 
 ## Checkouts confirmados
 
@@ -33,7 +35,7 @@ Cada asset principal tem uma funcao propria. Nao repetir imagens para preencher 
 
 | Area | Asset |
 | --- | --- |
-| Hero | `/product/celuclin-front-02.webp` |
+| Hero | `/product/celuclin-front-02.webp` e derivada responsiva `/product/celuclin-front-02-hero-mobile.webp` |
 | Apresentacao do produto | `/product/celuclin-angle.webp` e `/product/celuclin-front-01.webp` |
 | Liberdade de escolha | `/lifestyle/freedom-01.webp` |
 | Formula | `/product/celuclin-capsules.webp` |
@@ -54,8 +56,10 @@ Nao usar a arte plana do rotulo como produto, fundo, textura, formula ou kit. As
 - `src/theme/`: tokens e coreografias compartilhadas; novas cores e duracoes entram aqui.
 - `src/home.css`: composicao especifica da homepage.
 - `tools/`: utilitarios locais em Python; nunca modificar originais sem destino explicito.
-- `docs/requirements-ledger.md`: contratos atuais da pagina.
-- `docs/quiz-context.md`: estado e pendencias do quiz para a proxima fase.
+- `PROJECT_CONTEXT.md`: contrato de continuidade, arquitetura e comandos.
+- `artifacts/final-v2/scorecard.md`: matriz objetiva e evidencias da rodada aprovada.
+- `scripts/capture-final-evidence.mjs`: capturas, videos e auditoria do preview remoto; recebe `PREVIEW_URL` por variavel de ambiente.
+- React e React DOM sao resolvidos por `preact/compat` no Vite para reduzir o runtime sem mudar as APIs do projeto.
 
 ## Regras de UX
 
@@ -64,7 +68,7 @@ Nao usar a arte plana do rotulo como produto, fundo, textura, formula ou kit. As
 - Galerias de prova carregam somente anterior, atual e proxima; autoplay pausa fora da viewport, no hover, no foco, durante gesto e com aba oculta.
 - `prefers-reduced-motion` remove autoplay e transicoes sem esconder conteudo.
 - Numeracao decorativa nao deve voltar a imagens, galerias ou cards de kits.
-- Entradas e saidas usam `Reveal`; mouse movement deve ser leve e funcional.
+- Entradas e saidas usam familias curtas de motion; mouse movement deve ser leve e funcional.
 
 ## Comandos obrigatorios
 
@@ -76,20 +80,25 @@ npm run test:e2e
 npm run test:production
 ```
 
+O comando `test:production` refaz o build em modo de producao antes de validar os gates. Para revisar a entrega visual e os checkouts, usar o build padrao de preview.
+
 Para otimizar novas imagens, consultar `tools/README.md`. Depois de qualquer mudanca visual, validar pelo menos 390 x 844 e 1440 x 900, console, rede, overflow, teclado, swipe e reduced motion.
 
 ## Ultima validacao
 
-Rodada concluida em 15/07/2026:
+Rodada concluida em 16/07/2026:
 
-- lint, typecheck e build aprovados;
-- 57 testes Playwright aprovados;
-- gate de producao aprovado com comercio, canonical e quiz ainda bloqueados;
-- Lighthouse: performance 90, acessibilidade 100, boas praticas 100 e SEO 58;
-- FCP 1,7 s, LCP 3,1 s, CLS 0 e TBT 160 ms;
-- relatorio em `artifacts/lighthouse-home-refinement.json`;
-- capturas finais em `artifacts/screenshots/390x844-home-full.png` e `artifacts/screenshots/1440x900-home-full.png`;
-- gravacoes em `artifacts/videos/refinement/`.
+- lint, typecheck, build de preview e gate de producao aprovados;
+- 57/57 testes Playwright aprovados, incluindo os sete viewports exigidos;
+- preview remoto: zero erro de console, pagina, request funcional, overflow ou imagem quebrada;
+- tres checkouts Yampi: status 200, produto correto e carrinho preenchido;
+- Lighthouse local: Performance 97, Accessibility 100, Best Practices 100 e SEO 100;
+- Lighthouse remoto: Performance 95, Accessibility 100, Best Practices 100, LCP 2,1 s, TBT 210 ms e CLS 0;
+- SEO remoto 69 somente pelo `X-Robots-Tag: noindex` automatico da Vercel em previews; nao remover essa protecao;
+- JavaScript inicial: 8,88 kB gzip; secoes pesadas continuam separadas;
+- matriz e comparacao antes/depois em `artifacts/final-v2/scorecard.md`;
+- evidencias finais em `artifacts/final-v2/after/`;
+- nota de Consumidora continua nao validada ate o teste com cinco participantes reais.
 
 ## Politica de limpeza
 

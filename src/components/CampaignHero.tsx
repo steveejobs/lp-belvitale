@@ -65,11 +65,6 @@ export function CampaignHero() {
           <picture>
             <source
               media="(max-width: 47.99rem)"
-              type="image/avif"
-              srcSet={product.mobileAvifSrc}
-            />
-            <source
-              media="(max-width: 47.99rem)"
               type="image/webp"
               srcSet={product.mobileSrc}
             />

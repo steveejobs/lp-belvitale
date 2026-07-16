@@ -9,11 +9,11 @@ import { canonicalUrl } from "../config/site";
 import {
   campaignAssets,
   canRenderCampaignAsset,
-  internalMediaPreview,
 } from "../data/campaignAssets";
 import { getQuizAccessMode } from "../data/quizPublication";
 import {
   quizPublicationApproved,
+  quizPreviewEnabled,
   quizPublicationStatus,
 } from "../data/quizPublicationConfig";
 import { quizQuestions, type QuizQuestion } from "../data/quizQuestions";
@@ -61,7 +61,7 @@ function QuizMetadata({ path }: { readonly path: QuizRoutePath }) {
 
     const descriptionText = isResult
       ? "Um perfil de organização da rotina de autocuidado, sem diagnóstico ou promessa de resultado."
-      : "Seis escolhas rápidas para descobrir o que ajuda uma rotina de autocuidado a caber na vida real.";
+      : "Cinco escolhas rápidas para descobrir o que ajuda uma rotina de autocuidado a caber na vida real.";
     let description = document.querySelector<HTMLMetaElement>(
       'meta[name="description"]',
     );
@@ -106,7 +106,7 @@ function QuizMetadata({ path }: { readonly path: QuizRoutePath }) {
       const values = {
         "og:title": "Onde o seu cuidado encontra ritmo? | Belvitale",
         "og:description":
-          "Seis escolhas rápidas sobre começo, retomada e vida real.",
+          "Cinco escolhas rápidas sobre começo, retomada e vida real.",
         "og:type": "website",
         "og:url": new URL(getQuizUrl("quiz"), canonicalUrl).toString(),
       };
@@ -135,9 +135,15 @@ function QuizBrand() {
     <header className="quiz-header">
       <div className="quiz-shell quiz-header__inner">
         <a className="quiz-brand" href="/" aria-label="Belvitale — início">
-          belvitale
+          <img
+            src="/brand/belvitale-wordmark-dark.webp"
+            width="496"
+            height="369"
+            alt=""
+            decoding="async"
+          />
         </a>
-        <span>CeluClin · escolha 01—06</span>
+        <span>CeluClin · 5 escolhas</span>
       </div>
     </header>
   );
@@ -157,26 +163,23 @@ function QuizStart({ onStart }: { readonly onStart: () => void }) {
           {canShowCapsules ? (
             <img src={capsules.src} width={capsules.width} height={capsules.height} alt="" fetchPriority="high" decoding="async" />
           ) : null}
-          <span aria-hidden="true" />
-          <strong aria-hidden="true">6</strong>
-          <small aria-hidden="true">escolhas</small>
         </div>
         <div className="quiz-start__content">
-          <p className="quiz-eyebrow">Um editorial interativo</p>
+          <p className="quiz-eyebrow">Seu ritmo, sem resposta perfeita</p>
           <h1 ref={titleRef} tabIndex={-1}>
-            <span>Onde o seu cuidado</span>
-            <em>encontra ritmo?</em>
+            <span>Seu cuidado cabe</span>
+            <em>na vida real?</em>
           </h1>
           <p className="quiz-lead">
-            Seis cenas rápidas para perceber o que ajuda uma rotina a caber
-            na vida real — inclusive quando o dia sai do plano.
+            Cinco escolhas rápidas para entender se você prefere começar leve,
+            criar constância ou planejar por mais tempo.
           </p>
           <button
             className="quiz-button quiz-button--primary"
             type="button"
             onClick={onStart}
           >
-            Entrar na experiência
+            Começar
           </button>
           <p className="quiz-microcopy">
             Menos de 2 minutos. Você pode voltar e mudar respostas.
@@ -373,6 +376,23 @@ function QuizResult({
             <p>{profile.ritual}</p>
           </section>
 
+          {recommendation !== null ? (
+            <section className="quiz-recommendation" aria-labelledby="recommendation-title" data-ready="true">
+              <p className="quiz-eyebrow">{recommendation.disclosure}</p>
+              <h2 id="recommendation-title">
+                CeluClin para {recommendation.offer.approximateDurationMonths * 30} dias.
+              </h2>
+              <p>{recommendation.rationale}</p>
+              <a
+                className="quiz-button quiz-button--primary"
+                href={recommendation.checkoutUrl}
+                onClick={() => recordQuizEvent("quiz_checkout_click", { source: "quiz", profile: profileId })}
+              >
+                Ver opção de {recommendation.offer.approximateDurationMonths * 30} dias
+              </a>
+            </section>
+          ) : null}
+
           <section className="quiz-next-step" aria-labelledby="next-step-title">
             <div className="quiz-next-step__media" data-media-status={canShowProduct ? "preview" : "blocked"}>
               {canShowProduct ? (
@@ -391,22 +411,6 @@ function QuizResult({
               </div>
             </div>
           </section>
-
-          {recommendation !== null ? (
-            <section className="quiz-recommendation" aria-labelledby="recommendation-title" data-ready="true">
-              <p className="quiz-eyebrow">{recommendation.disclosure}</p>
-              <h2 id="recommendation-title">Opção sugerida para o seu ritmo</h2>
-              <p>{recommendation.rationale}</p>
-              <a className="quiz-button quiz-button--primary" href={recommendation.offer.checkoutUrl}>Ver opção de {recommendation.offer.approximateDurationMonths * 30} dias</a>
-            </section>
-          ) : internalMediaPreview ? (
-            <section className="quiz-recommendation" aria-labelledby="recommendation-title" data-ready="false">
-              <p className="quiz-eyebrow">Próximo passo comercial</p>
-              <h2 id="recommendation-title">Opção sugerida para o seu ritmo</h2>
-              <p>A recomendação de conveniência permanece protegida até ofertas, política, mídia, identidade empresarial e situação sanitária estarem aprovadas.</p>
-              <span>Recomendação não publicada</span>
-            </section>
-          ) : null}
 
           {evidence === undefined ? null : (
             <section className="quiz-evidence" aria-labelledby="evidence-title">
@@ -448,7 +452,7 @@ function QuizInvalidResult({ onStart }: { readonly onStart: () => void }) {
     <main className="quiz-main" id="conteudo-quiz">
       <div className="quiz-shell quiz-state-message">
         <p className="quiz-eyebrow">Resultado incompleto</p>
-        <h1 ref={titleRef} tabIndex={-1}>Seu ritmo precisa das seis escolhas.</h1>
+        <h1 ref={titleRef} tabIndex={-1}>Seu ritmo precisa das cinco escolhas.</h1>
         <p>
           Nenhum perfil é criado sem respostas válidas. Comece de novo para
           chegar a uma revelação que realmente use o conjunto.
@@ -468,14 +472,14 @@ function QuizUnavailable() {
   return (
     <main className="quiz-main" id="conteudo-quiz">
       <div className="quiz-shell quiz-state-message">
-        <p className="quiz-eyebrow">Experiência em revisão</p>
-        <h1 ref={titleRef} tabIndex={-1}>O quiz ainda não está publicado.</h1>
+        <p className="quiz-eyebrow">CeluClin</p>
+        <h1 ref={titleRef} tabIndex={-1}>Essa experiência não está disponível agora.</h1>
         <p>
-          Enquanto a revisão humana e os gates de produção não terminam, você
-          pode consultar as informações confirmadas do CeluClin.
+          Você ainda pode conhecer o produto, observar os resultados autorizados
+          e comparar as opções disponíveis.
         </p>
-        <a className="quiz-button quiz-button--primary" href="/#composicao">
-          Abrir a composição
+        <a className="quiz-button quiz-button--primary" href="/#ofertas">
+          Conhecer o CeluClin
         </a>
       </div>
     </main>
@@ -503,7 +507,7 @@ export function QuizRoute() {
   const accessMode = getQuizAccessMode(
     quizPublicationStatus,
     import.meta.env.DEV,
-    import.meta.env.VITE_INTERNAL_QUIZ === "true",
+    import.meta.env.VITE_INTERNAL_QUIZ === "true" || quizPreviewEnabled,
   );
 
   function navigate(nextRoute: QuizRoutePath, replace = false) {

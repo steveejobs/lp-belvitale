@@ -1,3 +1,8 @@
+import {
+  getTelephoneHref,
+  institutionalFacts,
+  isConfirmedInstitutionalFact,
+} from "./institutionalFacts";
 import { usageFact } from "./productFacts";
 
 export type FaqFactStatus = "confirmed" | "blocked";
@@ -10,102 +15,77 @@ export interface FaqAnswerLink {
 export interface FaqFact {
   readonly id: string;
   readonly question: string;
-  readonly answer?: string | undefined;
+  readonly answer?: string;
   readonly links?: readonly FaqAnswerLink[];
   readonly status: FaqFactStatus;
   readonly source: "label" | "document" | "both" | "editorial-rule";
 }
 
-const usageConfirmed = usageFact.status === "confirmed";
-const totalCapsules = usageFact.totalCapsules;
-const capsulesPerServing = usageFact.capsulesPerServing;
-const capsulesPerDay = usageFact.capsulesPerDay;
-const durationDays = usageFact.durationDays;
+const usageConfirmed =
+  usageFact.status === "confirmed" &&
+  usageFact.totalCapsules !== undefined &&
+  usageFact.capsulesPerDay !== undefined &&
+  usageFact.durationDays !== null &&
+  usageFact.durationDays !== undefined;
+const phoneHref = getTelephoneHref(institutionalFacts.phone);
+const phoneValue = isConfirmedInstitutionalFact(institutionalFacts.phone)
+  ? institutionalFacts.phone.value
+  : null;
 
 export const faqFacts: readonly FaqFact[] = [
   {
     id: "faq-o-que-e",
     question: "O que é o CeluClin?",
     answer:
-      "CeluClin é um suplemento alimentar em cápsulas da Belvitale, apresentado como parte de uma rotina de autocuidado.",
+      "CeluClin é um suplemento alimentar em cápsulas da Belvitale. Não é medicamento.",
     status: "confirmed",
     source: "both",
   },
   {
-    id: "faq-medicamento",
-    question: "CeluClin é medicamento?",
-    answer: "Não. CeluClin é um suplemento alimentar e não é medicamento.",
-    status: "confirmed",
-    source: "both",
-  },
-  {
-    id: "faq-conteudo",
-    question: "Quantas cápsulas vêm no frasco?",
-    answer:
-      usageConfirmed && totalCapsules !== undefined
-        ? `O frasco contém ${String(totalCapsules)} cápsulas.`
-        : undefined,
-    status:
-      usageConfirmed && totalCapsules !== undefined ? "confirmed" : "blocked",
-    source: "both",
-  },
-  {
-    id: "faq-porcao",
-    question: "Qual é a porção informada?",
-    answer:
-      usageConfirmed && capsulesPerServing !== undefined
-        ? `A porção informada é de ${String(capsulesPerServing)} cápsulas.`
-        : undefined,
-    status:
-      usageConfirmed && capsulesPerServing !== undefined
-        ? "confirmed"
-        : "blocked",
+    id: "faq-como-usar",
+    question: "Como é o uso informado?",
+    ...(usageConfirmed
+      ? {
+          answer: `O rótulo informa o consumo de ${String(usageFact.capsulesPerDay)} cápsulas ao dia. O frasco contém ${String(usageFact.totalCapsules)} cápsulas.`,
+        }
+      : {}),
+    status: usageConfirmed ? "confirmed" : "blocked",
     source: "both",
   },
   {
     id: "faq-duracao",
     question: "Quanto tempo dura um frasco?",
-    answer:
-      usageConfirmed &&
-      totalCapsules !== undefined &&
-      capsulesPerDay !== undefined &&
-      durationDays !== null &&
-      durationDays !== undefined
-        ? `Considerando o consumo informado de ${String(capsulesPerDay)} cápsulas ao dia, um frasco com ${String(totalCapsules)} cápsulas corresponde a ${String(durationDays)} dias de uso.`
-        : undefined,
-    status:
-      usageConfirmed &&
-      totalCapsules !== undefined &&
-      capsulesPerDay !== undefined &&
-      durationDays !== null &&
-      durationDays !== undefined
-        ? "confirmed"
-        : "blocked",
+    ...(usageConfirmed
+      ? {
+          answer: `${String(usageFact.totalCapsules)} cápsulas divididas pelo uso informado de ${String(usageFact.capsulesPerDay)} ao dia correspondem a aproximadamente ${String(usageFact.durationDays)} dias.`,
+        }
+      : {}),
+    status: usageConfirmed ? "confirmed" : "blocked",
     source: "both",
   },
   {
     id: "faq-publico",
-    question: "Quem pode consumir?",
+    question: "Para quem o produto é indicado?",
     answer:
-      "O público mínimo informado na documentação disponível é de adultos a partir de 19 anos.",
+      "O público mínimo informado é de adultos a partir de 19 anos. O rótulo informa que gestantes, lactantes e crianças não devem consumir.",
     status: "confirmed",
     source: "both",
   },
   {
     id: "faq-composicao",
-    question: "Onde vejo a composição?",
+    question: "Onde vejo a composição completa?",
     answer:
-      "A composição auditada e a arte original da embalagem estão disponíveis nesta página.",
+      "A composição por porção está nesta página, e a arte original da embalagem pode ser ampliada na seção de rótulo.",
     links: [
-      { label: "Consultar composição", href: "#composicao" },
-      { label: "Consultar rótulo original", href: "#rotulo" },
+      { label: "Ver composição", href: "#composicao" },
+      { label: "Abrir rótulo", href: "#rotulo" },
     ],
     status: "confirmed",
     source: "both",
   },
   {
     id: "faq-gluten-lactose",
-    question: "Possui glúten ou lactose?",
+    question: "Contém glúten ou lactose?",
     answer:
       "O rótulo informa que o produto não contém glúten e não contém lactose.",
     status: "confirmed",
@@ -113,23 +93,30 @@ export const faqFacts: readonly FaqFact[] = [
   },
   {
     id: "faq-resultados",
-    question: "O produto garante resultados?",
-    status: "blocked",
+    question: "Os resultados são iguais para todas?",
+    answer:
+      "Não. As imagens publicadas são resultados reais autorizados, mas experiências individuais podem variar.",
+    links: [{ label: "Ver resultados", href: "#resultados" }],
+    status: "confirmed",
     source: "editorial-rule",
   },
   {
-    id: "faq-armazenamento",
-    question: "Como devo conservar?",
-    status: "blocked",
-    source: "document",
+    id: "faq-compra-suporte",
+    question: "Como escolho um kit e falo com o suporte?",
+    answer:
+      phoneValue === null
+        ? "Compare os kits na seção de opções e conclua a escolha no checkout da Belvitale."
+        : `Compare os kits na seção de opções e conclua a escolha no checkout da Belvitale. O SAC informado é ${phoneValue}.`,
+    links: [
+      { label: "Ver opções", href: "#ofertas" },
+      ...(phoneHref === null
+        ? []
+        : [{ label: "Ligar para o SAC", href: phoneHref }]),
+    ],
+    status: "confirmed",
+    source: "editorial-rule",
   },
-  {
-    id: "faq-curcuma",
-    question: "A cúrcuma faz parte da fórmula?",
-    status: "blocked",
-    source: "document",
-  },
-];
+] as const;
 
 export function getPublishedFaqFacts(
   facts: readonly FaqFact[],

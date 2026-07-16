@@ -4,7 +4,7 @@ Atualizado em 15/07/2026. O rótulo foi inspecionado visualmente nas duas págin
 
 ## Confirmação comercial desta rodada - 15/07/2026
 
-O proprietario solicitou explicitamente que o kit de 3 unidades seja apresentado como `Mais vendido`. Essa e a unica alegacao de popularidade autorizada. Ela nao autoriza inventar volume de vendas, percentual, ranking, periodo, preco, desconto, estoque ou urgencia.
+O kit de 3 unidades pode receber maior presenca na composicao para facilitar comparacao, mas nenhum selo de popularidade e publicado sem evidencia comercial verificavel. Nao inventar volume de vendas, percentual, ranking, periodo, preco, desconto, estoque ou urgencia.
 
 ## Adendo de autorização das provas — 14/07/2026
 

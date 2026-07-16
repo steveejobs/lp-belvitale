@@ -7,15 +7,17 @@
     "dev": "vite",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build --mode preview",
+    "build:production": "tsc --noEmit && vite build --mode production",
     "preview": "vite preview",
     "test:e2e": "playwright test",
-    "test:production": "node scripts/verify-production-assets.mjs",
+    "test:production": "npm run build:production && node scripts/verify-production-assets.mjs",
     "capture": "node scripts/capture-artifacts.mjs"
   },
   "dependencies": {
     "@fontsource-variable/figtree": "^5.2.10",
     "@fontsource-variable/fraunces": "^5.2.9",
+    "preact": "^10.29.7",
     "react": "19.2.7",
     "react-dom": "19.2.7"
   },

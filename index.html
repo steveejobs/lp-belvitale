@@ -3,14 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fffaf8" />
     <link rel="icon" href="data:," />
-    <link
-      rel="preload"
-      href="/node_modules/@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
     <link
       rel="preload"
       href="/node_modules/@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2"
@@ -21,7 +15,7 @@
     <meta name="robots" content="noindex, nofollow" />
     <meta
       name="description"
-      content="Conheça o CeluClin, suplemento alimentar em cápsulas da Belvitale, sua composição confirmada, o uso informado e o rótulo original."
+      content="CeluClin é o suplemento alimentar em cápsulas da Belvitale: 60 cápsulas, uso informado de 2 ao dia e opções para 30, 90 ou 210 dias."
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
@@ -32,248 +26,78 @@
     />
     <meta
       property="og:description"
-      content="CeluClin é um suplemento alimentar em cápsulas apresentado com composição, uso e rótulo à vista."
+      content="Conheça o CeluClin, observe resultados reais autorizados e escolha a opção que cabe na sua rotina."
     />
     <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Belvitale"
-      }
+      {"@context":"https://schema.org","@type":"Organization","name":"Belvitale"}
     </script>
-    <title>Belvitale | CeluClin — a escolha continua sua</title>
+    <title>Belvitale | CeluClin — escolha por vontade</title>
     <style>
-      .bootstrap {
-        min-height: 100vh;
-        margin: 0;
-        color: #24101e;
-        background: #fff8f4;
-        font-family: Arial, sans-serif;
+      @font-face {
+        font-family: "Figtree Variable";
+        font-style: normal;
+        font-weight: 300 900;
+        font-display: swap;
+        src: url("/node_modules/@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2") format("woff2-variations");
       }
-      .bootstrap * {
-        box-sizing: border-box;
-      }
-      .bootstrap__shell {
-        width: min(calc(100% - 2.5rem), 90rem);
-        margin-inline: auto;
-      }
-      .bootstrap header {
-        display: flex;
-        min-height: 4.25rem;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid rgb(36 16 30 / 18%);
-      }
-      .bootstrap header a {
-        color: inherit;
-        font: 700 1.4rem Georgia, serif;
-        text-decoration: none;
-      }
-      .bootstrap__hero {
-        display: grid;
-        min-height: calc(100vh - 4.25rem);
-        align-content: center;
-        padding-block: 2.5rem;
-      }
-      .bootstrap__eyebrow {
-        margin: 0;
-        color: #7a173b;
-        font-size: 0.72rem;
-        font-weight: 800;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-      }
-      .bootstrap h1,
-      .bootstrap h2 {
-        max-width: 10ch;
-        margin: 0.8rem 0 0;
-        font-family: Georgia, serif;
-        font-weight: 600;
-        line-height: 0.92;
-        letter-spacing: -0.04em;
-      }
-      .bootstrap h1 {
-        font-size: clamp(3rem, 13vw, 7rem);
-      }
-      .bootstrap h1 em {
-        display: block;
-        color: #d90a73;
-        font-weight: 500;
-      }
-      .bootstrap h2 {
-        font-size: clamp(2.6rem, 10vw, 5rem);
-      }
-      .bootstrap__copy {
-        max-width: 36rem;
-        margin: 1.25rem 0 0;
-        color: #513847;
-        line-height: 1.55;
-      }
-      .bootstrap__actions {
-        display: flex;
-        margin-top: 1.5rem;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-      }
-      .bootstrap__actions a {
-        display: inline-flex;
-        min-height: 3.25rem;
-        padding: 0.8rem 1.15rem;
-        align-items: center;
-        color: white;
-        background: #d90a73;
-        font-weight: 700;
-        text-decoration: none;
-      }
-      .bootstrap__meta {
-        margin-top: 1rem;
-        font-size: 0.82rem;
-        font-weight: 700;
-      }
-      .bootstrap__media {
-        position: relative;
-        min-height: 8rem;
-        margin-top: 1rem;
-        overflow: hidden;
-        background: linear-gradient(105deg, #7a173b 0 38%, #ec0791 38% 70%, #5a2895 70%);
-        transform: rotate(-2deg);
-      }
-      .bootstrap__media strong,
-      .bootstrap__media span {
-        position: relative;
-        z-index: 1;
-        display: block;
-        margin: 2rem;
-        color: white;
-      }
-      .bootstrap__media strong {
-        margin-top: 5rem;
-        font: 600 clamp(3rem, 12vw, 6rem) Georgia, serif;
-      }
-      .bootstrap__media span {
-        max-width: 14rem;
-        font-size: .75rem;
-      }
-      .bootstrap__facts {
-        padding-block: 4rem;
-        color: white;
-        background: #24101e;
-      }
-      .bootstrap__facts dl {
-        margin: 2rem 0 0;
-        border-top: 1px solid rgb(255 255 255 / 42%);
-      }
-      .bootstrap__facts dl div {
-        display: flex;
-        padding-block: 0.8rem;
-        justify-content: space-between;
-        gap: 1rem;
-        border-bottom: 1px solid rgb(255 255 255 / 32%);
-      }
-      .bootstrap__facts dd {
-        margin: 0;
-        font-weight: 700;
-      }
-      .bootstrap__label {
-        padding-block: 4rem;
-      }
-      .bootstrap__label img {
-        display: block;
-        width: 100%;
-        height: auto;
-        margin-top: 2rem;
-      }
-      .bootstrap__label a {
-        display: inline-block;
-        min-height: 2.75rem;
-        margin-top: 1rem;
-        color: #7a173b;
-        font-weight: 700;
-      }
+      * { box-sizing: border-box; }
+      html { min-width: 320px; background: #fffaf8; }
+      body { min-width: 320px; margin: 0; color: #171216; background: #fffaf8; font-family: "Figtree Variable", Arial, sans-serif; }
+      .bootstrap { min-height: 100svh; }
+      .bootstrap__header { height: 4.25rem; display: flex; align-items: center; justify-content: space-between; width: min(calc(100% - 2rem), 82rem); margin-inline: auto; }
+      .bootstrap__logo { width: 7.5rem; height: 2rem; display: grid; place-items: center; overflow: hidden; }
+      .bootstrap__logo img { width: 8rem; height: auto; }
+      .bootstrap__header a:last-child { min-height: 2.75rem; display: inline-flex; align-items: center; color: inherit; font-size: .85rem; font-weight: 750; text-decoration: none; }
+      .bootstrap__hero { width: min(calc(100% - 2rem), 82rem); min-height: calc(100svh - 4.25rem); margin-inline: auto; padding: 1rem 0 1.5rem; display: grid; grid-template-areas: "visual" "copy"; align-content: start; gap: .9rem; }
+      .bootstrap__copy { grid-area: copy; padding: .6rem 0 0; }
+      .bootstrap__eyebrow { margin: 0; color: #a70b58; font-size: .72rem; font-weight: 750; text-transform: uppercase; }
+      .bootstrap h1 { max-width: 12ch; margin: .85rem 0 0; font-size: clamp(2.8rem, 12vw, 3.8rem); font-weight: 620; line-height: .98; }
+      .bootstrap h1 em { display: block; color: #b40860; font-style: normal; }
+      .bootstrap__lead { max-width: 34rem; margin: 1rem 0 0; color: #62585e; font-size: 1rem; line-height: 1.55; }
+      .bootstrap__actions { display: flex; margin-top: 1.15rem; flex-wrap: wrap; gap: .625rem; }
+      .bootstrap__actions a { min-height: 3.25rem; display: inline-flex; padding: .75rem 1rem; align-items: center; justify-content: center; border: 1px solid #171216; border-radius: 4px; color: #171216; font-size: .9rem; font-weight: 750; text-decoration: none; }
+      .bootstrap__actions a:first-child { color: #fff; background: #171216; }
+      .bootstrap__facts { margin: 1rem 0 0; font-size: .8rem; font-weight: 700; }
+      .bootstrap__visual { grid-area: visual; height: clamp(16.5rem, 70vw, 18rem); overflow: hidden; border-radius: 6px; background: #f3e4e7; }
+      .bootstrap__visual picture, .bootstrap__visual img { width: 100%; height: 100%; display: block; }
+      .bootstrap__visual img { object-fit: contain; object-position: center 53%; }
       @media (min-width: 56rem) {
-        .bootstrap__hero {
-          grid-template-columns: 1.2fr 0.8fr;
-          align-items: center;
-          gap: 3rem;
-        }
-        .bootstrap h1 {
-          font-size: 7rem;
-        }
-        .bootstrap__media {
-          min-height: 36rem;
-          margin-top: 0;
-        }
+        .bootstrap__header, .bootstrap__hero { width: min(calc(100% - 5rem), 82rem); }
+        .bootstrap__hero { grid-template-areas: "copy visual"; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 4rem; padding-block: 1.5rem; }
+        .bootstrap__copy { padding: 0; }
+        .bootstrap h1 { font-size: clamp(4.25rem, 5.6vw, 5.6rem); }
+        .bootstrap__visual, .bootstrap__visual img { height: min(47rem, calc(100svh - 7rem)); }
+        .bootstrap__visual img { object-fit: cover; }
       }
     </style>
   </head>
   <body>
     <div id="root">
       <div class="bootstrap">
-        <header class="bootstrap__shell">
-          <a href="#inicio">belvitale</a>
-          <span>CeluClin</span>
+        <header class="bootstrap__header">
+          <a class="bootstrap__logo" href="#inicio" aria-label="Belvitale — início">
+            <img src="/brand/belvitale-wordmark-dark.webp" width="496" height="369" alt="Belvitale" />
+          </a>
+          <a href="#ofertas">Ver opções</a>
         </header>
         <main>
-          <section class="bootstrap__hero bootstrap__shell" id="inicio">
-            <div>
-              <p class="bootstrap__eyebrow">
-                Belvitale · suplemento alimentar em cápsulas
-              </p>
-              <h1>
-                A celulite não precisa
-                <em>decidir o que você veste.</em>
-              </h1>
-              <p class="bootstrap__copy">
-                CeluClin entra na rotina com composição e uso à vista — sem
-                transformar o seu corpo em problema ou prometer perfeição.
-              </p>
+          <section class="bootstrap__hero" id="inicio">
+            <div class="bootstrap__copy">
+              <p class="bootstrap__eyebrow">Belvitale · suplemento alimentar em cápsulas</p>
+              <h1>A celulite não precisa <em>decidir o que você veste.</em></h1>
+              <p class="bootstrap__lead">CeluClin é um suplemento alimentar em cápsulas para uma rotina simples: duas ao dia, com composição e rótulo à vista.</p>
               <div class="bootstrap__actions">
-                <a href="#celuclin">Conhecer por dentro</a>
-                <a href="#composicao">Abrir a composição</a>
+                <a href="#ofertas">Escolher meu CeluClin</a>
+                <a href="#resultados">Ver resultados reais</a>
               </div>
-              <p class="bootstrap__meta">
-                60 cápsulas · 2 ao dia · 30 dias
-              </p>
-               <p>Suplemento alimentar. Não é medicamento.</p>
-             </div>
-             <div class="bootstrap__media" aria-label="Imagem oficial do produto aguardando validação">
-               <strong>CeluClin</strong>
-               <span>Packshot oficial em validação documental.</span>
-             </div>
-           </section>
-          <section class="bootstrap__facts" id="celuclin">
-            <div class="bootstrap__shell" id="composicao">
-              <p class="bootstrap__eyebrow">Composição confirmada</p>
-              <h2>Uma rotina. Não uma promessa de perfeição.</h2>
-              <p class="bootstrap__copy">
-                A porção informada corresponde a duas cápsulas. Um ingrediente
-                permanece fora da lista enquanto houver conflito documental.
-              </p>
-              <dl>
-                <div><dt>Fibra da casca da maçã</dt><dd>150 mg</dd></div>
-                <div><dt>Fibra de aveia</dt><dd>150 mg</dd></div>
-                <div><dt>Quercetina</dt><dd>100 mg</dd></div>
-                <div><dt>Vitamina C</dt><dd>100 mg</dd></div>
-                <div><dt>Zinco</dt><dd>11 mg</dd></div>
-                <div><dt>Chlorella</dt><dd>100 mg</dd></div>
-                <div><dt>Spirulina</dt><dd>100 mg</dd></div>
-              </dl>
+              <p class="bootstrap__facts">60 cápsulas · 2 ao dia · 30 dias</p>
             </div>
-          </section>
-          <section class="bootstrap__facts" id="resultados">
-            <div class="bootstrap__shell">
-              <p class="bootstrap__eyebrow">Resultados autorizados</p>
-              <h2>Histórias que a pele conta melhor do que qualquer promessa.</h2>
-              <p class="bootstrap__copy">Celulite, flacidez e gordura localizada. Enquadramentos preservados; sem inferir pessoa, período ou ordem.</p>
-              <p>Resultados reais autorizados. Experiências individuais podem variar.</p>
+            <div class="bootstrap__visual">
+              <picture>
+                <source media="(max-width: 47.99rem)" type="image/webp" srcset="/product/celuclin-front-02-hero-mobile.webp" />
+                <img src="/product/celuclin-front-02.webp" width="1122" height="1402" alt="Frasco CeluClin em vista frontal." fetchpriority="high" />
+              </picture>
             </div>
-          </section>
-          <section class="bootstrap__label bootstrap__shell" id="rotulo">
-            <p class="bootstrap__eyebrow">Rótulo original</p>
-            <h2>Leia antes de escolher.</h2>
-            <a href="/label/celuclin-label-complete.pdf">
-              Abrir o rótulo completo em PDF
-            </a>
           </section>
         </main>
       </div>

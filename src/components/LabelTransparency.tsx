@@ -44,12 +44,14 @@ function LabelModal({ open, onClose, triggerRef }: LabelModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
+  const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
     const dialog = dialogRef.current;
     if (dialog === null || !open) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    setZoom(1);
     dialog.showModal();
     closeRef.current?.focus();
 
@@ -92,6 +94,25 @@ function LabelModal({ open, onClose, triggerRef }: LabelModalProps) {
         >
           <CloseIcon />
         </button>
+        <div className="label-modal__tools" aria-label="Controles de ampliação">
+          <button
+            type="button"
+            aria-label="Diminuir rótulo"
+            disabled={zoom <= 1}
+            onClick={() => setZoom((current) => Math.max(1, current - 0.5))}
+          >
+            <span aria-hidden="true">−</span>
+          </button>
+          <output aria-live="polite">{String(Math.round(zoom * 100))}%</output>
+          <button
+            type="button"
+            aria-label="Ampliar rótulo"
+            disabled={zoom >= 2.5}
+            onClick={() => setZoom((current) => Math.min(2.5, current + 0.5))}
+          >
+            <span aria-hidden="true">+</span>
+          </button>
+        </div>
         <div className="label-modal__viewport">
           <img
             src={labelImage}
@@ -101,6 +122,7 @@ function LabelModal({ open, onClose, triggerRef }: LabelModalProps) {
             loading="lazy"
             decoding="async"
             draggable={false}
+            style={{ width: `${String(zoom * 100)}%` }}
           />
         </div>
       </div>
@@ -176,7 +198,7 @@ export function LabelTransparency() {
           Confira o rótulo original.
           <em>Amplie só o que quiser ler.</em>
         </h2>
-        <p>Tabela, composição, uso e avisos aparecem na arte original, sem reinterpretação.</p>
+        <p>Tabela, composição, uso e avisos na arte original da embalagem.</p>
       </div>
 
       <div className="section-shell label-focus" role="tablist" aria-label="Áreas do rótulo">
@@ -237,7 +259,6 @@ export function LabelTransparency() {
           Abrir PDF completo
           <span aria-hidden="true">↗</span>
         </a>
-        <p>Arte plana original da embalagem; não representa um frasco.</p>
       </div>
 
       <LabelModal

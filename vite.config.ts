@@ -43,7 +43,7 @@ function preloadHomeHeroMedia(): Plugin {
 
       return html.replace(
         "</head>",
-        '    <link rel="preload" href="/product/celuclin-front-02-640.avif" as="image" type="image/avif" media="(max-width: 47.99rem)" fetchpriority="high" />\n    <link rel="preload" href="/product/celuclin-front-02.webp" as="image" type="image/webp" media="(min-width: 48rem)" fetchpriority="high" />\n  </head>',
+        '    <link rel="preload" href="/product/celuclin-front-02-hero-mobile.webp" as="image" type="image/webp" media="(max-width: 47.99rem)" fetchpriority="high" />\n    <link rel="preload" href="/product/celuclin-front-02.webp" as="image" type="image/webp" media="(min-width: 48rem)" fetchpriority="high" />\n  </head>',
       );
     },
   };
@@ -74,6 +74,50 @@ function replaceRobots(html: string, content: string): string {
   );
 }
 
+function homePreviewSeo(enabled: boolean, canonicalBase: URL | null): Plugin {
+  return {
+    name: "home-preview-seo",
+    transformIndexHtml(html, context) {
+      if (
+        !enabled ||
+        canonicalBase === null ||
+        path.resolve(context.filename) !== homeEntry
+      ) {
+        return html;
+      }
+
+      const homeUrl = new URL("/", canonicalBase).toString();
+      const imageUrl = new URL(
+        "/product/celuclin-front-02.webp",
+        canonicalBase,
+      ).toString();
+      const tags = [
+        `<link rel="canonical" href="${homeUrl}" />`,
+        `<meta property="og:url" content="${homeUrl}" />`,
+        `<meta property="og:image" content="${imageUrl}" />`,
+        '<meta property="og:image:width" content="1122" />',
+        '<meta property="og:image:height" content="1402" />',
+        '<meta name="twitter:card" content="summary_large_image" />',
+        `<script type="application/ld+json">${JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: "CeluClin",
+          description:
+            "Suplemento alimentar em cápsulas da Belvitale com 60 cápsulas.",
+          image: imageUrl,
+          brand: { "@type": "Brand", name: "Belvitale" },
+          category: "Suplemento alimentar em cápsulas",
+        })}</script>`,
+      ].join("\n    ");
+
+      return replaceRobots(html, "index, follow").replace(
+        "</head>",
+        `    ${tags}\n  </head>`,
+      );
+    },
+  };
+}
+
 function quizPublicationSeo(
   approved: boolean,
   canonicalBase: URL | null,
@@ -101,7 +145,7 @@ function quizPublicationSeo(
       const tags = [
         `<link rel="canonical" href="${quizUrl}" />`,
         '<meta property="og:title" content="Quiz de rotina | Belvitale" />',
-        '<meta property="og:description" content="Seis perguntas sobre hábitos e preferências para conhecer um perfil neutro de rotina de autocuidado." />',
+        '<meta property="og:description" content="Cinco perguntas sobre hábitos e preferências para conhecer um perfil neutro de rotina de autocuidado." />',
         '<meta property="og:type" content="website" />',
         `<meta property="og:url" content="${quizUrl}" />`,
       ].join("\n    ");
@@ -139,6 +183,9 @@ export default defineConfig(({ command, mode }) => {
   const internalMediaPreview =
     (process.env.VITE_INTERNAL_MEDIA ??
       loadedEnvironment.VITE_INTERNAL_MEDIA) === "true";
+  const seoPreviewEnabled =
+    (process.env.VITE_SEO_PREVIEW ??
+      loadedEnvironment.VITE_SEO_PREVIEW) === "enabled";
   const publicationRequested = publicationValue === "approved";
   const publicationApproved =
     publicationRequested && regulatoryPublicationReady;
@@ -157,9 +204,20 @@ export default defineConfig(({ command, mode }) => {
   }
 
   return {
+    resolve: {
+      alias: [
+        { find: /^react-dom\/test-utils$/, replacement: "preact/test-utils" },
+        { find: /^react-dom\/client$/, replacement: "preact/compat/client" },
+        { find: /^react-dom$/, replacement: "preact/compat" },
+        { find: /^react\/jsx-runtime$/, replacement: "preact/jsx-runtime" },
+        { find: /^react\/jsx-dev-runtime$/, replacement: "preact/jsx-dev-runtime" },
+        { find: /^react$/, replacement: "preact/compat" },
+      ],
+    },
     plugins: [
       react(),
       preloadHomeHeroMedia(),
+      homePreviewSeo(seoPreviewEnabled, canonicalBase),
       quizPublicationSeo(
         publicationApproved,
         canonicalBase,

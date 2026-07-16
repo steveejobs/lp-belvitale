@@ -6,6 +6,7 @@ export function MobileOfferCta() {
   const [offersVisible, setOffersVisible] = useState(false);
   const [offersPassed, setOffersPassed] = useState(false);
   const [overlayOpen, setOverlayOpen] = useState(false);
+  const [protectedSurfaceVisible, setProtectedSurfaceVisible] = useState(false);
 
   useEffect(() => {
     if (!commercialNavigationReady) return;
@@ -13,18 +14,42 @@ export function MobileOfferCta() {
     const offers = document.querySelector<HTMLElement>("#ofertas");
     if (hero === null || offers === null) return;
 
-    const updatePosition = () => {
-      setHeroPassed(hero.getBoundingClientRect().bottom <= 72);
-      setOffersPassed(offers.getBoundingClientRect().bottom <= 0);
-    };
-    updatePosition();
-    window.addEventListener("scroll", updatePosition, { passive: true });
+    const heroObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry === undefined) return;
+        setHeroPassed(!entry.isIntersecting && entry.boundingClientRect.bottom <= 72);
+      },
+      { rootMargin: "-72px 0px 0px" },
+    );
+    heroObserver.observe(hero);
 
     const offersObserver = new IntersectionObserver(
-      ([entry]) => setOffersVisible(entry?.isIntersecting ?? false),
+      ([entry]) => {
+        if (entry === undefined) return;
+        setOffersVisible(entry.isIntersecting);
+        setOffersPassed(!entry.isIntersecting && entry.boundingClientRect.bottom <= 0);
+      },
       { threshold: 0.08 },
     );
     offersObserver.observe(offers);
+
+    const protectedSurfaces = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        "#celuclin, #composicao, #resultados, #rotulo, #faq",
+      ),
+    );
+    const visibleProtectedSurfaces = new Set<Element>();
+    const protectedSurfaceObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) visibleProtectedSurfaces.add(entry.target);
+          else visibleProtectedSurfaces.delete(entry.target);
+        });
+        setProtectedSurfaceVisible(visibleProtectedSurfaces.size > 0);
+      },
+      { threshold: 0.12 },
+    );
+    protectedSurfaces.forEach((surface) => protectedSurfaceObserver.observe(surface));
 
     const updateOverlay = () => setOverlayOpen(document.querySelector("dialog[open]") !== null);
     const overlayObserver = new MutationObserver(updateOverlay);
@@ -36,8 +61,9 @@ export function MobileOfferCta() {
     updateOverlay();
 
     return () => {
-      window.removeEventListener("scroll", updatePosition);
+      heroObserver.disconnect();
       offersObserver.disconnect();
+      protectedSurfaceObserver.disconnect();
       overlayObserver.disconnect();
     };
   }, []);
@@ -48,9 +74,29 @@ export function MobileOfferCta() {
     <a
       className="mobile-offer-cta"
       href="#ofertas"
-      data-visible={heroPassed && !offersVisible && !offersPassed && !overlayOpen}
-      aria-hidden={!heroPassed || offersVisible || offersPassed || overlayOpen}
-      tabIndex={heroPassed && !offersVisible && !offersPassed && !overlayOpen ? 0 : -1}
+      data-visible={
+        heroPassed &&
+        !offersVisible &&
+        !offersPassed &&
+        !overlayOpen &&
+        !protectedSurfaceVisible
+      }
+      aria-hidden={
+        !heroPassed ||
+        offersVisible ||
+        offersPassed ||
+        overlayOpen ||
+        protectedSurfaceVisible
+      }
+      tabIndex={
+        heroPassed &&
+        !offersVisible &&
+        !offersPassed &&
+        !overlayOpen &&
+        !protectedSurfaceVisible
+          ? 0
+          : -1
+      }
     >
       Ver opções
     </a>

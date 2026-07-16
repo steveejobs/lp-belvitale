@@ -9,7 +9,6 @@ if (root === null) {
 }
 
 const appRoot = root;
-appRoot.replaceChildren();
 
 async function startApplication(): Promise<void> {
   const { App } = await import("./App");

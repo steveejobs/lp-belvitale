@@ -1,18 +1,24 @@
 import {
-  canPublishOffer,
   commercialOffers,
+  isValidCheckoutUrl,
   type CommercialOffer,
 } from "../data/commercialOffers";
+import {
+  commercialPreviewReady,
+  getCheckoutUrlWithUtms,
+} from "../data/commercialPreview";
 import {
   getApprovedQuizOfferId,
   type QuizOfferMapping,
 } from "../data/quizPublication";
 import type { QuizProfile } from "../data/quizProfiles";
+import { quizPreviewEnabled } from "../data/quizPublicationConfig";
 import { regulatoryPublicationReady } from "../data/regulatoryFacts";
 
 export interface QuizCommercialRecommendation {
   readonly offer: CommercialOffer;
-  readonly disclosure: "Próximo passo comercial";
+  readonly disclosure: "Opção sugerida para o seu ritmo";
+  readonly checkoutUrl: string;
   readonly rationale: string;
 }
 
@@ -30,11 +36,14 @@ export function resolveQuizRecommendation(
   mappings?: readonly QuizOfferMapping[],
   offers: readonly CommercialOffer[] = commercialOffers,
 ): QuizCommercialRecommendation | null {
-  if (!regulatoryPublicationReady) return null;
+  const previewReady = quizPreviewEnabled && commercialPreviewReady;
+  if (!regulatoryPublicationReady && !previewReady) return null;
 
   const offerId =
     mappings === undefined
-      ? getApprovedQuizOfferId(profile)
+      ? previewReady
+        ? previewOfferIds[profile]
+        : getApprovedQuizOfferId(profile)
       : (mappings.find(
           (mapping) =>
             mapping.profile === profile &&
@@ -44,11 +53,23 @@ export function resolveQuizRecommendation(
   if (offerId === null) return null;
 
   const offer = offers.find((candidate) => candidate.id === offerId);
-  if (offer === undefined || !canPublishOffer(offer)) return null;
+  if (
+    offer === undefined ||
+    !isValidCheckoutUrl(offer.checkoutUrl) ||
+    offer.checkoutStatus !== "confirmed" ||
+    offer.contentsStatus !== "confirmed"
+  ) return null;
 
   return {
     offer,
-    disclosure: "Próximo passo comercial",
+    disclosure: "Opção sugerida para o seu ritmo",
+    checkoutUrl: getCheckoutUrlWithUtms(offer.checkoutUrl),
     rationale: convenienceCopy[offer.id],
   };
 }
+
+const previewOfferIds: Readonly<Record<QuizProfile, CommercialOffer["id"]>> = {
+  "simple-start": "one-month",
+  "gradual-consistency": "three-months",
+  "conscious-continuity": "seven-months",
+};

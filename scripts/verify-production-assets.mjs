@@ -40,6 +40,7 @@ const homeMediaFiles = [
   "product/celuclin-front-02.webp",
   "product/celuclin-front-02-640.webp",
   "product/celuclin-front-02-640.avif",
+  "product/celuclin-front-02-hero-mobile.webp",
   "product/celuclin-angle.webp",
   "product/celuclin-hand.webp",
   "product/celuclin-capsules.webp",
@@ -103,9 +104,9 @@ for (const forbiddenReference of [
 for (const requiredCopy of [
   "A celulite não precisa",
   "decidir o que você veste",
-  "Celulite não mede peso",
-  "CeluClin, visto por inteiro",
-  "Resultados organizados",
+  "Celulite não mede disciplina",
+  "Frasco real. Informação à vista",
+  "Resultados reais, para observar",
   "Resultados reais autorizados",
   "Confira o rótulo original",
   "Dois por dia",
@@ -123,9 +124,8 @@ for (const requiredCopy of [
 const mainHtml = await fs.readFile(path.join(dist, "index.html"), "utf8");
 assert.equal(mainHtml.includes("noindex, nofollow"), true);
 assert.equal(mainHtml.includes("A celulite não precisa"), true);
-assert.equal(mainHtml.includes("Fibra da casca da maçã"), true);
-assert.equal(mainHtml.includes("Histórias que a pele conta"), true);
-assert.equal(mainHtml.includes("Resultados reais autorizados"), true);
+assert.equal(mainHtml.includes("Escolher meu CeluClin"), true);
+assert.equal(mainHtml.includes("60 cápsulas · 2 ao dia · 30 dias"), true);
 assert.equal(mainHtml.includes("pay.yampi.com.br"), false);
 assert.equal(mainHtml.includes("example.test"), false);
 assert.equal(mainHtml.includes('rel="canonical"'), false);
@@ -202,12 +202,11 @@ try {
     await page.locator('.campaign-hero__visual[data-media-status="approved"]').count(),
     1,
   );
-  const productViews = page.locator("#celuclin .product-story__views img");
-  assert.equal(await productViews.count(), 2);
-  assert.deepEqual(
-    await productViews.evaluateAll((images) => images.map((image) => image.getAttribute("src"))),
-    ["/product/celuclin-angle.webp", "/product/celuclin-front-01.webp"],
-  );
+  const productView = page.locator("#celuclin .product-story__media img");
+  assert.equal(await productView.count(), 1);
+  assert.equal(await productView.getAttribute("src"), "/product/celuclin-angle.webp");
+  await page.getByRole("tab", { name: "De frente" }).click();
+  assert.equal(await productView.getAttribute("src"), "/product/celuclin-front-01.webp");
 
   await page.locator("#rotulo").scrollIntoViewIfNeeded();
   await page.waitForTimeout(300);
@@ -224,9 +223,9 @@ try {
   await page.locator("#resultados").scrollIntoViewIfNeeded();
   await page.waitForTimeout(500);
   assert.ok((await page.locator("#resultados .proof-figure img").count()) <= 3);
-  assert.equal(await page.getByRole("tab", { name: "Celulite", exact: true }).count(), 1);
-  assert.equal(await page.getByRole("tab", { name: "Flacidez", exact: true }).count(), 1);
-  assert.equal(await page.getByRole("tab", { name: "Gordura localizada", exact: true }).count(), 1);
+  assert.equal(await page.getByRole("tab", { name: /^Celulite/ }).count(), 1);
+  assert.equal(await page.getByRole("tab", { name: /^Flacidez/ }).count(), 1);
+  assert.equal(await page.getByRole("tab", { name: /^Gordura localizada/ }).count(), 1);
   const proofDisclaimer = page.locator(".proof-stories__disclaimer strong");
   assert.equal(await proofDisclaimer.count(), 1);
   assert.equal(
@@ -253,7 +252,7 @@ try {
   for (const quizPath of ["/quiz/", "/quiz/resultado/"]) {
     await page.goto("http://127.0.0.1:4180" + quizPath, { waitUntil: "networkidle" });
     assert.equal(
-      await page.getByRole("heading", { name: "O quiz ainda não está publicado." }).count(),
+      await page.getByRole("heading", { name: "Essa experiência não está disponível agora." }).count(),
       1,
       "quiz exposto sem gate em " + quizPath,
     );

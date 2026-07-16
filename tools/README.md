@@ -10,10 +10,10 @@ Instalar a dependencia em um ambiente Python isolado:
 python -m pip install -r tools/requirements.txt
 ```
 
-Converter uma imagem para WebP, limitando a maior dimensao a 1600 px:
+Converter uma imagem para WebP, limitando a largura a 1600 px:
 
 ```powershell
-python tools/optimize_images.py "entrada.png" "public/novo/entrada.webp" --max-size 1600 --quality 84
+python tools/optimize_images.py "entrada.png" "public/novo/entrada.webp" --max-width 1600 --quality 84
 ```
 
-O script corrige orientacao EXIF, preserva transparencia, nao amplia a imagem e se recusa a sobrescrever um arquivo sem `--overwrite`. Sempre manter o arquivo-fonte original fora do destino otimizado.
+Para um recorte revisavel, informar `--crop x,y,width,height`. O script nunca modifica o arquivo de origem e nao amplia imagens. Sempre revisar visualmente a derivada antes de inclui-la no manifesto tipado.

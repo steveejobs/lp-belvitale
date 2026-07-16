@@ -13,7 +13,7 @@ Validacao realizada em navegador limpo, sem compra, cadastro ou preenchimento de
 - nomes, quantidades, duracoes aproximadas e total de capsulas;
 - CTAs em mesma aba;
 - apenas `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` e `utm_term`;
-- destaque `Mais vendido` somente no kit de 3 meses;
+- maior presenca visual para o kit de 3 meses, sem alegacao de popularidade;
 - expressao `5 potes + 2 gratis`, confirmada pelo proprietario para a oferta atual.
 
 ## Ainda bloqueado
