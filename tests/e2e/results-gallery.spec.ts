@@ -4,8 +4,8 @@ test("galeria avança visível, pausa no hover e retoma depois da interação", 
   page,
 }) => {
   await page.goto("/");
-  await page.locator("#resultados").scrollIntoViewIfNeeded();
-  const gallery = page.locator(".proof-gallery");
+  await page.locator("#resultados-cellulite").scrollIntoViewIfNeeded();
+  const gallery = page.locator('.proof-gallery[data-category="cellulite"]');
   const initial = await gallery.getAttribute("data-active-index");
 
   await expect(gallery).toHaveAttribute("data-autoplay", "true");
@@ -26,9 +26,9 @@ test("galeria avança visível, pausa no hover e retoma depois da interação", 
 test("swipe horizontal troca a prova sem bloquear o scroll vertical", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.locator("#resultados").scrollIntoViewIfNeeded();
-  const stage = page.locator(".proof-gallery__stage");
-  const gallery = page.locator(".proof-gallery");
+  await page.locator("#resultados-cellulite").scrollIntoViewIfNeeded();
+  const gallery = page.locator('.proof-gallery[data-category="cellulite"]');
+  const stage = gallery.locator(".proof-gallery__stage");
   const initial = await gallery.getAttribute("data-active-index");
   const box = await stage.boundingBox();
   expect(box).not.toBeNull();
@@ -48,8 +48,8 @@ test("reduced motion interrompe completamente o autoplay", async ({ browser }) =
   const context = await browser.newContext({ reducedMotion: "reduce" });
   const page = await context.newPage();
   await page.goto("/");
-  await page.locator("#resultados").scrollIntoViewIfNeeded();
-  const gallery = page.locator(".proof-gallery");
+  await page.locator("#resultados-cellulite").scrollIntoViewIfNeeded();
+  const gallery = page.locator('.proof-gallery[data-category="cellulite"]');
   const initial = await gallery.getAttribute("data-active-index");
   await expect(gallery).toHaveAttribute("data-autoplay", "false");
   await page.waitForTimeout(5500);
@@ -61,13 +61,14 @@ test("cada categoria mantém no DOM somente atual, anterior e próxima", async (
   page,
 }) => {
   await page.goto("/");
-  await page.locator("#resultados").scrollIntoViewIfNeeded();
-  for (const category of ["Celulite", "Flacidez", "Gordura localizada"]) {
-    await page.getByRole("tab", { name: category }).click();
-    const count = await page.locator(".proof-figure img").count();
+  for (const category of ["cellulite", "laxity", "localized-fat"]) {
+    const section = page.locator(`[data-proof-category="${category}"]`);
+    await section.scrollIntoViewIfNeeded();
+    const gallery = section.locator(".proof-gallery");
+    const count = await gallery.locator(".proof-figure img").count();
     expect(count).toBeGreaterThanOrEqual(2);
     expect(count).toBeLessThanOrEqual(3);
-    for (const fit of await page.locator(".proof-figure img").evaluateAll((images) =>
+    for (const fit of await gallery.locator(".proof-figure img").evaluateAll((images) =>
       images.map((image) => getComputedStyle(image).objectFit),
     )) {
       expect(fit).toBe("contain");

@@ -1,86 +1,9 @@
 {
   "previewOrigin": "https://lp-belvitale-dlsx5nojt-bandeirargabriel-6963s-projects.vercel.app",
-  "capturedAt": "2026-07-16T04:37:10.258Z",
-  "viewports": [
-    {
-      "width": 390,
-      "height": 844,
-      "documentWidth": 390,
-      "viewportWidth": 390,
-      "bodyFontSize": "16px",
-      "brokenImages": [],
-      "imageCount": 19,
-      "mainCta": "Escolher meu CeluClin",
-      "offersVisible": true
-    },
-    {
-      "width": 430,
-      "height": 932,
-      "documentWidth": 430,
-      "viewportWidth": 430,
-      "bodyFontSize": "16px",
-      "brokenImages": [],
-      "imageCount": 19,
-      "mainCta": "Escolher meu CeluClin",
-      "offersVisible": true
-    },
-    {
-      "width": 1440,
-      "height": 900,
-      "documentWidth": 1440,
-      "viewportWidth": 1440,
-      "bodyFontSize": "16px",
-      "brokenImages": [],
-      "imageCount": 19,
-      "mainCta": "Escolher meu CeluClin",
-      "offersVisible": true
-    }
-  ],
+  "capturedAt": "2026-07-16T04:15:00.201Z",
+  "viewports": [],
   "consoleErrors": [],
   "requestFailures": [],
   "pageErrors": [],
-  "checkouts": [
-    {
-      "id": "one-month",
-      "initialURL": "https://belvitale.pay.yampi.com.br/r/PWJOI4I112",
-      "finalURL": "https://belvitale.pay.yampi.com.br/checkout?skipToCheckout=1&tokenReference=PWJOI4I112",
-      "status": 200,
-      "expectedProduct": "CeluClin 1 Mês (1 pote)",
-      "productPresent": true,
-      "cartEmpty": false,
-      "largestImage": {
-        "src": "https://images.yampi.me/assets/stores/belvitale/uploads/images/celuclin-1-mes-1-pote-68d06735c8838-thumb.png",
-        "width": 290,
-        "height": 314
-      }
-    },
-    {
-      "id": "three-months",
-      "initialURL": "https://belvitale.pay.yampi.com.br/r/1E8NNCGJW9",
-      "finalURL": "https://belvitale.pay.yampi.com.br/checkout?skipToCheckout=1&tokenReference=1E8NNCGJW9",
-      "status": 200,
-      "expectedProduct": "CeluClin 3 Meses (3 potes)",
-      "productPresent": true,
-      "cartEmpty": false,
-      "largestImage": {
-        "src": "https://images.yampi.me/assets/stores/belvitale/uploads/images/celuclin-3-meses-3-potes-68d1be4269d32-thumb.png",
-        "width": 290,
-        "height": 329
-      }
-    },
-    {
-      "id": "seven-months",
-      "initialURL": "https://belvitale.pay.yampi.com.br/r/41CHX4MGPX",
-      "finalURL": "https://belvitale.pay.yampi.com.br/checkout?skipToCheckout=1&tokenReference=41CHX4MGPX",
-      "status": 200,
-      "expectedProduct": "CeluClin 7 Meses (5 + 2 grátis)",
-      "productPresent": true,
-      "cartEmpty": false,
-      "largestImage": {
-        "src": "https://images.yampi.me/assets/stores/belvitale/uploads/images/celuclin-7-meses-5-2-gratis-68d1bf5f6553e-thumb.png",
-        "width": 290,
-        "height": 289
-      }
-    }
-  ]
+  "checkouts": []
 }

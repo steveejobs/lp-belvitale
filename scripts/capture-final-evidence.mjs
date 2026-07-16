@@ -191,14 +191,15 @@ async function captureSectionScreenshots() {
 
   await page.locator("#resultados").scrollIntoViewIfNeeded();
   const categories = [
-    ["cellulite", "Celulite"],
-    ["laxity", "Flacidez"],
-    ["localized-fat", "Gordura localizada"],
+    ["cellulite", "#resultados-cellulite"],
+    ["laxity", "#resultados-laxity"],
+    ["localized-fat", "#resultados-localized-fat"],
   ];
-  for (const [name, label] of categories) {
-    await page.getByRole("tab", { name: label }).click();
+  for (const [name, selector] of categories) {
+    const section = page.locator(selector);
+    await section.scrollIntoViewIfNeeded();
     await page.waitForTimeout(450);
-    await page.locator("#resultados").screenshot({
+    await section.screenshot({
       path: outputPath(screenshotDirectory, `results-${name}-390.png`),
       animations: "disabled",
     });
@@ -289,10 +290,10 @@ async function recordHome() {
 async function recordGalleries() {
   await recordVideo("galleries-autoplay-swipe-pause.webm", async (page) => {
     await openPreview(page);
-    await page.locator("#resultados").scrollIntoViewIfNeeded();
+    await page.locator("#resultados-cellulite").scrollIntoViewIfNeeded();
     await page.waitForTimeout(6_000);
 
-    const media = page.locator(".proof-gallery__stage");
+    const media = page.locator("#resultados-cellulite .proof-gallery__stage");
     const box = await media.boundingBox();
     if (box) {
       await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
@@ -302,11 +303,11 @@ async function recordGalleries() {
       await page.mouse.up();
     }
     await page.waitForTimeout(2_000);
-    await page.getByRole("tab", { name: "Flacidez" }).click();
+    await page.locator("#resultados-laxity").scrollIntoViewIfNeeded();
     await page.waitForTimeout(6_000);
-    await page.getByRole("tab", { name: "Gordura localizada" }).click();
+    await page.locator("#resultados-localized-fat").scrollIntoViewIfNeeded();
     await page.waitForTimeout(6_000);
-    await page.locator(".proof-gallery__controls button").last().focus();
+    await page.locator("#resultados-localized-fat .proof-gallery__controls button").last().focus();
     await page.waitForTimeout(2_500);
     await page.keyboard.press("Tab");
     await page.waitForTimeout(6_000);

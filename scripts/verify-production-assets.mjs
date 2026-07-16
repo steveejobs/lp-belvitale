@@ -222,10 +222,11 @@ try {
 
   await page.locator("#resultados").scrollIntoViewIfNeeded();
   await page.waitForTimeout(500);
-  assert.ok((await page.locator("#resultados .proof-figure img").count()) <= 3);
-  assert.equal(await page.getByRole("tab", { name: /^Celulite/ }).count(), 1);
-  assert.equal(await page.getByRole("tab", { name: /^Flacidez/ }).count(), 1);
-  assert.equal(await page.getByRole("tab", { name: /^Gordura localizada/ }).count(), 1);
+  assert.equal(await page.locator("#resultados .proof-category").count(), 3);
+  assert.equal(await page.locator("#resultados .proof-figure img").count(), 8);
+  assert.equal(await page.locator('[data-proof-category="cellulite"]').count(), 1);
+  assert.equal(await page.locator('[data-proof-category="laxity"]').count(), 1);
+  assert.equal(await page.locator('[data-proof-category="localized-fat"]').count(), 1);
   const proofDisclaimer = page.locator(".proof-stories__disclaimer strong");
   assert.equal(await proofDisclaimer.count(), 1);
   assert.equal(

@@ -65,13 +65,10 @@ test("assets reais cumprem funções distintas e o rótulo só aparece na transp
 }) => {
   await page.goto("/");
   await page.locator("#resultados").scrollIntoViewIfNeeded();
-  await expect(page.locator("#resultados .proof-figure img")).toHaveCount(3);
+  await expect(page.locator("#resultados .proof-category")).toHaveCount(3);
+  await expect(page.locator("#resultados .proof-figure img")).toHaveCount(8);
   await expect(page.locator('#resultados img[src^="/proof/cellulite/"]')).toHaveCount(3);
-  await page.getByRole("tab", { name: "Flacidez" }).click();
-  await expect(page.locator("#resultados .proof-figure img")).toHaveCount(2);
   await expect(page.locator('#resultados img[src^="/proof/laxity/"]')).toHaveCount(2);
-  await page.getByRole("tab", { name: "Gordura localizada" }).click();
-  await expect(page.locator("#resultados .proof-figure img")).toHaveCount(3);
   await expect(page.locator('#resultados img[src^="/proof/localized-fat/"]')).toHaveCount(3);
   await page.locator(".site-footer").scrollIntoViewIfNeeded();
 
@@ -123,7 +120,7 @@ test("imagens editoriais e ofertas não exibem numeração decorativa", async ({
       ".campaign-hero__index, .product-story__counter, .product-story__scene-copy > span, .offer-card__heading > span:not(.offer-card__badge)",
     ),
   ).toHaveCount(0);
-  await expect(page.locator(".proof-gallery__dots")).toBeVisible();
+  await expect(page.locator(".proof-gallery__dots")).toHaveCount(3);
   await expect(page.locator(".product-story__media img")).toHaveCount(1);
   await expect(page.locator(".product-story__switch [role='tab']")).toHaveCount(2);
 });
