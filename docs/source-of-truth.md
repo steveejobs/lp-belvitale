@@ -27,16 +27,18 @@ A autorização não confirma identidade, data, duração, cronologia ou qual la
 - O rótulo informa que não deve ser consumido por gestantes, lactantes e crianças.
 - Composição por porção diária de 2 cápsulas: fibra da casca da maçã 150 mg; fibra de aveia 150 mg; quercetina 100 mg; vitamina C 100 mg; zinco 11 mg; extrato de cúrcuma 130 mg; chlorella 100 mg; spirulina 100 mg.
 - O PDF `154x73 - Celuclin Rotulo.pdf` é a arte plana do rótulo, não uma imagem de frasco. A página 2 é uma camada de acabamento.
-- Links de checkout recebidos do usuário, mas fora do escopo de implementação atual:
+- Links de checkout implementados somente no preview comercial:
   - 1 frasco / 1 mês informado: `https://belvitale.pay.yampi.com.br/r/PWJOI4I112`;
   - 3 frascos / 3 meses informados: `https://belvitale.pay.yampi.com.br/r/1E8NNCGJW9`;
   - 5 + 2 adicionais / 7 meses informados: `https://belvitale.pay.yampi.com.br/r/41CHX4MGPX`.
-- Os três checkouts foram revalidados em 14/07/2026 e confirmaram respectivamente as estruturas de 1 pote, 3 potes e 5 + 2 adicionais. O checkout usa “grátis” na terceira opção, mas essa condição promocional não está aprovada para a copy. Preços continuam fora da fonte de publicação porque não receberam confirmação humana.
+- Os três checkouts foram revalidados em navegador limpo em 15/07/2026 e confirmaram respectivamente as estruturas de 1 pote, 3 potes e 5 + 2 adicionais.
+- O proprietario autorizou explicitamente a copy `5 + 2 gratis` para o kit de 7 meses. Precos continuam fora da fonte de publicacao porque nao receberam confirmacao humana.
 - Autorização declarada pelo proprietário para publicar e atribuir ao CeluClin as nove imagens de resultados, mantendo suas categorias recebidas e sem alterar os arquivos.
+- O proprietario declarou possuir autorizacao para utilizar os assets do projeto: logos, packshots, capsulas, lifestyle, provas e rotulo. Essa declaracao permite o uso no preview, sem substituir uma auditoria independente de procedencia.
 
 ## Fatos ainda não confirmados
 
-- Origem, autoria, licenças e direitos das fotografias, renders, imagens lifestyle e logos.
+- Procedencia, autoria e cadeia de licencas dos assets nao foram auditadas de forma independente; existe autorizacao de uso declarada pelo proprietario.
 - Identidade, datas, duração, contexto individual e cronologia das imagens de prova; nenhum desses dados acompanha a autorização de publicação.
 - Atualidade dos dados de fabricante, distribuidora, responsável técnica e alergênicos impressos no arquivo de rótulo; eles não serão reutilizados em copy institucional sem validação empresarial.
 - Razão social, nome fantasia jurídico, e-mail, WhatsApp, endereço, cidade, estado, domínio institucional e prazo de resposta do SAC.
@@ -45,7 +47,6 @@ A autorização não confirma identidade, data, duração, cronologia ou qual la
 - Preços, parcelamento, frete, prazo, estoque, garantia, troca e reembolso.
 - E-mail, redes sociais, laudos e recomendações profissionais.
 - Autenticidade, autoria, aprovação final, autorização e identificação dos rascunhos de depoimentos. O rascunho 6 está sem texto e não há rascunho 7 no material recebido.
-- Se as imagens de frasco/cápsulas são fotografias oficiais. O texto incoerente/ilegível observado impede seu uso como representação oficial nesta rodada.
 
 ## Claims permitidos
 

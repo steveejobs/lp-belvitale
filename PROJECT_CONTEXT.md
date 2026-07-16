@@ -43,18 +43,19 @@ Cada asset principal tem uma funcao propria. Nao repetir imagens para preencher 
 | Kits | composicoes locais em `/offers/`, feitas com o packshot real |
 | Fechamento | `/lifestyle/celuclin-hero.webp` |
 
-Nao usar a arte plana do rotulo como produto, fundo, textura, formula ou kit. As imagens de checkout em `/checkout/` sao miniaturas de auditoria e nao podem ser ampliadas ou publicadas sem direitos confirmados.
+Nao usar a arte plana do rotulo como produto, fundo, textura, formula ou kit. As miniaturas recuperadas da Yampi nao ficam no projeto: somente seus metadados de auditoria permanecem em `artifacts/checkout-audit.json`.
 
 ## Arquitetura
 
-- `src/components/`: secoes da homepage e rotas.
+- `src/components/`: secoes da homepage e rotas ativas.
 - `src/components/ui/`: primitivas reutilizaveis de interface e motion.
 - `src/components/commercial/`: componentes da area de kits.
 - `src/data/`: fatos, manifests, checkouts e apresentacao tipada.
 - `src/theme/`: tokens e coreografias compartilhadas; novas cores e duracoes entram aqui.
 - `src/home.css`: composicao especifica da homepage.
 - `tools/`: utilitarios locais em Python; nunca modificar originais sem destino explicito.
-- `docs/requirements-ledger.md`: contrato cumulativo das rodadas.
+- `docs/requirements-ledger.md`: contratos atuais da pagina.
+- `docs/quiz-context.md`: estado e pendencias do quiz para a proxima fase.
 
 ## Regras de UX
 
@@ -89,3 +90,10 @@ Rodada concluida em 15/07/2026:
 - relatorio em `artifacts/lighthouse-home-refinement.json`;
 - capturas finais em `artifacts/screenshots/390x844-home-full.png` e `artifacts/screenshots/1440x900-home-full.png`;
 - gravacoes em `artifacts/videos/refinement/`.
+
+## Politica de limpeza
+
+- Nao recriar `/__concept/*`, `GalleryAtlas` ou manifests paralelos de assets.
+- Nao versionar `dist/`, `.tmp/`, `test-results/`, logs ou capturas intermediarias.
+- Preservar os testes ativos: eles protegem comportamento real e ocupam pouco espaco.
+- Manter somente evidencias finais explicitamente liberadas no `.gitignore`.

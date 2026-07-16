@@ -1,124 +1,26 @@
-# Manifesto de assets
+# Manifesto de assets ativos
 
-## Mapa ativo de uso - 15/07/2026
+Os originais permanecem em `galeria belvitale/`. A interface usa somente derivados otimizados em `public/`. O contrato tipado correspondente esta em `src/data/assetManifest.ts`.
 
-O mapa abaixo substitui a distribuicao visual anterior da homepage. Uma imagem nao deve reaparecer em outra secao apenas para preencher espaco.
-
-| Funcao | Assets ativos |
+| Funcao | Arquivos publicados |
 | --- | --- |
-| Hero | `product/celuclin-front-02.webp` |
+| Marca | `brand/belvitale-wordmark-dark.webp`, `brand/belvitale-wordmark-light.webp`, `brand/belvitale-monogram-light.webp` |
+| Hero | `product/celuclin-front-02.webp` e variantes mobile |
 | Produto | `product/celuclin-angle.webp`, `product/celuclin-front-01.webp` |
-| Liberdade | `lifestyle/freedom-01.webp` |
 | Formula | `product/celuclin-capsules.webp` |
-| Resultados | todas as nove imagens em `proof/`, por categoria |
-| Rotulo | `label/celuclin-label-front.webp`, somente na transparencia |
+| Liberdade | `lifestyle/freedom-01.webp` |
 | Rotina | `lifestyle/routine-01.webp`, `product/celuclin-hand.webp` |
-| Ofertas | `offers/celuclin-one.webp`, `offers/celuclin-three.webp`, `offers/celuclin-seven.webp` |
 | Fechamento | `lifestyle/celuclin-hero.webp` |
+| Rotulo | `label/celuclin-label-front.webp`, `label/celuclin-label-complete.pdf` |
+| Kits | `offers/celuclin-one.webp`, `offers/celuclin-three.webp`, `offers/celuclin-seven.webp` |
+| Celulite | quatro arquivos em `proof/cellulite/` |
+| Flacidez | dois arquivos em `proof/laxity/` |
+| Gordura localizada | tres arquivos em `proof/localized-fat/` |
 
-As composicoes em `offers/` repetem o packshot aprovado somente para representar a quantidade real de cada kit. Isso e uma funcao comercial, nao reutilizacao editorial da foto do hero.
+## Regras
 
-Auditoria visual concluída em 14/07/2026. Os arquivos-fonte permanecem preservados em `galeria belvitale/`. “Origem” descreve apenas o que foi possível comprovar com os arquivos e com as instruções recebidas; aparência visual não é tratada como prova de procedência.
-
-## Adendo de autorização — campanha atual
-
-Em 14/07/2026, o proprietário declarou possuir documentação e autorização para publicar e atribuir ao CeluClin as nove imagens classificadas nas séries de celulite, flacidez e gordura localizada. O status corrente dessas nove linhas é `owner-authorized`, substituindo o `pending-verification` registrado na auditoria inicial da tabela histórica abaixo.
-
-O adendo não cria datas, duração, identidade, cronologia ou contexto individual. Os PNGs-fonte permanecem intactos em `galeria belvitale/`; os WebPs de entrega preservam dimensões proporcionais e enquadramento integral, sem retoque corporal.
-
-Em 15/07/2026, o proprietário autorizou explicitamente o uso, na homepage, das imagens de produto, cápsulas, lifestyle e logos fornecidas na galeria. Esses arquivos passam a `owner-authorized` para uso visual na rota `/`. A autorização não permite usar texto pequeno ou ilegível dos packshots como fonte factual; a arte plana aprovada continua sendo a única fonte visual do rótulo. Kits e checkout permanecem bloqueados.
-
-## Regras de status
-
-- `approved-label`: arte plana do rótulo confirmada pelo usuário; pode ser exibida como informação de embalagem, nunca como prova de eficácia.
-- `owner-authorized`: autorização declarada pelo proprietário para publicação e atribuição ao CeluClin, limitada ao arquivo e à categoria recebidos; não confirma cronologia ou contexto ausente.
-- `pending-verification`: origem, autorização, contexto, vínculo com cliente real e integridade ainda não confirmados; proibido em produção.
-- `restricted-product`: arquivo mostra o produto, mas a origem não foi confirmada e o texto visível diverge ou está ilegível; não pode representar o produto oficial.
-- `illustrative-only`: pode, após confirmação de direitos, ser usada apenas como ambientação; nunca como evidência do produto ou de resultado.
-- `brand-review`: peça gráfica disponível, com autoria/direitos ainda não documentados.
-
-## Fontes auditadas
-
-| Arquivo-fonte                                                      | Tipo real                              |                                            Dimensões |        Peso | Conteúdo observado                                                                                           | Origem real ou IA                                                                                 | Seção sugerida                                        | Pode ser prova?                                                            | Status                 |
-| ------------------------------------------------------------------ | -------------------------------------- | ---------------------------------------------------: | ----------: | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------- |
-| `galeria belvitale/154x73 - Celuclin Rotulo.pdf`                   | PDF 1.6, 2 páginas                     | 436,535 × 206,929 pt por página (aprox. 154 × 73 mm) |   846.156 B | Pág. 1: arte plana completa do rótulo; pág. 2: camada técnica de brilho/metalizados. Não contém frasco.      | Arte gráfica confirmada pelo usuário; não é fotografia nem imagem gerada para esta implementação. | Transparência do rótulo e download do PDF original    | Sim, apenas como fonte da informação impressa; não como prova de resultado | `approved-label`       |
-| `galeria belvitale/prova 1(1).png`                                 | PNG                                    |                                       1448 × 1086 px | 1.983.464 B | Montagem lado a lado de região glútea/coxa, com roupas e cenários diferentes                                 | Não confirmada; apresenta características de composição/render que exigem validação               | Resultados autorizados — série celulite                      | Sim, no escopo autorizado | `owner-authorized` |
-| `galeria belvitale/prova 2.png`                                    | PNG                                    |                                       1448 × 1086 px | 2.131.870 B | Montagem lado a lado com detalhe de coxa em fundo rosado                                                     | Não confirmada; apresenta características de composição/render que exigem validação               | Resultados autorizados — série celulite                      | Sim, no escopo autorizado | `owner-authorized` |
-| `galeria belvitale/prova 3.png`                                    | PNG                                    |                                       1448 × 1086 px | 1.976.951 B | Montagem lado a lado de região glútea e pernas, com roupas diferentes                                        | Não confirmada; apresenta características de composição/render que exigem validação               | Resultados autorizados — série celulite                      | Sim, no escopo autorizado | `owner-authorized` |
-| `galeria belvitale/prova 5.png`                                    | PNG                                    |                                       1254 × 1254 px | 2.054.808 B | Montagem lado a lado de região glútea e pernas com biquíni                                                   | Não confirmada; apresenta características de composição/render que exigem validação               | Resultados autorizados — série celulite                      | Sim, no escopo autorizado | `owner-authorized` |
-| `galeria belvitale/prova 1 flacidez.png`                           | PNG                                    |                                       1254 × 1254 px | 1.952.471 B | Montagem lado a lado de costas, região glútea e pernas                                                       | Não confirmada; apresenta características de composição/render que exigem validação               | Resultados autorizados — série flacidez                      | Sim, no escopo autorizado | `owner-authorized` |
-| `galeria belvitale/prova 2 flacidez.png`                           | PNG                                    |                                       1373 × 1145 px | 2.127.669 B | Montagem lado a lado de braço erguido em fundo escuro                                                        | Não confirmada; apresenta características de composição/render que exigem validação               | Resultados autorizados — série flacidez                      | Sim, no escopo autorizado | `owner-authorized` |
-| `galeria belvitale/prova gordura localizada  (1).png`              | PNG                                    |                                       1537 × 1023 px | 2.276.052 B | Montagem lado a lado de abdômen de perfil, com roupas diferentes                                             | Não confirmada; apresenta características de composição/render que exigem validação               | Resultados autorizados — série gordura localizada            | Sim, no escopo autorizado | `owner-authorized` |
-| `galeria belvitale/prova gordura localizada  (2).png`              | PNG                                    |                                       1448 × 1086 px | 2.011.397 B | Montagem lado a lado de abdômen de perfil, com roupas diferentes                                             | Não confirmada; apresenta características de composição/render que exigem validação               | Resultados autorizados — série gordura localizada            | Sim, no escopo autorizado | `owner-authorized` |
-| `galeria belvitale/prova gordura localizada  (3).png`              | PNG                                    |                                       1448 × 1086 px | 2.459.604 B | Montagem lado a lado de cintura/abdômen de perfil, com roupas diferentes                                     | Não confirmada; apresenta características de composição/render que exigem validação               | Resultados autorizados — série gordura localizada            | Sim, no escopo autorizado | `owner-authorized` |
-| `galeria belvitale/publicproductceluclin-front (1).png`            | PNG, apesar do padrão de nome da série |                                       1122 × 1402 px | 1.870.666 B | Frasco frontal em fundo claro; texto pequeno do rótulo contém trechos incoerentes/ilegíveis                  | Não confirmada; aparência de render/IA, a validar                                                 | Não usar até validação do arquivo oficial             | Não                                                                        | `restricted-product`   |
-| `galeria belvitale/publicproductceluclin-front (2).png`            | PNG                                    |                                       1122 × 1402 px | 1.760.306 B | Segunda vista frontal do frasco em fundo claro; texto pequeno do rótulo contém trechos incoerentes/ilegíveis | Não confirmada; aparência de render/IA, a validar                                                 | Não usar até validação do arquivo oficial             | Não                                                                        | `restricted-product`   |
-| `galeria belvitale/publicproductceluclin-angle.webp.png`           | PNG, não WebP                          |                                       1122 × 1402 px | 1.877.157 B | Frasco em ângulo sobre fundo roxo; texto pequeno do rótulo contém trechos incoerentes/ilegíveis              | Não confirmada; aparência de render/IA, a validar                                                 | Não usar até validação do arquivo oficial             | Não                                                                        | `restricted-product`   |
-| `galeria belvitale/publicproductceluclin-hand.webp.png`            | PNG, não WebP                          |                                       1122 × 1402 px | 1.943.323 B | Frasco segurado por mão; texto pequeno do rótulo contém trechos incoerentes/ilegíveis                        | Não confirmada; aparência de render/IA, a validar                                                 | Não usar até validação do arquivo oficial             | Não                                                                        | `restricted-product`   |
-| `galeria belvitale/publicproductcapsules.webp.png`                 | PNG, não WebP                          |                                       1122 × 1402 px | 1.811.604 B | Cápsulas vermelhas sobre superfície mineral                                                                  | Não confirmada; aparência de composição/render, a validar                                         | Somente após confirmação de que são cápsulas oficiais | Não                                                                        | `restricted-product`   |
-| `galeria belvitale/publiclifestylehero.webp.png`                   | PNG, não WebP                          |                                       1122 × 1402 px | 1.813.501 B | Frasco em composição botânica; rótulo contém trechos incoerentes/ilegíveis                                   | Não confirmada; aparência de render/IA, a validar                                                 | Não usar como produto oficial                         | Não                                                                        | `restricted-product`   |
-| `galeria belvitale/publiclifestylefreedom-01.webp.png`             | PNG, não WebP                          |                                       1122 × 1402 px | 1.918.747 B | Mulher adulta em ambiente doméstico claro                                                                    | Não confirmada; aparência de imagem ilustrativa/IA, a validar                                     | Lifestyle ilustrativo, fora do escopo atual           | Não                                                                        | `illustrative-only`    |
-| `galeria belvitale/publiclifestyleroutine-01.webp.png`             | PNG, não WebP                          |                                       1122 × 1402 px | 2.013.083 B | Mulher servindo água em ambiente doméstico                                                                   | Não confirmada; aparência de imagem ilustrativa/IA, a validar                                     | Lifestyle ilustrativo, fora do escopo atual           | Não                                                                        | `illustrative-only`    |
-| `galeria belvitale/BV belvitale.png`                               | PNG                                    |                                         500 × 500 px |   254.358 B | Monograma BV preto sobre fundo quase branco                                                                  | Autoria e direitos não documentados                                                               | Marca, após aprovação                                 | Não                                                                        | `brand-review`         |
-| `galeria belvitale/logos belvitale/logo sem fundo preta.png`       | PNG com transparência                  |                                         537 × 400 px |    52.635 B | Monograma BV preto                                                                                           | Autoria e direitos não documentados                                                               | Marca, após aprovação                                 | Não                                                                        | `brand-review`         |
-| `galeria belvitale/logos belvitale/logo sem fundo branca.png`      | PNG com transparência                  |                                         546 × 480 px |    53.232 B | Monograma BV branco                                                                                          | Autoria e direitos não documentados                                                               | Marca, após aprovação                                 | Não                                                                        | `brand-review`         |
-| `galeria belvitale/logos belvitale/belvitale sem fundo preto.png`  | PNG com transparência                  |                                         496 × 369 px |    27.549 B | Wordmark “BELVITALE” escuro                                                                                  | Autoria e direitos não documentados                                                               | Marca, após aprovação                                 | Não                                                                        | `brand-review`         |
-| `galeria belvitale/logos belvitale/belvitale sem fundo branco.png` | PNG com transparência                  |                                        2508 × 627 px |   112.392 B | Wordmark “BELVITALE” branco                                                                                  | Autoria e direitos não documentados                                                               | Marca, após aprovação                                 | Não                                                                        | `brand-review`         |
-
-## Séries e ordem editorial
-
-Os arquivos de cada série são montagens independentes. Não há metadados ou contexto que permitam afirmar cronologia, equivalência de pessoas, período ou relação entre o lado esquerdo e o direito. Por isso, a interface não usa “antes”, “depois”, datas ou números de dias.
-
-- Celulite: `prova 5.png`, `prova 3.png`, `prova 1(1).png`, `prova 2.png`. A ordem de desenvolvimento vai do enquadramento mais amplo ao detalhe; não é cronológica.
-- Flacidez: `prova 1 flacidez.png`, `prova 2 flacidez.png`. A ordem apenas agrupa corpo e braço; não é cronológica.
-- Gordura localizada: `prova gordura localizada  (1).png`, `(2).png`, `(3).png`. A numeração é preservada somente como identidade do arquivo; não é cronológica.
-
-O arquivo `prova 1` citado na classificação recebida não está presente no diretório. A série de celulite tem quatro arquivos disponíveis, não cinco.
-
-## Derivados normalizados gerados
-
-As cópias abaixo foram geradas sem remover ou renomear as fontes. `proof`, `product`, `lifestyle` e `brand` permanecem no `dist/` por autorização expressa do proprietário. `checkout` continua excluído automaticamente do build normal; `label` permanece publicado somente em sua seção própria.
-
-| Fonte                                      | Cópia normalizada                                  | Tipo    |      Dimensões |      Peso | Uso/status                                 |
-| ------------------------------------------ | -------------------------------------------------- | ------- | -------------: | --------: | ------------------------------------------ |
-| `prova 5.png`                              | `public/proof/cellulite/cellulite-01.webp`         | WebP    | 1254 × 1254 px |  95.004 B | Produção; `owner-authorized`    |
-| `prova 3.png`                              | `public/proof/cellulite/cellulite-02.webp`         | WebP    | 1448 × 1086 px |  89.568 B | Produção; `owner-authorized`    |
-| `prova 1(1).png`                           | `public/proof/cellulite/cellulite-03.webp`         | WebP    | 1448 × 1086 px |  85.920 B | Produção; `owner-authorized`    |
-| `prova 2.png`                              | `public/proof/cellulite/cellulite-04.webp`         | WebP    | 1448 × 1086 px | 116.690 B | Produção; `owner-authorized`    |
-| `prova 1 flacidez.png`                     | `public/proof/laxity/laxity-01.webp`               | WebP    | 1254 × 1254 px | 101.980 B | Produção; `owner-authorized`    |
-| `prova 2 flacidez.png`                     | `public/proof/laxity/laxity-02.webp`               | WebP    | 1373 × 1145 px | 120.048 B | Produção; `owner-authorized`    |
-| `prova gordura localizada  (1).png`        | `public/proof/localized-fat/localized-fat-01.webp` | WebP    | 1537 × 1023 px | 136.386 B | Produção; `owner-authorized`    |
-| `prova gordura localizada  (2).png`        | `public/proof/localized-fat/localized-fat-02.webp` | WebP    | 1448 × 1086 px |  93.896 B | Produção; `owner-authorized`    |
-| `prova gordura localizada  (3).png`        | `public/proof/localized-fat/localized-fat-03.webp` | WebP    | 1448 × 1086 px | 182.752 B | Produção; `owner-authorized`    |
-| `publicproductceluclin-front (1).png`      | `public/product/celuclin-front-01.webp`            | WebP    | 1122 × 1402 px | 117.802 B | Excluído da produção; `restricted-product` |
-| `publicproductceluclin-front (2).png`      | `public/product/celuclin-front-02.webp`            | WebP    | 1122 × 1402 px |  95.674 B | Excluído da produção; `restricted-product` |
-| `public/product/celuclin-front-02.webp`    | `public/product/celuclin-front-02-640.avif`         | AVIF    |  640 × 800 px |  11.229 B | Hero mobile do preview; `restricted-product` |
-| `public/product/celuclin-front-02.webp`    | `public/product/celuclin-front-02-640.webp`         | WebP    |  640 × 800 px |  16.220 B | Fallback mobile do preview; `restricted-product` |
-| `publicproductceluclin-angle.webp.png`     | `public/product/celuclin-angle.webp`               | WebP    | 1122 × 1402 px |  95.722 B | Excluído da produção; `restricted-product` |
-| `publicproductceluclin-hand.webp.png`      | `public/product/celuclin-hand.webp`                | WebP    | 1122 × 1402 px | 108.440 B | Excluído da produção; `restricted-product` |
-| `publicproductcapsules.webp.png`           | `public/product/celuclin-capsules.webp`            | WebP    | 1122 × 1402 px | 136.318 B | Excluído da produção; `restricted-product` |
-| `publiclifestylehero.webp.png`             | `public/lifestyle/celuclin-hero.webp`              | WebP    | 1122 × 1402 px | 115.266 B | Excluído da produção; `restricted-product` |
-| `publiclifestylefreedom-01.webp.png`       | `public/lifestyle/freedom-01.webp`                 | WebP    | 1122 × 1402 px | 122.818 B | Excluído da produção; `illustrative-only`  |
-| `publiclifestyleroutine-01.webp.png`       | `public/lifestyle/routine-01.webp`                 | WebP    | 1122 × 1402 px | 138.724 B | Excluído da produção; `illustrative-only`  |
-| `BV belvitale.png`                         | `public/brand/belvitale-monogram-square.webp`      | WebP    |   500 × 500 px |   6.566 B | Excluído da produção; `brand-review`       |
-| `logo sem fundo preta.png`                 | `public/brand/belvitale-monogram-dark.webp`        | WebP    |   537 × 400 px |  18.202 B | Excluído da produção; `brand-review`       |
-| `logo sem fundo branca.png`                | `public/brand/belvitale-monogram-light.webp`       | WebP    |   546 × 480 px |  20.126 B | Excluído da produção; `brand-review`       |
-| `belvitale sem fundo preto.png`            | `public/brand/belvitale-wordmark-dark.webp`        | WebP    |   496 × 369 px |  14.034 B | Excluído da produção; `brand-review`       |
-| `belvitale sem fundo branco.png`           | `public/brand/belvitale-wordmark-light.webp`       | WebP    |  2508 × 627 px |  86.812 B | Excluído da produção; `brand-review`       |
-| `checkout-assets/celuclin-kit-01-month-yampi.png`  | `public/checkout/celuclin-kit-01-month-yampi.png`  | PNG     |   290 × 314 px |  63.745 B | Excluído da produção; `commercial-review` |
-| `checkout-assets/celuclin-kit-03-months-yampi.png` | `public/checkout/celuclin-kit-03-months-yampi.png` | PNG     |   290 × 329 px |  89.694 B | Excluído da produção; `commercial-review` |
-| `checkout-assets/celuclin-kit-07-months-yampi.png` | `public/checkout/celuclin-kit-07-months-yampi.png` | PNG     |   290 × 289 px |  84.412 B | Excluído da produção; `commercial-review` |
-| página 1 de `154x73 - Celuclin Rotulo.pdf` | `public/label/celuclin-label-front.webp`           | WebP    |  1310 × 621 px | 187.194 B | Produção; `approved-label`                 |
-| `154x73 - Celuclin Rotulo.pdf`             | `public/label/celuclin-label-complete.pdf`         | PDF 1.6 |      2 páginas | 846.156 B | Produção/download; `approved-label`        |
-
-## Assets recuperados dos checkouts
-
-As três mídias abaixo foram baixadas das páginas Yampi fornecidas pelo usuário em 14/07/2026. São miniaturas públicas do resumo do checkout, não versões originais em alta resolução. Nesta rodada, cópias literais foram colocadas em `public/checkout/` para o preview interno; a pasta é removida automaticamente do build público por `vite.config.ts`.
-
-| Arquivo local                                                        | Tipo real |    Dimensões |     Peso | Conteúdo observado                                     | Origem                                                                               | Seção sugerida                   | Pode ser prova? | Status              |
-| -------------------------------------------------------------------- | --------- | -----------: | -------: | ------------------------------------------------------ | ------------------------------------------------------------------------------------ | -------------------------------- | --------------- | ------------------- |
-| `galeria belvitale/checkout-assets/celuclin-kit-01-month-yampi.png`  | PNG       | 290 × 314 px | 63.745 B | Composição com um frasco CeluClin sobre fundo cinza    | Checkout Yampi do kit de 1 mês; direitos e arquivo original ainda não documentados   | Kits, em rodada comercial futura | Não             | `commercial-review` |
-| `galeria belvitale/checkout-assets/celuclin-kit-03-months-yampi.png` | PNG       | 290 × 329 px | 89.694 B | Composição com três frascos CeluClin sobre fundo cinza | Checkout Yampi do kit de 3 meses; direitos e arquivo original ainda não documentados | Kits, em rodada comercial futura | Não             | `commercial-review` |
-| `galeria belvitale/checkout-assets/celuclin-kit-07-months-yampi.png` | PNG       | 290 × 289 px | 84.412 B | Composição com sete frascos CeluClin sobre fundo cinza | Checkout Yampi do kit de 7 meses; direitos e arquivo original ainda não documentados | Kits, em rodada comercial futura | Não             | `commercial-review` |
-
-As versões sem `-thumb` retornaram HTTP 404. Caso a rodada comercial exija recorte maior ou leitura detalhada do rótulo, será necessário fornecer os arquivos originais em alta resolução.
+- Nao repetir imagens editoriais para preencher espaco.
+- Nao usar a arte plana do rotulo como produto, textura, fundo ou kit.
+- Provas usam `contain`, sem filtro, retoque ou cronologia inventada.
+- Kits sao composicoes locais do packshot real; as miniaturas Yampi nao sao publicadas.
+- Nao reintroduzir o monograma quadrado, copias de checkout ou manifests paralelos.

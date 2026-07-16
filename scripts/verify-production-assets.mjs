@@ -48,7 +48,6 @@ const homeMediaFiles = [
   "lifestyle/routine-01.webp",
   "brand/belvitale-wordmark-dark.webp",
   "brand/belvitale-wordmark-light.webp",
-  "brand/belvitale-monogram-dark.webp",
   "brand/belvitale-monogram-light.webp",
 ];
 

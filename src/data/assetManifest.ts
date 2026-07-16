@@ -30,19 +30,9 @@ export interface AuditedAsset {
 }
 
 export const auditedAssetManifest: readonly AuditedAsset[] = [
-  { path: "/brand/belvitale-monogram-dark.webp", classification: "logo", width: 537, height: 400, usage: "active" },
   { path: "/brand/belvitale-monogram-light.webp", classification: "logo", width: 546, height: 480, usage: "active" },
   { path: "/brand/belvitale-wordmark-dark.webp", classification: "logo", width: 496, height: 369, usage: "active" },
   { path: "/brand/belvitale-wordmark-light.webp", classification: "logo", width: 2508, height: 627, usage: "active" },
-  {
-    path: "/brand/belvitale-monogram-square.webp",
-    classification: "inadequate-or-duplicate",
-    width: 500,
-    height: 500,
-    usage: "unused",
-    duplicateOf: "/brand/belvitale-monogram-dark.webp",
-    note: "Monograma escuro repetido sobre fundo claro.",
-  },
   { path: "/product/celuclin-front-02.webp", classification: "front-bottle", width: 1122, height: 1402, usage: "active" },
   { path: "/product/celuclin-front-01.webp", classification: "front-bottle", width: 1122, height: 1402, usage: "active" },
   { path: "/product/celuclin-front-02-640.webp", classification: "front-bottle", width: 640, height: 800, usage: "responsive-variant", duplicateOf: "/product/celuclin-front-02.webp" },
@@ -67,28 +57,4 @@ export const auditedAssetManifest: readonly AuditedAsset[] = [
   { path: "/proof/localized-fat/localized-fat-03.webp", classification: "localized-fat", width: 1448, height: 1086, usage: "active" },
   { path: "/label/celuclin-label-front.webp", classification: "label", width: 1310, height: 621, usage: "label-only" },
   { path: "/label/celuclin-label-complete.pdf", classification: "label", width: null, height: null, usage: "label-only" },
-  {
-    path: "/checkout/celuclin-kit-01-month-yampi.png",
-    classification: "kit",
-    width: 290,
-    height: 314,
-    usage: "audit-only",
-    note: "Miniatura oficial; não ampliar nem publicar sem confirmação de direitos.",
-  },
-  {
-    path: "/checkout/celuclin-kit-03-months-yampi.png",
-    classification: "kit",
-    width: 290,
-    height: 329,
-    usage: "audit-only",
-    note: "Miniatura oficial; não ampliar nem publicar sem confirmação de direitos.",
-  },
-  {
-    path: "/checkout/celuclin-kit-07-months-yampi.png",
-    classification: "kit",
-    width: 290,
-    height: 289,
-    usage: "audit-only",
-    note: "Miniatura oficial; não ampliar nem publicar sem confirmação de direitos.",
-  },
 ] as const;
