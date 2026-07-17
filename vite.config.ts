@@ -186,7 +186,7 @@ function quizPublicationSeo(
       const tags = [
         `<link rel="canonical" href="${quizUrl}" />`,
         '<meta property="og:title" content="Quiz de rotina | Belvitale" />',
-        '<meta property="og:description" content="Seis escolhas rápidas sobre começo, retomada e vida real para descobrir um ritmo de autocuidado." />',
+        '<meta property="og:description" content="Sete escolhas e sete momentos narrativos sobre rotina, prova e compromisso, com recomendação comercial transparente." />',
         '<meta property="og:type" content="website" />',
         `<meta property="og:url" content="${quizUrl}" />`,
       ].join("\n    ");
