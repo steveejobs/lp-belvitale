@@ -1,7 +1,7 @@
-import { useRef, useState, type PointerEvent } from "react";
+import { useState } from "react";
 import { homeContent } from "../content/homeContent";
 import { campaignAssets, type CampaignAsset } from "../data/campaignAssets";
-import { useReducedMotion } from "../hooks/useReducedMotion";
+import { usePointerMotion } from "../hooks/usePointerMotion";
 import { Reveal } from "./ui/Reveal";
 
 interface ProductView {
@@ -31,29 +31,19 @@ const productViews = [
 
 export function ProductStory() {
   const [activeId, setActiveId] = useState<ProductView["id"]>("angle");
-  const mediaRef = useRef<HTMLElement>(null);
-  const reducedMotion = useReducedMotion();
+  const pointerMotion = usePointerMotion<HTMLElement>({
+    propertyX: "--story-pointer-x",
+    propertyY: "--story-pointer-y",
+    maxX: 7,
+    maxY: 5,
+  });
   const product = homeContent.product;
   const activeView =
     productViews.find((view) => view.id === activeId) ?? productViews[0];
 
-  function moveProduct(event: PointerEvent<HTMLElement>) {
-    if (reducedMotion || event.pointerType !== "mouse") return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-    mediaRef.current?.style.setProperty("--story-pointer-x", `${String(x * 7)}px`);
-    mediaRef.current?.style.setProperty("--story-pointer-y", `${String(y * 5)}px`);
-  }
-
-  function resetProduct() {
-    mediaRef.current?.style.setProperty("--story-pointer-x", "0px");
-    mediaRef.current?.style.setProperty("--story-pointer-y", "0px");
-  }
-
   return (
     <section className="product-story" id="celuclin" aria-labelledby="product-title">
-      <Reveal className="product-story__intro section-shell" effect="slide-left">
+      <Reveal className="product-story__intro section-shell" effect="slide-left" stagger>
         <p className="eyebrow">{product.eyebrow}</p>
         <h2 id="product-title">{product.title}</h2>
         <p>{product.body}</p>
@@ -63,10 +53,8 @@ export function ProductStory() {
         <Reveal className="product-story__media" effect="clip" delay={60}>
           <figure
             id="product-view-panel"
-            ref={mediaRef}
+            {...pointerMotion}
             data-view={activeView.id}
-            onPointerMove={moveProduct}
-            onPointerLeave={resetProduct}
           >
             <img
               key={activeView.id}
@@ -86,7 +74,7 @@ export function ProductStory() {
           </figure>
         </Reveal>
 
-        <div className="product-story__details">
+        <Reveal className="product-story__details" effect="slide-right" delay={100}>
           <div className="product-story__switch" role="tablist" aria-label="Ângulos do produto">
             {productViews.map((view) => (
               <button
@@ -115,7 +103,7 @@ export function ProductStory() {
             <strong>Suplemento alimentar em cápsulas.</strong>
             <span>Não é medicamento.</span>
           </p>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

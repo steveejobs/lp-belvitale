@@ -15,7 +15,6 @@ import { getLegalDocumentByPath } from "./data/legalDocuments";
 import { regulatoryFacts } from "./data/regulatoryFacts";
 import { useAccessibleHashFocus } from "./hooks/useAccessibleHashFocus";
 import { isQuizPath } from "./quiz/quizRouting";
-import "./theme/index.css";
 import "./home.css";
 
 const QuizRoute = lazy(() =>

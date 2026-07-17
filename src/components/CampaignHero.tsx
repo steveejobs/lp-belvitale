@@ -1,29 +1,18 @@
-import { useRef, type PointerEvent } from "react";
 import { homeContent } from "../content/homeContent";
 import { campaignAssets } from "../data/campaignAssets";
 import { commercialNavigationReady } from "../data/commercialPreview";
-import { useReducedMotion } from "../hooks/useReducedMotion";
+import { usePointerMotion } from "../hooks/usePointerMotion";
 
 export function CampaignHero() {
-  const visualRef = useRef<HTMLDivElement>(null);
-  const reducedMotion = useReducedMotion();
+  const pointerMotion = usePointerMotion<HTMLDivElement>({
+    propertyX: "--pointer-x",
+    propertyY: "--pointer-y",
+    maxX: 8,
+    maxY: 6,
+  });
   const product = campaignAssets.productFrontPrimary;
   const { hero } = homeContent;
   const title = `${hero.titleLead} ${hero.titleAccent}`;
-
-  function moveProduct(event: PointerEvent<HTMLDivElement>) {
-    if (reducedMotion || event.pointerType !== "mouse") return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-    visualRef.current?.style.setProperty("--pointer-x", `${String(x * 8)}px`);
-    visualRef.current?.style.setProperty("--pointer-y", `${String(y * 6)}px`);
-  }
-
-  function resetProduct() {
-    visualRef.current?.style.setProperty("--pointer-x", "0px");
-    visualRef.current?.style.setProperty("--pointer-y", "0px");
-  }
 
   return (
     <section className="campaign-hero" id="inicio" aria-labelledby="hero-title">
@@ -58,9 +47,7 @@ export function CampaignHero() {
         <div
           className="campaign-hero__visual"
           data-media-status="approved"
-          ref={visualRef}
-          onPointerMove={moveProduct}
-          onPointerLeave={resetProduct}
+          {...pointerMotion}
         >
           <picture>
             <source

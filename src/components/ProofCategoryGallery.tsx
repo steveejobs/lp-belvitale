@@ -9,6 +9,7 @@ import {
 import type { ProofAsset, ProofCategory } from "../data/proofGallery";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 import { ArrowIcon } from "./ui/ArrowIcon";
+import { Reveal } from "./ui/Reveal";
 
 const autoplayDelay = 5200;
 const resumeDelay = 3200;
@@ -213,25 +214,26 @@ export function ProofCategoryGallery({ category, assets }: ProofCategoryGalleryP
         <p>{assets.length} imagens autorizadas</p>
       </header>
 
-      <div
-        className="proof-gallery"
-        ref={galleryRef}
-        data-category={category.id}
-        data-active-index={activeIndex}
-        data-autoplay={autoplayActive}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => {
-          setHovered(false);
-          resumeAfterInteraction();
-        }}
-        onFocusCapture={() => setFocusWithin(true)}
-        onBlurCapture={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget)) {
-            setFocusWithin(false);
+      <Reveal effect="scale">
+        <div
+          className="proof-gallery"
+          ref={galleryRef}
+          data-category={category.id}
+          data-active-index={activeIndex}
+          data-autoplay={autoplayActive}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => {
+            setHovered(false);
             resumeAfterInteraction();
-          }
-        }}
-      >
+          }}
+          onFocusCapture={() => setFocusWithin(true)}
+          onBlurCapture={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+              setFocusWithin(false);
+              resumeAfterInteraction();
+            }
+          }}
+        >
         <div className="proof-gallery__meta">
           <strong>{category.label}</strong>
           <span>
@@ -288,7 +290,8 @@ export function ProofCategoryGallery({ category, assets }: ProofCategoryGalleryP
         <div className="proof-gallery__progress" aria-hidden="true">
           <span key={`${category.id}-${String(activeIndex)}`} />
         </div>
-      </div>
+        </div>
+      </Reveal>
     </section>
   );
 }

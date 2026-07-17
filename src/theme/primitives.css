@@ -1,0 +1,57 @@
+:root {
+  /* Brand palette — values sampled from approved Belvitale/CeluClin assets. */
+  --bv-primitive-warm-50: #fffaf8;
+  --bv-primitive-warm-100: #fbf8f5;
+  --bv-primitive-white: #ffffff;
+  --bv-primitive-ink-950: #171216;
+  --bv-primitive-plum-950: #25111f;
+  --bv-primitive-plum-900: #2a1022;
+  --bv-primitive-plum-700: #4f1535;
+  --bv-primitive-plum-600: #6b2448;
+  --bv-primitive-muted-700: #66535e;
+  --bv-primitive-muted-600: #6d6469;
+  --bv-primitive-magenta-700: #a70b58;
+  --bv-primitive-magenta-600: #b40860;
+  --bv-primitive-magenta-500: #d80b70;
+  --bv-primitive-pink-500: #e50073;
+  --bv-primitive-pink-200: #f5bed4;
+  --bv-primitive-label-pink: #c34ba1;
+  --bv-primitive-violet: #6d2f88;
+  --bv-primitive-rose-100: #f7e8ed;
+  --bv-primitive-rose-200: #f3e4e7;
+  --bv-primitive-line-100: #e7ded9;
+  --bv-primitive-line-200: #dfccd5;
+  --bv-primitive-capsule-700: #a91b31;
+  --bv-primitive-capsule-900: #681525;
+  --bv-primitive-warm-200: #ead5cc;
+
+  /* A 4 px rhythm keeps mobile spacing predictable. */
+  --bv-space-1: 0.25rem;
+  --bv-space-2: 0.5rem;
+  --bv-space-3: 0.75rem;
+  --bv-space-4: 1rem;
+  --bv-space-5: 1.25rem;
+  --bv-space-6: 1.5rem;
+  --bv-space-8: 2rem;
+  --bv-space-10: 2.5rem;
+  --bv-space-12: 3rem;
+  --bv-space-16: 4rem;
+
+  --bv-primitive-radius-xs: 0.25rem;
+  --bv-primitive-radius-sm: 0.5rem;
+  --bv-primitive-radius-md: 0.75rem;
+  --bv-primitive-radius-lg: 1rem;
+  --bv-primitive-radius-round: 999px;
+
+  --bv-primitive-shadow-header: 0 0.5rem 1.875rem rgb(31 18 26 / 5%);
+  --bv-primitive-shadow-card: 0 1rem 2.5rem rgb(37 17 31 / 10%);
+  --bv-primitive-shadow-floating: 0 0.75rem 2.125rem rgb(23 18 22 / 14%);
+
+  --bv-duration-press: 90ms;
+  --bv-duration-fast: 160ms;
+  --bv-duration-medium: 280ms;
+  --bv-duration-enter: 420ms;
+  --bv-duration-exit: 220ms;
+  --bv-easing-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --bv-easing-exit: cubic-bezier(0.4, 0, 1, 1);
+}

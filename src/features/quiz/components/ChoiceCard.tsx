@@ -1,4 +1,7 @@
 import type { QuizOption } from "../domain/quiz.types";
+import { ArrowIcon } from "../../../components/ui/ArrowIcon";
+import { CheckIcon } from "../../../components/ui/CheckIcon";
+import { usePointerMotion } from "../../../hooks/usePointerMotion";
 import { getMotionFamilyAttribute } from "../motion/quiz.transitions";
 
 interface ChoiceCardProps {
@@ -9,6 +12,12 @@ interface ChoiceCardProps {
 }
 
 export function ChoiceCard({ option, selected, index, onSelect }: ChoiceCardProps) {
+  const pointerMotion = usePointerMotion<HTMLButtonElement>({
+    propertyX: "--choice-pointer-x",
+    propertyY: "--choice-pointer-y",
+    output: "position",
+  });
+
   return (
     <button
       className="quiz-choice"
@@ -17,6 +26,7 @@ export function ChoiceCard({ option, selected, index, onSelect }: ChoiceCardProp
       data-selected={selected}
       data-motion={getMotionFamilyAttribute("choice")}
       onClick={() => onSelect(option.id)}
+      {...pointerMotion}
     >
       <span className="quiz-choice__index" aria-hidden="true">
         {String(index + 1).padStart(2, "0")}
@@ -25,7 +35,9 @@ export function ChoiceCard({ option, selected, index, onSelect }: ChoiceCardProp
         <strong>{option.label}</strong>
         {option.detail === undefined ? null : <small>{option.detail}</small>}
       </span>
-      <span className="quiz-choice__state" aria-hidden="true">{selected ? "✓" : "→"}</span>
+      <span className="quiz-choice__state" aria-hidden="true">
+        {selected ? <CheckIcon /> : <ArrowIcon direction="right" />}
+      </span>
     </button>
   );
 }

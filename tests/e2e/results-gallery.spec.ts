@@ -73,5 +73,13 @@ test("cada categoria mantém no DOM somente atual, anterior e próxima", async (
     )) {
       expect(fit).toBe("contain");
     }
+    const framePadding = await gallery.locator('.proof-figure[data-position="current"]').evaluate((figure) => {
+      const style = getComputedStyle(figure);
+      return [style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft]
+        .map((value) => Number.parseFloat(value));
+    });
+    for (const padding of framePadding) {
+      expect(padding).toBeGreaterThanOrEqual(4);
+    }
   }
 });

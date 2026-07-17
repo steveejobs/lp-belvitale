@@ -4,6 +4,7 @@ import {
   canRenderCampaignAsset,
 } from "../data/campaignAssets";
 import { commercialNavigationReady } from "../data/commercialPreview";
+import { Reveal } from "./ui/Reveal";
 
 export function CampaignClosing() {
   const { closing } = homeContent;
@@ -16,7 +17,7 @@ export function CampaignClosing() {
         <img src={media.src} width={media.width} height={media.height} alt="" loading="lazy" decoding="async" />
       ) : null}
       <div className="campaign-closing__veil" aria-hidden="true" />
-      <div className="campaign-closing__content section-shell">
+      <Reveal className="campaign-closing__content section-shell" effect="slide-right" stagger>
         <p className="eyebrow eyebrow--light">{closing.eyebrow}</p>
         <h2 id="closing-title">
           <span>{closing.titleLead}</span>
@@ -28,7 +29,7 @@ export function CampaignClosing() {
             {closing.action}
           </a>
         ) : null}
-      </div>
+      </Reveal>
     </section>
   );
 }

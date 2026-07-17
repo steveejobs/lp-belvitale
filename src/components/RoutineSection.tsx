@@ -8,6 +8,7 @@ import {
   usageFact,
   warningFacts,
 } from "../data/productFacts";
+import { Reveal } from "./ui/Reveal";
 
 export function RoutineSection() {
   const warnings = warningFacts.filter((warning) => warning.status === "confirmed");
@@ -22,7 +23,7 @@ export function RoutineSection() {
 
   return (
     <section className="routine-section" id="rotina" aria-labelledby="routine-title">
-      <div className="routine-section__media">
+      <Reveal className="routine-section__media" effect="scale">
         {canRenderCampaignAsset(lifestyle) ? (
           <img
             className="routine-section__lifestyle"
@@ -47,9 +48,9 @@ export function RoutineSection() {
             decoding="async"
           />
         ) : null}
-      </div>
+      </Reveal>
 
-      <div className="section-shell routine-section__layout">
+      <Reveal className="section-shell routine-section__layout" effect="slide-right" delay={70} stagger>
         <div className="routine-section__heading">
           <p className="eyebrow">{routine.eyebrow}</p>
           <h2 id="routine-title">
@@ -77,7 +78,7 @@ export function RoutineSection() {
             <p>{professionalGuidance}</p>
           </div>
         </aside>
-      </div>
+      </Reveal>
     </section>
   );
 }

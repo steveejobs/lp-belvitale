@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { publishedFaqFacts } from "../data/faqFacts";
+import { Reveal } from "./ui/Reveal";
 
 function getFaqIdFromHash(): string | null {
   const id = window.location.hash.slice(1);
@@ -47,7 +48,7 @@ export function FaqSection() {
 
   return (
     <section className="faq-section" id="faq" aria-labelledby="faq-title">
-      <div className="section-shell faq-section__layout">
+      <Reveal className="section-shell faq-section__layout" effect="slide-left">
         <div className="faq-section__heading">
           <p className="institutional-eyebrow">Dúvidas</p>
           <h2 id="faq-title">Dúvidas comuns, respostas sem rodeios.</h2>
@@ -105,7 +106,7 @@ export function FaqSection() {
             );
           })}
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

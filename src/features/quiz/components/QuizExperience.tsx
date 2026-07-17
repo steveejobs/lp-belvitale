@@ -25,6 +25,7 @@ import {
   type QuizQuestionId,
 } from "../domain/quiz.types";
 import { hasCompleteQuizAnswers } from "../domain/quiz.validation";
+import { useQuizSceneTransition } from "../motion/useQuizSceneTransition";
 import {
   getAnsweredCount,
   quizMachineReducer,
@@ -86,9 +87,9 @@ function QuizUnavailable() {
   return (
     <main className="quiz-main quiz-main--message" id="conteudo-quiz">
       <div className="quiz-state-message">
-        <p className="quiz-kicker">Preview indisponível</p>
-        <h1>Esta experiência ainda está atrás dos gates de publicação.</h1>
-        <p>Regulação, conteúdo e checkout precisam permanecer verificáveis antes de qualquer liberação pública.</p>
+        <p className="quiz-kicker">Experiência indisponível</p>
+        <h1>Essa experiência não está disponível agora.</h1>
+        <p>Enquanto isso, você pode consultar as informações confirmadas e o rótulo original do CeluClin.</p>
         <a className="quiz-primary-action" href="/#celuclin">Ver informações confirmadas do CeluClin</a>
       </div>
     </main>
@@ -115,6 +116,7 @@ export function QuizExperience() {
   const recommendation = useMemo(() => calculateRecommendedPlan(state.answers), [state.answers]);
   const [selectedPlan, setSelectedPlan] = useState<QuizPlanId>(() => recommendation?.plan ?? "30-days");
   const reducedMotion = useReducedMotion();
+  const transitionScene = useQuizSceneTransition(reducedMotion);
   const selectionTimer = useRef<number | null>(null);
   const stateRef = useRef(state);
   const lastViewedScene = useRef<string | null>(null);
@@ -141,18 +143,20 @@ export function QuizExperience() {
   useEffect(() => {
     function handlePopState() {
       const nextRoute = getQuizRoutePath(window.location.pathname) ?? "quiz";
-      if (nextRoute === "quiz") {
+      transitionScene("backward", () => {
         const currentScene = stateRef.current.scene;
-        if (currentScene === "offer") dispatch({ type: "BACK", now: now() });
-        if (currentScene === "offer" || currentScene === "result") {
-          dispatch({ type: "BACK", now: now() });
+        if (nextRoute === "quiz") {
+          if (currentScene === "offer") dispatch({ type: "BACK", now: now() });
+          if (currentScene === "offer" || currentScene === "result") {
+            dispatch({ type: "BACK", now: now() });
+          }
         }
-      }
-      setRoute(nextRoute);
+        setRoute(nextRoute);
+      });
     }
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
+  }, [transitionScene]);
 
   useEffect(() => {
     if (!quizQuestionIds.includes(state.scene as QuizQuestionId)) return;
@@ -191,7 +195,7 @@ export function QuizExperience() {
   }
 
   function start() {
-    dispatch({ type: "START", now: now() });
+    transitionScene("forward", () => dispatch({ type: "START", now: now() }));
     recordQuizEvent("quiz_started");
   }
 
@@ -204,37 +208,43 @@ export function QuizExperience() {
     });
     selectionTimer.current = window.setTimeout(() => {
       selectionTimer.current = null;
-      dispatch({ type: "NEXT", now: now() });
-    }, reducedMotion ? 40 : 360);
+      transitionScene("forward", () => dispatch({ type: "NEXT", now: now() }));
+    }, reducedMotion ? 40 : 280);
   }
 
   function next() {
-    dispatch({ type: "NEXT", now: now() });
+    transitionScene("forward", () => dispatch({ type: "NEXT", now: now() }));
   }
 
   function back() {
     if (selectionTimer.current !== null) window.clearTimeout(selectionTimer.current);
     selectionTimer.current = null;
-    if (state.scene === "result") navigate("quiz");
-    dispatch({ type: "BACK", now: now() });
+    transitionScene("backward", () => {
+      if (state.scene === "result") navigate("quiz");
+      dispatch({ type: "BACK", now: now() });
+    });
   }
 
   function restart() {
     if (selectionTimer.current !== null) window.clearTimeout(selectionTimer.current);
     selectionTimer.current = null;
     clearQuizState();
-    dispatch({ type: "RESTART", now: now() });
+    transitionScene("backward", () => {
+      dispatch({ type: "RESTART", now: now() });
+      navigate("quiz", true);
+    });
     profileViewed.current = false;
     offerViewed.current = false;
     lastViewedScene.current = null;
-    navigate("quiz", true);
     recordQuizEvent("quiz_restarted");
   }
 
   function revealResult() {
     if (calculation === null || recommendation === null) return;
-    dispatch({ type: "NEXT", now: now() });
-    navigate("result");
+    transitionScene("forward", () => {
+      dispatch({ type: "NEXT", now: now() });
+      navigate("result");
+    });
     recordQuizEvent("quiz_completed", {
       result_profile: calculation.profile,
       recommended_plan: recommendation.plan,
@@ -244,7 +254,7 @@ export function QuizExperience() {
   function showOffer() {
     if (recommendation === null) return;
     setSelectedPlan(recommendation.plan);
-    dispatch({ type: "SHOW_OFFER", now: now() });
+    transitionScene("forward", () => dispatch({ type: "SHOW_OFFER", now: now() }));
     if (!offerViewed.current) {
       offerViewed.current = true;
       recordQuizEvent("quiz_offer_recommended", {
@@ -254,8 +264,10 @@ export function QuizExperience() {
   }
 
   function review(questionId: QuizQuestionId) {
-    dispatch({ type: "REVIEW", questionId, now: now() });
-    navigate("quiz");
+    transitionScene("backward", () => {
+      dispatch({ type: "REVIEW", questionId, now: now() });
+      navigate("quiz");
+    });
   }
 
   function changePlan(plan: QuizPlanId) {
@@ -337,7 +349,9 @@ export function QuizExperience() {
       onRestart={restart}
     >
       <QuizMetadata route={route} />
-      <div data-publication-status={quizPublicationStatus}>{content}</div>
+      <div className="quiz-scene" key={`${route}:${state.scene}`} data-scene={state.scene}>
+        <div data-publication-status={quizPublicationStatus}>{content}</div>
+      </div>
     </QuizShell>
   );
 }

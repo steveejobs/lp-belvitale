@@ -61,7 +61,7 @@ export function CommercialSection() {
         data-publication-ready={publicReady}
         data-preview-ready={previewReady || fixtureReady}
       >
-        <Reveal className="commercial-section__heading section-shell" effect="slide-left">
+        <Reveal className="commercial-section__heading section-shell" effect="slide-left" stagger>
           <p className="eyebrow">{commercial.eyebrow}</p>
           <h2 id="commercial-title">{commercial.title}</h2>
           <p>{commercial.body}</p>

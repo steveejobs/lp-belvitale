@@ -1,4 +1,5 @@
 import { ProgressIndicator } from "./ProgressIndicator";
+import { ArrowIcon } from "../../../components/ui/ArrowIcon";
 
 interface QuizHeaderProps {
   readonly moment: number;
@@ -25,7 +26,7 @@ export function QuizHeader({
         <div className="quiz-header__leading">
           {canGoBack ? (
             <button className="quiz-icon-button" type="button" onClick={onBack} aria-label="Voltar um momento">
-              <span aria-hidden="true">←</span>
+              <ArrowIcon direction="left" />
             </button>
           ) : (
             <span className="quiz-icon-button quiz-icon-button--placeholder" aria-hidden="true" />

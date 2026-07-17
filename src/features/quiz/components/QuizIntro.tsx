@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { usePointerMotion } from "../../../hooks/usePointerMotion";
 
 interface QuizIntroProps {
   readonly onStart: () => void;
@@ -6,6 +7,12 @@ interface QuizIntroProps {
 
 export function QuizIntro({ onStart }: QuizIntroProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const pointerMotion = usePointerMotion<HTMLDivElement>({
+    propertyX: "--intro-pointer-x",
+    propertyY: "--intro-pointer-y",
+    maxX: 7,
+    maxY: 5,
+  });
   useEffect(() => {
     const frame = requestAnimationFrame(() => titleRef.current?.focus());
     return () => cancelAnimationFrame(frame);
@@ -37,17 +44,20 @@ export function QuizIntro({ onStart }: QuizIntroProps) {
         </section>
         <section className="quiz-intro__visual" aria-label="Frasco CeluClin totalmente visível">
           <div className="quiz-intro__window" aria-hidden="true">
-            <span>perceber</span><span>entender</span><span>escolher</span>
+            <span><i>01</i> perceber</span>
+            <span><i>02</i> entender</span>
+            <span><i>03</i> escolher</span>
           </div>
-          <img
-            src="/product/celuclin-front-02.webp"
-            alt="Frasco do suplemento alimentar CeluClin em vista frontal."
-            width="1122"
-            height="1402"
-            fetchPriority="high"
-          />
-          <div className="quiz-intro__capsules" aria-hidden="true"><i /><i /><i /></div>
-          <p>60 cápsulas · 2 ao dia conforme o rótulo</p>
+          <div className="quiz-intro__product" {...pointerMotion}>
+            <img
+              src="/product/celuclin-front-02.webp"
+              alt="Frasco do suplemento alimentar CeluClin em vista frontal."
+              width="1122"
+              height="1402"
+              fetchPriority="high"
+            />
+          </div>
+          <p><strong>CeluClin</strong><span>60 cápsulas · 2 ao dia conforme o rótulo</span></p>
         </section>
       </div>
     </main>

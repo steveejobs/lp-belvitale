@@ -259,10 +259,17 @@ test("abertura mobile mostra produto inteiro, proposta, tempo e venda identifica
   await expect(page.getByText(/recomendação comercial identificada/)).toBeVisible();
   const product = page.getByAltText(/Frasco do suplemento alimentar CeluClin/);
   const box = await product.boundingBox();
+  const stepsBox = await page.locator(".quiz-intro__window").boundingBox();
   expect(box).not.toBeNull();
   if (box !== null) {
     expect(box.y).toBeGreaterThanOrEqual(0);
     expect(box.y + box.height).toBeLessThanOrEqual(await page.evaluate(() => document.documentElement.scrollHeight));
+    expect(await product.evaluate((element) => getComputedStyle(element).objectFit)).toBe("contain");
+  }
+  if (box !== null && stepsBox !== null) {
+    const overlapWidth = Math.max(0, Math.min(box.x + box.width, stepsBox.x + stepsBox.width) - Math.max(box.x, stepsBox.x));
+    const overlapHeight = Math.max(0, Math.min(box.y + box.height, stepsBox.y + stepsBox.height) - Math.max(box.y, stepsBox.y));
+    expect(overlapWidth * overlapHeight).toBe(0);
   }
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");
 });

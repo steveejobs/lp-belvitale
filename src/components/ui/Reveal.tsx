@@ -14,6 +14,7 @@ interface RevealProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
   readonly children: ReactNode;
   readonly effect?: RevealEffect;
   readonly delay?: number;
+  readonly stagger?: boolean;
 }
 
 export function Reveal({
@@ -21,6 +22,7 @@ export function Reveal({
   className = "",
   effect = "clip",
   delay = 0,
+  stagger = false,
   style,
   ...props
 }: RevealProps) {
@@ -35,7 +37,7 @@ export function Reveal({
     if (element === null) return;
     const observer = new IntersectionObserver(
       ([entry]) => setVisible(entry?.isIntersecting ?? false),
-      { rootMargin: "-7% 0px -7%", threshold: 0.12 },
+      { rootMargin: "0px 0px -9%", threshold: 0.08 },
     );
     observer.observe(element);
     return () => observer.disconnect();
@@ -52,6 +54,7 @@ export function Reveal({
       ref={elementRef}
       className={`bv-reveal ${className}`.trim()}
       data-effect={effect}
+      data-stagger={stagger}
       data-visible={reducedMotion || visible}
       style={revealStyle}
     >

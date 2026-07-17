@@ -8,7 +8,7 @@ export function ChoiceSequence() {
 
   return (
     <section className="choice-sequence" id="liberdade" aria-labelledby="choice-title">
-      <Reveal className="choice-sequence__heading section-shell" effect="slide-right">
+      <Reveal className="choice-sequence__heading section-shell" effect="slide-right" stagger>
         <p className="eyebrow">{emotional.eyebrow}</p>
         <h2 id="choice-title">
           Uma roupa não deveria

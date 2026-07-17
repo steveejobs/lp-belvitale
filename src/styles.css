@@ -1,3 +1,5 @@
+@import "./theme/index.css";
+
 @font-face {
   font-family: "Fraunces Variable";
   font-style: normal;
@@ -15,25 +17,7 @@
 }
 
 :root {
-  --ink: #171216;
-  --ink-soft: #62585e;
-  --plum: #25111f;
-  --plum-mid: #6b2448;
-  --magenta: #b40860;
-  --magenta-hot: #e50073;
-  --label-pink: #c34ba1;
-  --violet: #6d2f88;
-  --capsule: #a91b31;
-  --capsule-deep: #681525;
-  --blush: #f5e6eb;
-  --warm: #fffaf8;
-  --warm-2: #ead5cc;
-  --white: #fff;
-  --display: "Fraunces Variable", Georgia, serif;
-  --body: "Figtree Variable", Arial, sans-serif;
-  --shell: 82rem;
   --header-height: 4.25rem;
-  --focus: #f06aa7;
   color: var(--ink);
   background: var(--warm);
   font-family: var(--body);

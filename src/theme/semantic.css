@@ -1,0 +1,65 @@
+:root {
+  /* Shared semantic layer. */
+  --bv-surface-page: var(--bv-primitive-warm-100);
+  --bv-surface-page-strong: var(--bv-primitive-warm-50);
+  --bv-surface-card: var(--bv-primitive-white);
+  --bv-surface-soft: var(--bv-primitive-rose-100);
+  --bv-surface-brand: var(--bv-primitive-plum-950);
+  --bv-surface-brand-deep: var(--bv-primitive-plum-900);
+  --bv-text-primary: var(--bv-primitive-ink-950);
+  --bv-text-secondary: var(--bv-primitive-muted-600);
+  --bv-text-on-brand: var(--bv-primitive-white);
+  --bv-action-primary: var(--bv-primitive-magenta-600);
+  --bv-action-primary-strong: var(--bv-primitive-pink-500);
+  --bv-border-subtle: var(--bv-primitive-line-100);
+  --bv-border-strong: var(--bv-primitive-line-200);
+  --bv-focus-color: #f06aa7;
+
+  --bv-font-display: "Fraunces Variable", Georgia, serif;
+  --bv-font-body: "Figtree Variable", Arial, sans-serif;
+  --bv-content-max: 82rem;
+  --bv-content-gutter: max(1rem, env(safe-area-inset-left));
+
+  /* Existing public aliases remain stable while now sharing one source. */
+  --ink: var(--bv-text-primary);
+  --ink-soft: var(--bv-text-secondary);
+  --plum: var(--bv-surface-brand);
+  --magenta: var(--bv-action-primary);
+  --magenta-hot: var(--bv-action-primary-strong);
+  --plum-mid: var(--bv-primitive-plum-600);
+  --label-pink: var(--bv-primitive-label-pink);
+  --violet: var(--bv-primitive-violet);
+  --capsule: var(--bv-primitive-capsule-700);
+  --capsule-deep: var(--bv-primitive-capsule-900);
+  --blush: var(--bv-surface-soft);
+  --warm: var(--bv-surface-page-strong);
+  --warm-2: var(--bv-primitive-warm-200);
+  --white: var(--bv-surface-card);
+  --display: var(--bv-font-display);
+  --body: var(--bv-font-body);
+  --shell: var(--bv-content-max);
+  --focus: var(--bv-focus-color);
+
+  --bv-paper: var(--bv-surface-page);
+  --bv-white: var(--bv-surface-card);
+  --bv-ink: var(--bv-text-primary);
+  --bv-muted: var(--bv-text-secondary);
+  --bv-line: var(--bv-border-subtle);
+  --bv-pink: var(--bv-action-primary-strong);
+  --bv-magenta: var(--bv-primitive-magenta-700);
+  --bv-plum: var(--bv-surface-brand);
+  --bv-rose: var(--bv-primitive-rose-200);
+  --bv-capsule: var(--bv-primitive-capsule-700);
+
+  --quiz-paper: var(--bv-surface-page-strong);
+  --quiz-white: var(--bv-surface-card);
+  --quiz-ink: var(--bv-primitive-plum-950);
+  --quiz-muted: var(--bv-primitive-muted-700);
+  --quiz-plum: var(--bv-primitive-plum-700);
+  --quiz-plum-deep: var(--bv-surface-brand-deep);
+  --quiz-magenta: var(--bv-primitive-magenta-500);
+  --quiz-pink: var(--bv-primitive-pink-200);
+  --quiz-rose: var(--bv-primitive-rose-100);
+  --quiz-line: var(--bv-border-strong);
+  --quiz-capsule: var(--bv-primitive-capsule-700);
+}

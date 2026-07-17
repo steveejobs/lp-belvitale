@@ -1,9 +1,10 @@
-import type { CSSProperties, PointerEvent } from "react";
+import type { CSSProperties } from "react";
 import { recordCommerceEvent } from "../../commerce/commerceEvents";
 import { campaignAssets, canRenderCampaignAsset } from "../../data/campaignAssets";
 import { getOfferTotalBottles, type CommercialOffer } from "../../data/commercialOffers";
 import { getCheckoutUrlWithUtms } from "../../data/commercialPreview";
 import { getOfferPresentation } from "../../data/offerPresentation";
+import { usePointerMotion } from "../../hooks/usePointerMotion";
 
 interface OfferCardProps {
   readonly offer: CommercialOffer;
@@ -16,20 +17,12 @@ export function OfferCard({ offer, index, checkoutReady }: OfferCardProps) {
   const bottles = getOfferTotalBottles(offer);
   const presentation = getOfferPresentation(offer);
   const showProduct = canRenderCampaignAsset(product);
-
-  function movePackshot(event: PointerEvent<HTMLElement>) {
-    if (event.pointerType !== "mouse") return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-    event.currentTarget.style.setProperty("--offer-pointer-x", `${String(x * 7)}px`);
-    event.currentTarget.style.setProperty("--offer-pointer-y", `${String(y * 5)}px`);
-  }
-
-  function resetPackshot(event: PointerEvent<HTMLElement>) {
-    event.currentTarget.style.setProperty("--offer-pointer-x", "0px");
-    event.currentTarget.style.setProperty("--offer-pointer-y", "0px");
-  }
+  const pointerMotion = usePointerMotion<HTMLElement>({
+    propertyX: "--offer-pointer-x",
+    propertyY: "--offer-pointer-y",
+    maxX: 7,
+    maxY: 5,
+  });
 
   return (
     <article
@@ -38,8 +31,7 @@ export function OfferCard({ offer, index, checkoutReady }: OfferCardProps) {
       data-count={bottles}
       data-featured={presentation.featured}
       style={{ "--offer-index": index } as CSSProperties}
-      onPointerMove={movePackshot}
-      onPointerLeave={resetPackshot}
+      {...pointerMotion}
     >
       <div className="offer-card__heading">
         <p className="offer-card__kicker">{presentation.kicker}</p>

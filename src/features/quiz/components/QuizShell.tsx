@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import type { QuizMachineState } from "../domain/quiz.types";
-import { getQuizMotionStyle } from "../motion/quiz.transitions";
 import { QuizHeader } from "./QuizHeader";
 
 interface QuizShellProps {
@@ -27,7 +26,6 @@ export function QuizShell({
       className="quiz-route"
       data-scene={state.scene}
       data-direction={state.direction}
-      style={getQuizMotionStyle()}
     >
       <a className="quiz-skip-link" href="#conteudo-quiz">Ir para o conteúdo</a>
       <QuizHeader

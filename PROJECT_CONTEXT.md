@@ -53,7 +53,7 @@ Nao usar a arte plana do rotulo como produto, fundo, textura, formula ou kit. As
 - `src/components/ui/`: primitivas reutilizaveis de interface e motion.
 - `src/components/commercial/`: componentes da area de kits.
 - `src/data/`: fatos, manifests, checkouts e apresentacao tipada.
-- `src/theme/`: tokens e coreografias compartilhadas; novas cores e duracoes entram aqui.
+- `src/theme/`: tema unificado em três camadas (`primitives.css` → `semantic.css` → `components.css`) e coreografias compartilhadas em `motion.css`; novas cores, medidas e durações entram somente aqui.
 - `src/home.css`: composicao especifica da homepage.
 - `tools/`: utilitarios locais em Python; nunca modificar originais sem destino explicito.
 - `PROJECT_CONTEXT.md`: contrato de continuidade, arquitetura e comandos.

@@ -1,0 +1,30 @@
+:root {
+  --bv-shell: min(100% - 2rem, var(--bv-content-max));
+  --bv-radius-control: var(--bv-primitive-radius-xs);
+  --bv-radius-media: var(--bv-primitive-radius-sm);
+  --bv-radius-card: var(--bv-primitive-radius-md);
+  --bv-radius-round: var(--bv-primitive-radius-round);
+  --bv-control-min: 2.75rem;
+  --bv-control-comfortable: 3.25rem;
+  --bv-card-border: var(--bv-border-subtle);
+  --bv-card-background: var(--bv-surface-card);
+  --bv-card-shadow: var(--bv-primitive-shadow-card);
+  --bv-shadow-header: var(--bv-primitive-shadow-header);
+  --bv-shadow-floating: var(--bv-primitive-shadow-floating);
+  --bv-focus-ring: 0 0 0 3px rgb(240 106 167 / 25%);
+
+  --bv-motion-press: var(--bv-duration-press);
+  --bv-motion-fast: var(--bv-duration-fast);
+  --bv-motion-medium: var(--bv-duration-medium);
+  --bv-motion-slow: var(--bv-duration-enter);
+  --bv-motion-exit: var(--bv-duration-exit);
+  --bv-ease-standard: var(--bv-easing-standard);
+  --bv-ease-exit: var(--bv-easing-exit);
+
+  --quiz-touch-ms: var(--bv-duration-press);
+  --quiz-question-ms: 340ms;
+  --quiz-insight-ms: 400ms;
+  --quiz-anticipation-ms: 400ms;
+  --quiz-offer-ms: 360ms;
+  --quiz-ease: var(--bv-easing-standard);
+}

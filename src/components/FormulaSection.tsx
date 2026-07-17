@@ -15,6 +15,7 @@ import {
   type FormulaPublicationState,
   usageFact,
 } from "../data/productFacts";
+import { Reveal } from "./ui/Reveal";
 
 function getDevelopmentPreviewState(): FormulaPublicationState | null {
   if (!import.meta.env.DEV) return null;
@@ -66,13 +67,13 @@ export function FormulaSection() {
       data-publication-state={publicationState}
       aria-labelledby="formula-title"
     >
-      <div className="section-shell formula-section__heading">
+      <Reveal className="section-shell formula-section__heading" effect="slide-left" stagger>
         <p className="eyebrow">{formula.eyebrow}</p>
         <h2 id="formula-title">{formula.title}</h2>
         <p>{formula.body}</p>
-      </div>
+      </Reveal>
 
-      <div className="section-shell formula-section__experience">
+      <Reveal className="section-shell formula-section__experience" effect="clip" delay={70}>
         {active === undefined ? (
           <div className="formula-section__blocked" role="status">
             <p>
@@ -145,7 +146,7 @@ export function FormulaSection() {
             </div>
           </>
         )}
-      </div>
+      </Reveal>
 
       <div className="section-shell formula-section__footer">
         {publicationState === "partial" ? (

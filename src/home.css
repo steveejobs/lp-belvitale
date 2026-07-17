@@ -246,8 +246,17 @@
   z-index: 2;
   padding-top: 0.6rem;
   grid-area: copy;
-  animation: hero-copy-in 520ms var(--bv-ease-standard) both;
+  animation: none;
 }
+
+.site .campaign-hero__copy > * {
+  animation: hero-copy-item-in var(--bv-motion-slow) var(--bv-ease-standard) both;
+}
+
+.site .campaign-hero__copy > h1 { animation-delay: 55ms; }
+.site .campaign-hero__copy > .campaign-hero__lead { animation-delay: 110ms; }
+.site .campaign-hero__copy > .campaign-hero__actions { animation-delay: 165ms; }
+.site .campaign-hero__copy > .campaign-hero__facts { animation-delay: 220ms; }
 
 .site .campaign-hero__copy h1 {
   max-width: 12ch;
@@ -312,7 +321,7 @@
   overflow: hidden;
   border-radius: var(--bv-radius-media);
   background: var(--bv-rose);
-  animation: hero-product-in 650ms 80ms var(--bv-ease-standard) both;
+  animation: hero-product-in 520ms 60ms var(--bv-ease-standard) both;
 }
 
 .site .campaign-hero__visual picture,
@@ -985,13 +994,19 @@
   position: absolute;
   inset: 0;
   display: grid;
+  padding: clamp(0.4rem, 1.8vw, 0.75rem);
   place-items: center;
   background: #eee3df;
-  transition: transform 620ms var(--bv-ease-standard), visibility 620ms step-end;
+  opacity: 0.62;
+  transition:
+    opacity var(--bv-motion-slow) var(--bv-ease-standard),
+    transform var(--bv-motion-slow) var(--bv-ease-standard),
+    visibility var(--bv-motion-slow) step-end;
 }
 
 .site .proof-figure[data-position="current"] {
   z-index: 2;
+  opacity: 1;
   transform: translateX(var(--proof-drag));
 }
 
@@ -1013,6 +1028,7 @@
   object-fit: contain;
   object-position: center;
   user-select: none;
+  transition: transform var(--bv-motion-medium) var(--bv-ease-standard);
 }
 
 .site .proof-gallery__controls {
@@ -1149,6 +1165,10 @@
   overflow: hidden;
   flex: 0 0 min(84vw, 21rem);
   scroll-snap-align: start;
+  transition:
+    border-color var(--bv-motion-fast) ease,
+    box-shadow var(--bv-motion-medium) var(--bv-ease-standard),
+    transform var(--bv-motion-medium) var(--bv-ease-standard);
 }
 
 .site .offer-card[data-featured="true"] {
@@ -1797,14 +1817,14 @@
   to { transform: translateX(0); }
 }
 
-@keyframes hero-copy-in {
-  from { clip-path: inset(0 100% 0 0); transform: translateX(-1rem); }
-  to { clip-path: inset(0); transform: translateX(0); }
+@keyframes hero-copy-item-in {
+  from { opacity: 0; clip-path: inset(0 100% 0 0); transform: translateX(-1.4rem); }
+  to { opacity: 1; clip-path: inset(0); transform: translateX(0); }
 }
 
 @keyframes hero-product-in {
-  from { clip-path: inset(12% 0 0); transform: scale(0.985); }
-  to { clip-path: inset(0); transform: scale(1); }
+  from { opacity: 0.35; clip-path: inset(18% 0 0); transform: scale(0.955); }
+  to { opacity: 1; clip-path: inset(0); transform: scale(1); }
 }
 
 @keyframes product-media-change {
@@ -1820,6 +1840,34 @@
 @keyframes proof-progress {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site .button:hover:not(:active) {
+    box-shadow: 0 0.65rem 1.5rem rgb(37 17 31 / 12%);
+    transform: translateY(-2px);
+  }
+
+  .site .proof-gallery:hover .proof-figure[data-position="current"] img {
+    transform: scale(1.012);
+  }
+
+  .site .proof-gallery__controls > button:hover,
+  .site .product-story__switch button:hover,
+  .site .formula-tab:hover {
+    border-color: var(--bv-magenta);
+    color: var(--bv-magenta);
+  }
+
+  .site .offer-card:hover {
+    border-color: rgb(167 11 88 / 45%);
+    box-shadow: var(--bv-card-shadow);
+    transform: translateY(-4px);
+  }
+
+  .site .faq-item button:hover .faq-item__icon {
+    transform: rotate(90deg);
+  }
 }
 
 @media (min-width: 56rem) {
@@ -2208,6 +2256,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .site .campaign-hero__copy,
+  .site .campaign-hero__copy > *,
   .site .campaign-hero__visual,
   .site .product-story__media img,
   .site .formula-focus,

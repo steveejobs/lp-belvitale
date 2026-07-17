@@ -1,2 +1,4 @@
-@import "./tokens.css";
+@import "./primitives.css";
+@import "./semantic.css";
+@import "./components.css";
 @import "./motion.css";
