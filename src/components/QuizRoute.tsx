@@ -1,35 +1,34 @@
 import {
   useEffect,
+  useMemo,
   useRef,
   useState,
-  type ChangeEvent,
-  type RefObject,
 } from "react";
 import { canonicalUrl } from "../config/site";
-import {
-  campaignAssets,
-  canRenderCampaignAsset,
-} from "../data/campaignAssets";
+import { campaignAssets, canRenderCampaignAsset } from "../data/campaignAssets";
 import { getQuizAccessMode } from "../data/quizPublication";
 import {
   quizPublicationApproved,
   quizPreviewEnabled,
   quizPublicationStatus,
 } from "../data/quizPublicationConfig";
-import { quizQuestions, type QuizQuestion } from "../data/quizQuestions";
-import { quizProfiles, type QuizProfile } from "../data/quizProfiles";
-import { proofAssets, proofAuthorization } from "../data/proofGallery";
-import { resolveQuizRecommendation } from "../quiz/quizRecommendation";
-import { recordQuizEvent } from "../quiz/quizEvents";
+import { quizTotalSteps, type QuizAnswer } from "../data/quizQuestions";
+import { useReducedMotion } from "../hooks/useReducedMotion";
+import { getQuizQuestionPath, sanitizeAnswersForPath } from "../quiz/quizAdaptive";
+import { recordQuizEvent, getQuizAttribution } from "../quiz/quizEvents";
+import { getStableQuizExperiment } from "../quiz/quizExperiment";
+import {
+  deriveQuizMicroInsight,
+  type QuizCheckpoint,
+  type QuizMicroInsight,
+} from "../quiz/quizInsights";
+import { calculateRecommendedPlan } from "../quiz/quizRecommendation";
 import {
   getQuizRoutePath,
   getQuizUrl,
   type QuizRoutePath,
 } from "../quiz/quizRouting";
-import {
-  calculateQuizProfile,
-  type QuizAnswer,
-} from "../quiz/quizScoring";
+import { calculateQuizResult, hasCompleteQuizAnswers } from "../quiz/quizScoring";
 import {
   clearQuizState,
   createInitialQuizState,
@@ -37,19 +36,26 @@ import {
   saveQuizState,
   type QuizStoredState,
 } from "../quiz/quizStorage";
+import {
+  QuizMicroInsightToast,
+  QuizQuestionExperience,
+} from "./quiz/QuizQuestionExperience";
+import { QuizResultExperience } from "./quiz/QuizResultExperience";
 import "../quiz/quiz.css";
 
 const privacyNotice =
-  "Sem diagnóstico, sem dados pessoais. As respostas ficam neste dispositivo por até 30 dias para você poder continuar depois.";
+  "Sem diagnóstico e sem dados pessoais. Suas escolhas ficam neste dispositivo por até 30 dias para você poder continuar depois.";
 
-function useTitleFocus(
-  reference: RefObject<HTMLHeadingElement | null>,
-  changeKey: string | number,
-) {
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => reference.current?.focus());
-    return () => cancelAnimationFrame(frame);
-  }, [changeKey, reference]);
+function buildQuizUrl(path: QuizRoutePath): string {
+  const attribution = getQuizAttribution();
+  const search = new URLSearchParams();
+  Object.entries(attribution).forEach(([name, value]) => {
+    if (name.startsWith("utm_") && typeof value === "string") {
+      search.set(name, value);
+    }
+  });
+  const query = search.toString();
+  return `${getQuizUrl(path)}${query.length === 0 ? "" : `?${query}`}`;
 }
 
 function QuizMetadata({ path }: { readonly path: QuizRoutePath }) {
@@ -57,14 +63,12 @@ function QuizMetadata({ path }: { readonly path: QuizRoutePath }) {
     const isResult = path === "result";
     document.title = isResult
       ? "Seu ritmo de autocuidado | Belvitale"
-      : "Onde o seu cuidado encontra ritmo? | Belvitale";
+      : "Descubra seu ritmo de autocuidado | Belvitale";
 
     const descriptionText = isResult
-      ? "Um perfil de organização da rotina de autocuidado, sem diagnóstico ou promessa de resultado."
-      : "Cinco escolhas rápidas para descobrir o que ajuda uma rotina de autocuidado a caber na vida real.";
-    let description = document.querySelector<HTMLMetaElement>(
-      'meta[name="description"]',
-    );
+      ? "Uma leitura de preferências de rotina, com orientação prática e opções do CeluClin por conveniência — sem diagnóstico."
+      : "Seis escolhas rápidas para descobrir o ritmo de autocuidado que combina mais com sua vida.";
+    let description = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     if (description === null) {
       description = document.createElement("meta");
       description.name = "description";
@@ -72,9 +76,7 @@ function QuizMetadata({ path }: { readonly path: QuizRoutePath }) {
     }
     description.content = descriptionText;
 
-    let robots = document.querySelector<HTMLMetaElement>(
-      'meta[name="robots"]',
-    );
+    let robots = document.querySelector<HTMLMetaElement>('meta[name="robots"]');
     if (robots === null) {
       robots = document.createElement("meta");
       robots.name = "robots";
@@ -86,14 +88,11 @@ function QuizMetadata({ path }: { readonly path: QuizRoutePath }) {
         : "index, follow"
       : "noindex, nofollow";
 
-    const currentCanonical = document.querySelector<HTMLLinkElement>(
-      'link[rel="canonical"]',
-    );
+    const currentCanonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!quizPublicationApproved || canonicalUrl === null) {
       currentCanonical?.remove();
     } else {
-      const canonical =
-        currentCanonical ?? document.createElement("link");
+      const canonical = currentCanonical ?? document.createElement("link");
       canonical.rel = "canonical";
       canonical.href = new URL(getQuizUrl("quiz"), canonicalUrl).toString();
       if (currentCanonical === null) document.head.append(canonical);
@@ -104,9 +103,8 @@ function QuizMetadata({ path }: { readonly path: QuizRoutePath }) {
       .forEach((meta) => meta.remove());
     if (quizPublicationApproved && canonicalUrl !== null) {
       const values = {
-        "og:title": "Onde o seu cuidado encontra ritmo? | Belvitale",
-        "og:description":
-          "Cinco escolhas rápidas sobre começo, retomada e vida real.",
+        "og:title": "Seu jeito de começar muda o que você consegue manter | Belvitale",
+        "og:description": "Seis escolhas rápidas sobre começo, retomada e vida real.",
         "og:type": "website",
         "og:url": new URL(getQuizUrl("quiz"), canonicalUrl).toString(),
       };
@@ -122,18 +120,13 @@ function QuizMetadata({ path }: { readonly path: QuizRoutePath }) {
       .querySelectorAll('script[type="application/ld+json"]')
       .forEach((schema) => schema.remove());
   }, [path]);
-
   return null;
-}
-
-function QuizPrivacyNotice() {
-  return <p className="quiz-privacy">{privacyNotice}</p>;
 }
 
 function QuizBrand() {
   return (
     <header className="quiz-header">
-      <div className="quiz-shell quiz-header__inner">
+      <div className="quiz-header__inner">
         <a className="quiz-brand" href="/" aria-label="Belvitale — início">
           <img
             src="/brand/belvitale-wordmark-dark.webp"
@@ -143,299 +136,74 @@ function QuizBrand() {
             decoding="async"
           />
         </a>
-        <span>CeluClin · 5 escolhas</span>
+        <span>CeluClin · 6 escolhas</span>
       </div>
     </header>
   );
 }
 
-function QuizStart({ onStart }: { readonly onStart: () => void }) {
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  useTitleFocus(titleRef, "start");
-
-  const capsules = campaignAssets.capsules;
-  const canShowCapsules = canRenderCampaignAsset(capsules);
-
-  return (
-    <main className="quiz-main" id="conteudo-quiz">
-      <div className="quiz-shell quiz-start">
-        <div className="quiz-start__art">
-          {canShowCapsules ? (
-            <img src={capsules.src} width={capsules.width} height={capsules.height} alt="" fetchPriority="high" decoding="async" />
-          ) : null}
-        </div>
-        <div className="quiz-start__content">
-          <p className="quiz-eyebrow">Seu ritmo, sem resposta perfeita</p>
-          <h1 ref={titleRef} tabIndex={-1}>
-            <span>Seu cuidado cabe</span>
-            <em>na vida real?</em>
-          </h1>
-          <p className="quiz-lead">
-            Cinco escolhas rápidas para entender se você prefere começar leve,
-            criar constância ou planejar por mais tempo.
-          </p>
-          <button
-            className="quiz-button quiz-button--primary"
-            type="button"
-            onClick={onStart}
-          >
-            Começar
-          </button>
-          <p className="quiz-microcopy">
-            Menos de 2 minutos. Você pode voltar e mudar respostas.
-          </p>
-        </div>
-        <QuizPrivacyNotice />
-      </div>
-    </main>
-  );
+function QuizPrivacyNotice() {
+  return <p className="quiz-privacy">{privacyNotice}</p>;
 }
 
-interface QuizQuestionScreenProps {
-  readonly question: QuizQuestion;
-  readonly step: number;
-  readonly selectedOptionId: string | null;
-  readonly direction: "forward" | "backward";
-  readonly errorVisible: boolean;
-  readonly onBack: () => void;
-  readonly onContinue: () => void;
-  readonly onSelect: (optionId: string) => void;
-}
-
-function QuizQuestionScreen({
-  question,
-  step,
-  selectedOptionId,
-  direction,
-  errorVisible,
-  onBack,
-  onContinue,
-  onSelect,
-}: QuizQuestionScreenProps) {
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  useTitleFocus(titleRef, question.id);
-  const errorId = "quiz-error-" + question.id;
-  const selectedOption = question.options.find(
-    (option) => option.id === selectedOptionId,
-  );
-
-  function selectOption(event: ChangeEvent<HTMLInputElement>) {
-    onSelect(event.currentTarget.value);
-  }
-
-  return (
-    <main className="quiz-main" id="conteudo-quiz">
-      <div
-        className="quiz-shell quiz-question"
-        data-direction={direction}
-        data-presentation={question.presentation}
-      >
-        <div className="quiz-question__topline">
-          <button className="quiz-back" type="button" onClick={onBack}>
-            <span aria-hidden="true">←</span>
-            Voltar
-          </button>
-          <p>
-            {String(step + 1).padStart(2, "0")} / {String(quizQuestions.length).padStart(2, "0")}
-          </p>
-        </div>
-
-        <div
-          className="quiz-progress"
-          role="progressbar"
-          aria-label="Progresso do quiz"
-          aria-valuemin={1}
-          aria-valuemax={quizQuestions.length}
-          aria-valuenow={step + 1}
-          aria-valuetext={
-            "Pergunta " + String(step + 1) + " de " + String(quizQuestions.length)
-          }
-        >
-          {quizQuestions.map((item, index) => (
-            <span
-              key={item.id}
-              data-complete={index <= step}
-              aria-hidden="true"
-            />
-          ))}
-        </div>
-
-        <section className="quiz-step" aria-labelledby="quiz-question-title">
-          <div className="quiz-step__heading">
-            <p className="quiz-eyebrow">{question.eyebrow}</p>
-            <h1 id="quiz-question-title" ref={titleRef} tabIndex={-1}>
-              {question.title}
-            </h1>
-            <p>{question.hint}</p>
-          </div>
-
-          <fieldset
-            className="quiz-options"
-            aria-describedby={errorVisible ? errorId : undefined}
-            aria-invalid={errorVisible}
-          >
-            <legend className="sr-only">Escolha uma resposta</legend>
-            {question.options.map((option) => (
-              <label
-                className="quiz-option"
-                data-selected={selectedOptionId === option.id}
-                key={option.id}
-              >
-                <input
-                  type="radio"
-                  name={question.id}
-                  value={option.id}
-                  checked={selectedOptionId === option.id}
-                  onChange={selectOption}
-                />
-                <span className="quiz-option__marker" aria-hidden="true" />
-                <span className="quiz-option__copy">
-                  <strong>{option.label}</strong>
-                  {option.detail === undefined ? null : (
-                    <small>{option.detail}</small>
-                  )}
-                </span>
-              </label>
-            ))}
-          </fieldset>
-
-          <p className="quiz-feedback" aria-live="polite">
-            {selectedOptionId === null
-              ? "Escolha a frase mais próxima do seu cotidiano."
-              : selectedOption?.detail ??
-                "Escolha registrada. Você pode continuar ou mudar a resposta."}
-          </p>
-          <p
-            className="quiz-error"
-            id={errorId}
-            role={errorVisible ? "alert" : undefined}
-            hidden={!errorVisible}
-          >
-            Escolha uma resposta para continuar.
-          </p>
-
-          <button
-            className="quiz-button quiz-button--primary quiz-question__continue"
-            type="button"
-            onClick={onContinue}
-          >
-            {step === quizQuestions.length - 1
-              ? "Ver meu ritmo"
-              : "Continuar"}
-          </button>
-        </section>
-      </div>
-    </main>
-  );
-}
-
-function QuizResult({
-  profileId,
-  onRestart,
+function QuizStart({
+  onStart,
+  hasSavedAnswers,
 }: {
-  readonly profileId: QuizProfile;
-  readonly onRestart: () => void;
+  readonly onStart: () => void;
+  readonly hasSavedAnswers: boolean;
 }) {
-  const profile = quizProfiles[profileId];
   const titleRef = useRef<HTMLHeadingElement>(null);
-  useTitleFocus(titleRef, profileId);
+  const experiment = getStableQuizExperiment();
   const product = campaignAssets.productFrontPrimary;
   const canShowProduct = canRenderCampaignAsset(product);
-  const evidence = proofAssets.find((asset) => asset.category === "cellulite");
-  const recommendation = resolveQuizRecommendation(profileId);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => titleRef.current?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  const title =
+    experiment.opening === "routine"
+      ? "O que faz um cuidado encontrar lugar no seu dia?"
+      : "Seu jeito de começar muda o que você consegue manter.";
 
   return (
-    <main className="quiz-main quiz-main--result" id="conteudo-quiz">
-      <div className="quiz-result">
-        <div className="quiz-result__reveal">
-          <div className="quiz-result__reveal-band" aria-hidden="true" />
-          <div className="quiz-shell">
-            <p className="quiz-eyebrow">{profile.eyebrow}</p>
-            <h1 ref={titleRef} tabIndex={-1}>
-              {profile.title}
-            </h1>
-            <p>{profile.description}</p>
-            <span>perfil de rotina · não diagnóstico</span>
+    <main className="quiz-main quiz-main--start" id="conteudo-quiz">
+      <div className="quiz-start">
+        <div className="quiz-start__visual">
+          <div className="quiz-start__band" aria-hidden="true">
+            <span>começar</span><span>voltar</span><span>manter</span>
           </div>
+          {canShowProduct ? (
+            <picture>
+              <source media="(max-width: 47.99rem)" srcSet={product.mobileSrc} type="image/webp" />
+              <img
+                src={product.src}
+                width={product.width}
+                height={product.height}
+                alt="Frasco CeluClin em vista frontal."
+                fetchPriority="high"
+                decoding="async"
+              />
+            </picture>
+          ) : null}
+          <p aria-hidden="true">60–90 s</p>
         </div>
 
-        <div className="quiz-shell quiz-result__body">
-          <section className="quiz-result__traits" aria-labelledby="traits-title">
-            <p className="quiz-eyebrow">Três pistas</p>
-            <h2 id="traits-title">O que aparece no seu jeito de cuidar.</h2>
-            <ul>
-              {profile.characteristics.map((characteristic, index) => (
-                <li key={characteristic}><span>0{index + 1}</span>{characteristic}</li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="quiz-result__ritual" aria-labelledby="ritual-title">
-            <p className="quiz-eyebrow">Para levar para a vida real</p>
-            <h2 id="ritual-title">{profile.ritualTitle}</h2>
-            <p>{profile.ritual}</p>
-          </section>
-
-          {recommendation !== null ? (
-            <section className="quiz-recommendation" aria-labelledby="recommendation-title" data-ready="true">
-              <p className="quiz-eyebrow">{recommendation.disclosure}</p>
-              <h2 id="recommendation-title">
-                CeluClin para {recommendation.offer.approximateDurationMonths * 30} dias.
-              </h2>
-              <p>{recommendation.rationale}</p>
-              <a
-                className="quiz-button quiz-button--primary"
-                href={recommendation.checkoutUrl}
-                onClick={() => recordQuizEvent("quiz_checkout_click", { source: "quiz", profile: profileId })}
-              >
-                Ver opção de {recommendation.offer.approximateDurationMonths * 30} dias
-              </a>
-            </section>
-          ) : null}
-
-          <section className="quiz-next-step" aria-labelledby="next-step-title">
-            <div className="quiz-next-step__media" data-media-status={canShowProduct ? "preview" : "blocked"}>
-              {canShowProduct ? (
-                <img src={product.src} width={product.width} height={product.height} alt={product.alt} loading="lazy" decoding="async" />
-              ) : <span aria-hidden="true">CeluClin</span>}
-            </div>
-            <div className="quiz-next-step__copy">
-              <p className="quiz-eyebrow">Um próximo passo possível</p>
-              <h2 id="next-step-title">Conhecer antes de escolher.</h2>
-              <p>{profile.nextStep}</p>
-              <div className="quiz-result__actions">
-                <a className="quiz-button quiz-button--primary" href="/#composicao" onClick={() => recordQuizEvent("quiz_composition_click", { source: "quiz" })}>
-                  Abrir a composição
-                </a>
-                <a className="quiz-text-link" href="/#rotulo">Ler o rótulo original</a>
-              </div>
-            </div>
-          </section>
-
-          {evidence === undefined ? null : (
-            <section className="quiz-evidence" aria-labelledby="evidence-title">
-              <div>
-                <p className="quiz-eyebrow">Prova geral da marca</p>
-                <h2 id="evidence-title">Uma imagem autorizada. Não um resultado calculado pelo quiz.</h2>
-                <p>{proofAuthorization.disclaimer} Esta imagem não foi escolhida a partir das suas respostas.</p>
-                <a className="quiz-text-link" href="/#resultados">Ver todas as séries</a>
-              </div>
-              <img src={evidence.src} width={evidence.width} height={evidence.height} alt={evidence.alt} loading="lazy" decoding="async" />
-            </section>
-          )}
-
-          <div className="quiz-result__footer">
-            <p>
-              Este perfil descreve preferências de organização. Não é
-              diagnóstico, avaliação corporal ou recomendação médica.
-            </p>
-            <button
-              className="quiz-text-button"
-              type="button"
-              onClick={onRestart}
-            >
-              Refazer o quiz
-            </button>
+        <div className="quiz-start__copy">
+          <p className="quiz-kicker">Uma conversa visual sobre rotina</p>
+          <h1 ref={titleRef} tabIndex={-1}>{title}</h1>
+          <p className="quiz-start__lead">
+            Faça seis escolhas rápidas e descubra um ritmo de autocuidado que
+            combina mais com a sua vida.
+          </p>
+          <button className="quiz-primary-action" type="button" onClick={onStart}>
+            {hasSavedAnswers ? "Continuar meu ritmo" : "Descobrir meu ritmo"}
+          </button>
+          <div className="quiz-start__meta">
+            <span>60–90 segundos</span>
+            <span>Ao final: uma orientação de rotina e uma opção do CeluClin por conveniência.</span>
           </div>
           <QuizPrivacyNotice />
         </div>
@@ -446,18 +214,20 @@ function QuizResult({
 
 function QuizInvalidResult({ onStart }: { readonly onStart: () => void }) {
   const titleRef = useRef<HTMLHeadingElement>(null);
-  useTitleFocus(titleRef, "invalid");
-
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => titleRef.current?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, []);
   return (
     <main className="quiz-main" id="conteudo-quiz">
-      <div className="quiz-shell quiz-state-message">
-        <p className="quiz-eyebrow">Resultado incompleto</p>
-        <h1 ref={titleRef} tabIndex={-1}>Seu ritmo precisa das cinco escolhas.</h1>
+      <div className="quiz-state-message">
+        <p className="quiz-kicker">Resultado ainda não formado</p>
+        <h1 ref={titleRef} tabIndex={-1}>Seu ritmo precisa das seis escolhas.</h1>
         <p>
-          Nenhum perfil é criado sem respostas válidas. Comece de novo para
-          chegar a uma revelação que realmente use o conjunto.
+          Nenhum perfil é criado sem um caminho completo e válido. Você pode
+          recomeçar agora — sem cadastro e sem avaliação corporal.
         </p>
-        <button className="quiz-button quiz-button--primary" onClick={onStart}>
+        <button className="quiz-primary-action" type="button" onClick={onStart}>
           Começar o quiz
         </button>
       </div>
@@ -466,21 +236,16 @@ function QuizInvalidResult({ onStart }: { readonly onStart: () => void }) {
 }
 
 function QuizUnavailable() {
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  useTitleFocus(titleRef, "unavailable");
-
   return (
     <main className="quiz-main" id="conteudo-quiz">
-      <div className="quiz-shell quiz-state-message">
-        <p className="quiz-eyebrow">CeluClin</p>
-        <h1 ref={titleRef} tabIndex={-1}>Essa experiência não está disponível agora.</h1>
+      <div className="quiz-state-message">
+        <p className="quiz-kicker">Belvitale · CeluClin</p>
+        <h1 tabIndex={-1}>Essa experiência não está disponível agora.</h1>
         <p>
-          Você ainda pode conhecer o produto, observar os resultados autorizados
-          e comparar as opções disponíveis.
+          A publicação depende dos gates de conteúdo, regulação, privacidade e
+          checkout. Você ainda pode consultar as informações confirmadas do produto.
         </p>
-        <a className="quiz-button quiz-button--primary" href="/#ofertas">
-          Conhecer o CeluClin
-        </a>
+        <a className="quiz-primary-action" href="/#celuclin">Conhecer o CeluClin</a>
       </div>
     </main>
   );
@@ -498,161 +263,284 @@ function upsertAnswer(
 }
 
 export function QuizRoute() {
-  const initialRoute = getQuizRoutePath(location.pathname) ?? "quiz";
+  const initialRoute = getQuizRoutePath(window.location.pathname) ?? "quiz";
   const [route, setRoute] = useState<QuizRoutePath>(initialRoute);
   const [quizState, setQuizState] = useState<QuizStoredState>(loadQuizState);
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
-  const [errorVisible, setErrorVisible] = useState(false);
+  const [activeInsight, setActiveInsight] = useState<QuizMicroInsight | null>(null);
+  const reducedMotion = useReducedMotion();
+  const experiment = getStableQuizExperiment();
+  const transitionTimer = useRef<number | null>(null);
+  const insightTimer = useRef<number | null>(null);
+  const stateRef = useRef(quizState);
   const viewRecorded = useRef(false);
+  const abandonRecorded = useRef(false);
+  const questionViews = useRef(new Set<string>());
+  const path = useMemo(
+    () => getQuizQuestionPath(quizState.answers),
+    [quizState.answers],
+  );
+  const currentQuestion = path[quizState.currentStep];
+  const selectedOptionId =
+    currentQuestion === undefined
+      ? null
+      : quizState.answers.find(
+          (answer) => answer.questionId === currentQuestion.id,
+        )?.optionId ?? null;
   const accessMode = getQuizAccessMode(
     quizPublicationStatus,
     import.meta.env.DEV,
     import.meta.env.VITE_INTERNAL_QUIZ === "true" || quizPreviewEnabled,
   );
 
+  function persistState(nextState: QuizStoredState) {
+    stateRef.current = nextState;
+    setQuizState(nextState);
+    saveQuizState(nextState);
+  }
+
   function navigate(nextRoute: QuizRoutePath, replace = false) {
-    history[replace ? "replaceState" : "pushState"](
+    window.history[replace ? "replaceState" : "pushState"](
       null,
       "",
-      getQuizUrl(nextRoute),
+      buildQuizUrl(nextRoute),
     );
     setRoute(nextRoute);
   }
 
+  function clearTimers() {
+    if (transitionTimer.current !== null) window.clearTimeout(transitionTimer.current);
+    if (insightTimer.current !== null) window.clearTimeout(insightTimer.current);
+    transitionTimer.current = null;
+    insightTimer.current = null;
+  }
+
+  useEffect(() => clearTimers, []);
+
   useEffect(() => {
     function handlePopState() {
-      setRoute(getQuizRoutePath(location.pathname) ?? "quiz");
+      setRoute(getQuizRoutePath(window.location.pathname) ?? "quiz");
     }
-    addEventListener("popstate", handlePopState);
-    return () => removeEventListener("popstate", handlePopState);
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   useEffect(() => {
     if (accessMode !== "interactive" || viewRecorded.current) return;
     viewRecorded.current = true;
-    recordQuizEvent("quiz_view", { source: "quiz" });
+    recordQuizEvent("quiz_view");
   }, [accessMode]);
 
-  function persistState(nextState: QuizStoredState) {
-    setQuizState(nextState);
-    saveQuizState(nextState);
-  }
+  useEffect(() => {
+    if (currentQuestion === undefined || quizState.currentStep < 0) return;
+    const viewKey = `${String(quizState.currentStep)}:${currentQuestion.id}`;
+    if (questionViews.current.has(viewKey)) return;
+    questionViews.current.add(viewKey);
+    recordQuizEvent("quiz_question_view", {
+      question_id: currentQuestion.id,
+      step: quizState.currentStep + 1,
+    });
+  }, [currentQuestion, quizState.currentStep]);
+
+  useEffect(() => {
+    function recordAbandon() {
+      const state = stateRef.current;
+      if (
+        abandonRecorded.current ||
+        state.currentStep < 0 ||
+        state.currentStep >= quizTotalSteps
+      ) {
+        return;
+      }
+      abandonRecorded.current = true;
+      const currentPath = getQuizQuestionPath(state.answers);
+      const question = currentPath[state.currentStep];
+      recordQuizEvent("quiz_abandon", {
+        ...(question === undefined ? {} : { question_id: question.id }),
+        step: state.currentStep + 1,
+      });
+    }
+    window.addEventListener("pagehide", recordAbandon);
+    return () => window.removeEventListener("pagehide", recordAbandon);
+  }, []);
 
   function startQuiz() {
+    clearTimers();
+    setActiveInsight(null);
     setDirection("forward");
-    setErrorVisible(false);
-    persistState({ answers: quizState.answers, currentStep: 0 });
-    recordQuizEvent("quiz_start", { source: "quiz" });
+    abandonRecorded.current = false;
+    const answers = quizState.profile === undefined ? quizState.answers : [];
+    const now = new Date().toISOString();
+    persistState({
+      answers,
+      currentStep: 0,
+      startedAt: quizState.profile === undefined ? quizState.startedAt ?? now : now,
+    });
+    recordQuizEvent("quiz_start");
+    if (route !== "quiz") navigate("quiz", true);
   }
 
   function startFromInvalidResult() {
     clearQuizState();
-    setDirection("forward");
-    setErrorVisible(false);
-    persistState({ answers: [], currentStep: 0 });
-    recordQuizEvent("quiz_start", { source: "quiz" });
+    setQuizState(createInitialQuizState());
+    stateRef.current = createInitialQuizState();
     navigate("quiz", true);
+    window.setTimeout(startQuiz, 0);
   }
 
-  function selectOption(optionId: string) {
-    const question = quizQuestions[quizState.currentStep];
-    if (question === undefined) return;
-    setErrorVisible(false);
-    persistState({
-      answers: upsertAnswer(quizState.answers, question.id, optionId),
-      currentStep: quizState.currentStep,
+  function showInsight(checkpoint: QuizCheckpoint, answers: readonly QuizAnswer[]) {
+    const insight = deriveQuizMicroInsight(checkpoint, answers);
+    setActiveInsight(insight);
+    recordQuizEvent("quiz_checkpoint_view", {
+      step: checkpoint === "after-planning" ? experiment.firstCheckpointAfter : 4,
     });
+    if (insightTimer.current !== null) window.clearTimeout(insightTimer.current);
+    insightTimer.current = window.setTimeout(() => {
+      setActiveInsight(null);
+      insightTimer.current = null;
+    }, reducedMotion ? 700 : 1200);
   }
 
-  function continueQuiz() {
-    const question = quizQuestions[quizState.currentStep];
-    if (question === undefined) return;
-    const answered = quizState.answers.some(
-      (answer) => answer.questionId === question.id,
-    );
-    if (!answered) {
-      setErrorVisible(true);
-      return;
-    }
-
-    setErrorVisible(false);
-    setDirection("forward");
-    recordQuizEvent("quiz_step_complete", {
-      source: "quiz",
-      step: quizState.currentStep + 1,
-    });
-
-    if (quizState.currentStep < quizQuestions.length - 1) {
-      persistState({
-        answers: quizState.answers,
-        currentStep: quizState.currentStep + 1,
-      });
-      return;
-    }
-
-    const profile = calculateQuizProfile(quizState.answers);
-    persistState({
-      answers: quizState.answers,
-      currentStep: quizQuestions.length,
-      profile,
+  function finishQuiz(answers: readonly QuizAnswer[]) {
+    if (!hasCompleteQuizAnswers(answers)) return;
+    const calculation = calculateQuizResult(answers);
+    const plan = calculateRecommendedPlan(calculation.dimensions).plan;
+    const completedState: QuizStoredState = {
+      answers,
+      currentStep: quizTotalSteps,
+      startedAt: quizState.startedAt ?? new Date().toISOString(),
+      profile: calculation.profile,
       completedAt: new Date().toISOString(),
+    };
+    persistState(completedState);
+    recordQuizEvent("quiz_complete", {
+      result_profile: calculation.profile,
+      recommended_plan: plan,
     });
-    recordQuizEvent("quiz_complete", { source: "quiz", profile });
     navigate("result");
   }
 
+  function advanceAfterSelection(
+    step: number,
+    answers: readonly QuizAnswer[],
+  ) {
+    if (step === quizTotalSteps - 1) {
+      finishQuiz(answers);
+      return;
+    }
+
+    persistState({
+      answers,
+      currentStep: step + 1,
+      startedAt: quizState.startedAt ?? new Date().toISOString(),
+    });
+    const answeredCount = step + 1;
+    if (answeredCount === experiment.firstCheckpointAfter) {
+      showInsight("after-planning", answers);
+    } else if (answeredCount === 4) {
+      showInsight("after-adaptive", answers);
+    }
+  }
+
+  function selectOption(optionId: string) {
+    if (currentQuestion === undefined) return;
+    if (transitionTimer.current !== null) window.clearTimeout(transitionTimer.current);
+    setDirection("forward");
+    const withAnswer = upsertAnswer(
+      quizState.answers,
+      currentQuestion.id,
+      optionId,
+    );
+    const nextAnswers =
+      quizState.currentStep <= 2
+        ? sanitizeAnswersForPath(withAnswer)
+        : withAnswer;
+    persistState({
+      answers: nextAnswers,
+      currentStep: quizState.currentStep,
+      startedAt: quizState.startedAt ?? new Date().toISOString(),
+    });
+    recordQuizEvent("quiz_answer", {
+      question_id: currentQuestion.id,
+      answer_id: optionId,
+      step: quizState.currentStep + 1,
+    });
+
+    const answeredStep = quizState.currentStep;
+    transitionTimer.current = window.setTimeout(() => {
+      transitionTimer.current = null;
+      advanceAfterSelection(answeredStep, nextAnswers);
+    }, reducedMotion ? 30 : 320);
+  }
+
   function goBack() {
-    setErrorVisible(false);
+    clearTimers();
+    setActiveInsight(null);
     setDirection("backward");
+    const nextStep = Math.max(-1, quizState.currentStep - 1);
+    recordQuizEvent("quiz_back", {
+      ...(currentQuestion === undefined ? {} : { question_id: currentQuestion.id }),
+      ...(quizState.currentStep < 0 ? {} : { step: quizState.currentStep + 1 }),
+    });
     persistState({
       answers: quizState.answers,
-      currentStep: Math.max(-1, quizState.currentStep - 1),
+      currentStep: nextStep,
+      ...(quizState.startedAt === undefined ? {} : { startedAt: quizState.startedAt }),
     });
   }
 
   function restartQuiz() {
+    clearTimers();
     clearQuizState();
+    const initial = createInitialQuizState();
+    stateRef.current = initial;
+    setQuizState(initial);
     setDirection("backward");
-    setErrorVisible(false);
-    setQuizState(createInitialQuizState());
-    recordQuizEvent("quiz_restart", { source: "quiz" });
+    setActiveInsight(null);
+    recordQuizEvent("quiz_restart", {
+      ...(quizState.profile === undefined ? {} : { result_profile: quizState.profile }),
+    });
     navigate("quiz");
   }
 
-  const currentQuestion = quizQuestions[quizState.currentStep];
-  const selectedOptionId =
-    currentQuestion === undefined
-      ? null
-      : (quizState.answers.find(
-          (answer) => answer.questionId === currentQuestion.id,
-        )?.optionId ?? null);
+  const completedCalculation =
+    quizState.profile !== undefined && hasCompleteQuizAnswers(quizState.answers)
+      ? calculateQuizResult(quizState.answers)
+      : null;
 
   return (
     <div
       className="quiz-route"
       data-publication-status={quizPublicationStatus}
       data-route={route}
+      data-experiment={experiment.id}
     >
       <QuizMetadata path={route} />
       <a className="skip-link" href="#conteudo-quiz">Ir para o conteúdo</a>
       <QuizBrand />
+      <QuizMicroInsightToast insight={activeInsight} />
       {accessMode === "unavailable" ? (
         <QuizUnavailable />
-      ) : route === "result" && quizState.profile !== undefined ? (
-        <QuizResult profileId={quizState.profile} onRestart={restartQuiz} />
+      ) : route === "result" && completedCalculation !== null ? (
+        <QuizResultExperience
+          calculation={completedCalculation}
+          onRestart={restartQuiz}
+        />
       ) : route === "result" ? (
         <QuizInvalidResult onStart={startFromInvalidResult} />
       ) : quizState.currentStep < 0 || currentQuestion === undefined ? (
-        <QuizStart onStart={startQuiz} />
+        <QuizStart
+          onStart={startQuiz}
+          hasSavedAnswers={quizState.answers.length > 0 && quizState.profile === undefined}
+        />
       ) : (
-        <QuizQuestionScreen
+        <QuizQuestionExperience
           question={currentQuestion}
           step={quizState.currentStep}
+          total={quizTotalSteps}
           selectedOptionId={selectedOptionId}
           direction={direction}
-          errorVisible={errorVisible}
           onBack={goBack}
-          onContinue={continueQuiz}
           onSelect={selectOption}
         />
       )}

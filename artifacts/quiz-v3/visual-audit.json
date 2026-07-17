@@ -1,0 +1,168 @@
+{
+  "capturedAt": "2026-07-17T00:32:29.544Z",
+  "previewURL": "http://127.0.0.1:5173",
+  "consoleErrors": [],
+  "pageErrors": [],
+  "requestFailures": [],
+  "viewports": [
+    {
+      "width": 360,
+      "height": 800,
+      "opening": {
+        "documentWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 800,
+        "viewportHeight": 800,
+        "h1Count": 1
+      },
+      "question": {
+        "documentWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 800,
+        "viewportHeight": 800,
+        "minimumAnswerHeight": 53.15625,
+        "h1Count": 1
+      }
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "opening": {
+        "documentWidth": 375,
+        "clientWidth": 375,
+        "scrollHeight": 830,
+        "viewportHeight": 812,
+        "h1Count": 1
+      },
+      "question": {
+        "documentWidth": 375,
+        "clientWidth": 375,
+        "scrollHeight": 812,
+        "viewportHeight": 812,
+        "minimumAnswerHeight": 76.828125,
+        "h1Count": 1
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "opening": {
+        "documentWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "viewportHeight": 844,
+        "h1Count": 1
+      },
+      "question": {
+        "documentWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "viewportHeight": 844,
+        "minimumAnswerHeight": 76.828125,
+        "h1Count": 1
+      }
+    },
+    {
+      "width": 412,
+      "height": 915,
+      "opening": {
+        "documentWidth": 412,
+        "clientWidth": 412,
+        "scrollHeight": 915,
+        "viewportHeight": 915,
+        "h1Count": 1
+      },
+      "question": {
+        "documentWidth": 412,
+        "clientWidth": 412,
+        "scrollHeight": 915,
+        "viewportHeight": 915,
+        "minimumAnswerHeight": 58.4375,
+        "h1Count": 1
+      }
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "opening": {
+        "documentWidth": 430,
+        "clientWidth": 430,
+        "scrollHeight": 932,
+        "viewportHeight": 932,
+        "h1Count": 1
+      },
+      "question": {
+        "documentWidth": 430,
+        "clientWidth": 430,
+        "scrollHeight": 932,
+        "viewportHeight": 932,
+        "minimumAnswerHeight": 58.4375,
+        "h1Count": 1
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "opening": {
+        "documentWidth": 1366,
+        "clientWidth": 1366,
+        "scrollHeight": 772,
+        "viewportHeight": 768,
+        "h1Count": 1
+      },
+      "question": {
+        "documentWidth": 1366,
+        "clientWidth": 1366,
+        "scrollHeight": 814,
+        "viewportHeight": 768,
+        "minimumAnswerHeight": 69.59375,
+        "h1Count": 1
+      }
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "opening": {
+        "documentWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "viewportHeight": 900,
+        "h1Count": 1
+      },
+      "question": {
+        "documentWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 921,
+        "viewportHeight": 900,
+        "minimumAnswerHeight": 69.59375,
+        "h1Count": 1
+      }
+    }
+  ],
+  "screenshots": [
+    "opening-390x844.png",
+    "question-1-scenes-390x844.png",
+    "question-2-tactile-390x844.png",
+    "microinsight-1-390x844.png",
+    "question-3-contrast-390x844.png",
+    "question-4-path-390x844.png",
+    "microinsight-2-390x844.png",
+    "question-5-sentence-390x844.png",
+    "question-6-priority-390x844.png",
+    "result-complete-390x844.png",
+    "proof-real-390.png",
+    "all-options-390.png",
+    "profile-fits-now-390x844.png",
+    "profile-return-counts-390x844.png",
+    "profile-marked-place-390x844.png",
+    "profile-everything-at-hand-390x844.png",
+    "recommendation-30-days-390.png",
+    "recommendation-90-days-390.png",
+    "recommendation-210-days-390.png"
+  ],
+  "videos": [
+    "quiz-complete-390x844.webm",
+    "quiz-complete-1440x900.webm",
+    "quiz-reduced-motion-390x844.webm"
+  ]
+}

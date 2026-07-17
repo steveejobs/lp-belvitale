@@ -2,7 +2,13 @@ import { rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
-import { defineConfig, loadEnv, type Plugin } from "vite";
+import {
+  defineConfig,
+  loadEnv,
+  type Plugin,
+  type PreviewServer,
+  type ViteDevServer,
+} from "vite";
 import { regulatoryPublicationReady } from "./src/data/regulatoryFacts";
 
 const rootDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -45,6 +51,41 @@ function preloadHomeHeroMedia(): Plugin {
         "</head>",
         '    <link rel="preload" href="/product/celuclin-front-02-hero-mobile.webp" as="image" type="image/webp" media="(max-width: 47.99rem)" fetchpriority="high" />\n    <link rel="preload" href="/product/celuclin-front-02.webp" as="image" type="image/webp" media="(min-width: 48rem)" fetchpriority="high" />\n  </head>',
       );
+    },
+  };
+}
+
+function serveQuizHtmlEntries(): Plugin {
+  function rewriteQuizRequest(requestUrl: string | undefined): string | undefined {
+    if (requestUrl === undefined) return undefined;
+    const url = new URL(requestUrl, "http://belvitale.local");
+    const normalized = url.pathname.length > 1 && url.pathname.endsWith("/")
+      ? url.pathname.slice(0, -1)
+      : url.pathname;
+    if (normalized === "/quiz") {
+      return `/quiz/index.html${url.search}`;
+    }
+    if (normalized === "/quiz/resultado") {
+      return `/quiz/resultado/index.html${url.search}`;
+    }
+    return undefined;
+  }
+
+  const configure = (server: ViteDevServer | PreviewServer) => {
+    server.middlewares.use((request, _response, next) => {
+      const rewritten = rewriteQuizRequest(request.url);
+      if (rewritten !== undefined) request.url = rewritten;
+      next();
+    });
+  };
+
+  return {
+    name: "serve-quiz-html-entries",
+    configureServer(server) {
+      configure(server);
+    },
+    configurePreviewServer(server) {
+      configure(server);
     },
   };
 }
@@ -145,7 +186,7 @@ function quizPublicationSeo(
       const tags = [
         `<link rel="canonical" href="${quizUrl}" />`,
         '<meta property="og:title" content="Quiz de rotina | Belvitale" />',
-        '<meta property="og:description" content="Cinco perguntas sobre hábitos e preferências para conhecer um perfil neutro de rotina de autocuidado." />',
+        '<meta property="og:description" content="Seis escolhas rápidas sobre começo, retomada e vida real para descobrir um ritmo de autocuidado." />',
         '<meta property="og:type" content="website" />',
         `<meta property="og:url" content="${quizUrl}" />`,
       ].join("\n    ");
@@ -216,6 +257,7 @@ export default defineConfig(({ command, mode }) => {
     },
     plugins: [
       react(),
+      serveQuizHtmlEntries(),
       preloadHomeHeroMedia(),
       homePreviewSeo(seoPreviewEnabled, canonicalBase),
       quizPublicationSeo(

@@ -1,0 +1,2548 @@
+{
+  "generatedAt": "2026-07-17T00:10:01.752Z",
+  "quizVersion": "3.0.0",
+  "totalCombinations": 4096,
+  "invalidPaths": 0,
+  "profileDistribution": {
+    "everything-at-hand": 711,
+    "fits-now": 986,
+    "marked-place": 1576,
+    "return-counts": 823
+  },
+  "planDistribution": {
+    "210-days": 651,
+    "30-days": 755,
+    "90-days": 2690
+  },
+  "confidenceDistribution": {
+    "blended": 1439,
+    "clear": 823,
+    "subtle": 1834
+  },
+  "branchDistribution": {
+    "adaptive-real-life": 448,
+    "adaptive-return": 1216,
+    "adaptive-simple": 448,
+    "adaptive-supply": 1984
+  },
+  "dimensionStats": {
+    "startEase": {
+      "minimum": 0,
+      "p25": 25,
+      "median": 50,
+      "p75": 66.7,
+      "maximum": 100,
+      "mean": 46.66249999999908
+    },
+    "recovery": {
+      "minimum": 0,
+      "p25": 27.3,
+      "median": 53.8,
+      "p75": 55.6,
+      "maximum": 100,
+      "mean": 47.000878906250996
+    },
+    "simplicity": {
+      "minimum": 0,
+      "p25": 33.3,
+      "median": 46.2,
+      "p75": 53.8,
+      "maximum": 100,
+      "mean": 45.41057128906298
+    },
+    "consistency": {
+      "minimum": 0,
+      "p25": 30,
+      "median": 40,
+      "p75": 55,
+      "maximum": 100,
+      "mean": 41.06337890625041
+    },
+    "planning": {
+      "minimum": 0,
+      "p25": 47.6,
+      "median": 57.1,
+      "p75": 66.7,
+      "maximum": 100,
+      "mean": 57.30991210937598
+    },
+    "replenishmentRelief": {
+      "minimum": 0,
+      "p25": 25,
+      "median": 37.5,
+      "p75": 50,
+      "maximum": 100,
+      "mean": 37.676123046875226
+    },
+    "autonomy": {
+      "minimum": 0,
+      "p25": 30,
+      "median": 40,
+      "p75": 50,
+      "maximum": 100,
+      "mean": 39.53125
+    },
+    "commitmentComfort": {
+      "minimum": 0,
+      "p25": 44.4,
+      "median": 55.6,
+      "p75": 66.7,
+      "maximum": 100,
+      "mean": 54.86572265625049
+    }
+  },
+  "maximumProfileShare": 0.384765625,
+  "minimumProfileOutcomesPerAnswer": 3,
+  "minimumPlanOutcomesPerAnswer": 2,
+  "examplesByProfile": {
+    "fits-now": {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        },
+        {
+          "questionId": "adaptive-supply",
+          "optionId": "supply-near-end"
+        },
+        {
+          "questionId": "choice-lightness",
+          "optionId": "see-essential"
+        },
+        {
+          "questionId": "what-stays",
+          "optionId": "small-commitment"
+        }
+      ],
+      "resultProfile": "fits-now",
+      "recommendedPlan": "30-days",
+      "confidence": "clear"
+    },
+    "return-counts": {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        },
+        {
+          "questionId": "adaptive-supply",
+          "optionId": "supply-near-end"
+        },
+        {
+          "questionId": "choice-lightness",
+          "optionId": "picture-routine"
+        },
+        {
+          "questionId": "what-stays",
+          "optionId": "survives-change"
+        }
+      ],
+      "resultProfile": "return-counts",
+      "recommendedPlan": "30-days",
+      "confidence": "blended"
+    },
+    "marked-place": {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        },
+        {
+          "questionId": "adaptive-supply",
+          "optionId": "supply-anticipate"
+        },
+        {
+          "questionId": "choice-lightness",
+          "optionId": "picture-routine"
+        },
+        {
+          "questionId": "what-stays",
+          "optionId": "has-clear-place"
+        }
+      ],
+      "resultProfile": "marked-place",
+      "recommendedPlan": "90-days",
+      "confidence": "subtle"
+    },
+    "everything-at-hand": {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        },
+        {
+          "questionId": "adaptive-return",
+          "optionId": "return-replan"
+        },
+        {
+          "questionId": "choice-lightness",
+          "optionId": "information-at-hand"
+        },
+        {
+          "questionId": "what-stays",
+          "optionId": "months-decided"
+        }
+      ],
+      "resultProfile": "everything-at-hand",
+      "recommendedPlan": "90-days",
+      "confidence": "subtle"
+    }
+  },
+  "examplesByPlan": {
+    "30-days": {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        },
+        {
+          "questionId": "adaptive-supply",
+          "optionId": "supply-near-end"
+        },
+        {
+          "questionId": "choice-lightness",
+          "optionId": "see-essential"
+        },
+        {
+          "questionId": "what-stays",
+          "optionId": "small-commitment"
+        }
+      ],
+      "resultProfile": "fits-now",
+      "recommendedPlan": "30-days",
+      "confidence": "clear"
+    },
+    "90-days": {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        },
+        {
+          "questionId": "adaptive-supply",
+          "optionId": "supply-near-end"
+        },
+        {
+          "questionId": "choice-lightness",
+          "optionId": "repeat-fewer-decisions"
+        },
+        {
+          "questionId": "what-stays",
+          "optionId": "months-decided"
+        }
+      ],
+      "resultProfile": "fits-now",
+      "recommendedPlan": "90-days",
+      "confidence": "blended"
+    },
+    "210-days": {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        },
+        {
+          "questionId": "adaptive-supply",
+          "optionId": "supply-anticipate"
+        },
+        {
+          "questionId": "choice-lightness",
+          "optionId": "repeat-fewer-decisions"
+        },
+        {
+          "questionId": "what-stays",
+          "optionId": "months-decided"
+        }
+      ],
+      "resultProfile": "marked-place",
+      "recommendedPlan": "210-days",
+      "confidence": "blended"
+    }
+  },
+  "adaptiveCoverage": {
+    "adaptive-return": [
+      "recovery"
+    ],
+    "adaptive-supply": [
+      "planning",
+      "replenishmentRelief",
+      "commitmentComfort"
+    ],
+    "adaptive-simple": [
+      "simplicity"
+    ],
+    "adaptive-real-life": [
+      "startEase",
+      "consistency",
+      "autonomy"
+    ]
+  },
+  "earlyPaths": [
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "start-tiny-now"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-real-life"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-simple"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-simple"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-real-life"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-real-life"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "choose-a-place"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-real-life"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-simple"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-simple"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "understand-first"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-supply"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "next-gesture"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "few-days"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-simple"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-real-life"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "week-shaped"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-return"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "resume-usual"
+        }
+      ],
+      "branch": "adaptive-real-life"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "make-smaller"
+        }
+      ],
+      "branch": "adaptive-real-life"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "change-time"
+        }
+      ],
+      "branch": "adaptive-simple"
+    },
+    {
+      "answers": [
+        {
+          "questionId": "first-move",
+          "optionId": "prepare-the-way"
+        },
+        {
+          "questionId": "planning-dose",
+          "optionId": "future-decided"
+        },
+        {
+          "questionId": "missed-day",
+          "optionId": "reshape-days"
+        }
+      ],
+      "branch": "adaptive-simple"
+    }
+  ],
+  "profiles": {
+    "fits-now": {
+      "title": "Cabe no agora",
+      "center": {
+        "startEase": 86,
+        "recovery": 64,
+        "simplicity": 88,
+        "consistency": 45,
+        "planning": 22,
+        "replenishmentRelief": 22,
+        "autonomy": 78,
+        "commitmentComfort": 18
+      }
+    },
+    "return-counts": {
+      "title": "Voltar também conta",
+      "center": {
+        "startEase": 65,
+        "recovery": 92,
+        "simplicity": 72,
+        "consistency": 66,
+        "planning": 42,
+        "replenishmentRelief": 42,
+        "autonomy": 78,
+        "commitmentComfort": 45
+      }
+    },
+    "marked-place": {
+      "title": "Lugar certo, hora certa",
+      "center": {
+        "startEase": 62,
+        "recovery": 64,
+        "simplicity": 54,
+        "consistency": 92,
+        "planning": 72,
+        "replenishmentRelief": 58,
+        "autonomy": 60,
+        "commitmentComfort": 66
+      }
+    },
+    "everything-at-hand": {
+      "title": "Tudo à mão",
+      "center": {
+        "startEase": 48,
+        "recovery": 55,
+        "simplicity": 44,
+        "consistency": 76,
+        "planning": 92,
+        "replenishmentRelief": 94,
+        "autonomy": 74,
+        "commitmentComfort": 88
+      }
+    }
+  },
+  "plans": {
+    "30-days": {
+      "title": "30 dias",
+      "center": {
+        "commitment": 22,
+        "consistency": 28,
+        "planning": 30,
+        "fewerReplacements": 14,
+        "convenience": 40
+      }
+    },
+    "90-days": {
+      "title": "90 dias",
+      "center": {
+        "commitment": 54,
+        "consistency": 44,
+        "planning": 56,
+        "fewerReplacements": 42,
+        "convenience": 52
+      }
+    },
+    "210-days": {
+      "title": "7 meses",
+      "center": {
+        "commitment": 78,
+        "consistency": 58,
+        "planning": 76,
+        "fewerReplacements": 74,
+        "convenience": 66
+      }
+    }
+  },
+  "matrix": [
+    {
+      "id": "first-move",
+      "adaptive": false,
+      "presentation": "scenes",
+      "options": [
+        {
+          "id": "start-tiny-now",
+          "label": "Faço um teste pequeno, sem organizar o resto.",
+          "impact": {
+            "startEase": 2,
+            "recovery": 0,
+            "simplicity": 2,
+            "consistency": 0,
+            "planning": -2,
+            "replenishmentRelief": 0,
+            "autonomy": 1,
+            "commitmentComfort": -2
+          }
+        },
+        {
+          "id": "choose-a-place",
+          "label": "Escolho onde isso cabe no meu dia.",
+          "impact": {
+            "startEase": 1,
+            "recovery": 0,
+            "simplicity": 1,
+            "consistency": 2,
+            "planning": 1,
+            "replenishmentRelief": 0,
+            "autonomy": 0,
+            "commitmentComfort": 1
+          }
+        },
+        {
+          "id": "understand-first",
+          "label": "Entendo o essencial e decido com calma.",
+          "impact": {
+            "startEase": -1,
+            "recovery": 0,
+            "simplicity": 1,
+            "consistency": 0,
+            "planning": 1,
+            "replenishmentRelief": 0,
+            "autonomy": 2,
+            "commitmentComfort": -1
+          }
+        },
+        {
+          "id": "prepare-the-way",
+          "label": "Deixo o caminho preparado antes de começar.",
+          "impact": {
+            "startEase": -1,
+            "recovery": 0,
+            "simplicity": 0,
+            "consistency": 1,
+            "planning": 2,
+            "replenishmentRelief": 1,
+            "autonomy": 0,
+            "commitmentComfort": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "planning-dose",
+      "adaptive": false,
+      "presentation": "tactile",
+      "options": [
+        {
+          "id": "next-gesture",
+          "label": "Só o próximo gesto",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 2,
+            "consistency": 0,
+            "planning": -2,
+            "replenishmentRelief": 0,
+            "autonomy": 1,
+            "commitmentComfort": -2
+          }
+        },
+        {
+          "id": "few-days",
+          "label": "Alguns dias à vista",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 1,
+            "consistency": 1,
+            "planning": 0.5,
+            "replenishmentRelief": 0,
+            "autonomy": 1,
+            "commitmentComfort": -0.5
+          }
+        },
+        {
+          "id": "week-shaped",
+          "label": "Uma semana organizada",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": -1,
+            "consistency": 1,
+            "planning": 2,
+            "replenishmentRelief": 0,
+            "autonomy": 0,
+            "commitmentComfort": 1
+          }
+        },
+        {
+          "id": "future-decided",
+          "label": "Reposições já encaminhadas",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 0,
+            "consistency": 1,
+            "planning": 2,
+            "replenishmentRelief": 2,
+            "autonomy": 0,
+            "commitmentComfort": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "missed-day",
+      "adaptive": false,
+      "presentation": "contrast",
+      "options": [
+        {
+          "id": "resume-usual",
+          "label": "Volto no ponto habitual, sem compensar.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 2,
+            "simplicity": 1,
+            "consistency": 2,
+            "planning": 0,
+            "replenishmentRelief": 0,
+            "autonomy": 0,
+            "commitmentComfort": 1
+          }
+        },
+        {
+          "id": "make-smaller",
+          "label": "Diminuo o gesto até ele caber de novo.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 2,
+            "simplicity": 2,
+            "consistency": 1,
+            "planning": 0,
+            "replenishmentRelief": 0,
+            "autonomy": 0,
+            "commitmentComfort": -1
+          }
+        },
+        {
+          "id": "change-time",
+          "label": "Troco o horário e sigo o dia.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 1,
+            "simplicity": 0,
+            "consistency": 1,
+            "planning": -1,
+            "replenishmentRelief": 0,
+            "autonomy": 2,
+            "commitmentComfort": 0
+          }
+        },
+        {
+          "id": "reshape-days",
+          "label": "Reorganizo os próximos dias antes de voltar.",
+          "impact": {
+            "startEase": -1,
+            "recovery": -0.5,
+            "simplicity": 0,
+            "consistency": 1,
+            "planning": 2,
+            "replenishmentRelief": 0,
+            "autonomy": 0,
+            "commitmentComfort": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "choice-lightness",
+      "adaptive": false,
+      "presentation": "sentence",
+      "options": [
+        {
+          "id": "see-essential",
+          "label": "ver o essencial e seguir.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 2,
+            "consistency": 0,
+            "planning": -1,
+            "replenishmentRelief": 0,
+            "autonomy": 2,
+            "commitmentComfort": -1
+          }
+        },
+        {
+          "id": "picture-routine",
+          "label": "enxergar como isso cabe no dia.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 1,
+            "consistency": 2,
+            "planning": 1,
+            "replenishmentRelief": 0,
+            "autonomy": 1,
+            "commitmentComfort": 0
+          }
+        },
+        {
+          "id": "information-at-hand",
+          "label": "ter tudo à mão e decidir no seu tempo.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": -1,
+            "consistency": 0,
+            "planning": 2,
+            "replenishmentRelief": 0,
+            "autonomy": 2,
+            "commitmentComfort": 1
+          }
+        },
+        {
+          "id": "repeat-fewer-decisions",
+          "label": "diminuir decisões que precisaria repetir.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 1,
+            "consistency": 0,
+            "planning": 1,
+            "replenishmentRelief": 2,
+            "autonomy": 0,
+            "commitmentComfort": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "what-stays",
+      "adaptive": false,
+      "presentation": "priority",
+      "options": [
+        {
+          "id": "small-commitment",
+          "label": "pode começar sem grande compromisso.",
+          "impact": {
+            "startEase": 2,
+            "recovery": 0,
+            "simplicity": 2,
+            "consistency": 0,
+            "planning": -2,
+            "replenishmentRelief": -1,
+            "autonomy": 0,
+            "commitmentComfort": -2
+          }
+        },
+        {
+          "id": "survives-change",
+          "label": "continua possível quando a semana muda.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 2,
+            "simplicity": 0,
+            "consistency": 1,
+            "planning": 0,
+            "replenishmentRelief": 0,
+            "autonomy": 1,
+            "commitmentComfort": 0.5
+          }
+        },
+        {
+          "id": "has-clear-place",
+          "label": "ganha um lugar claro no dia.",
+          "impact": {
+            "startEase": 1,
+            "recovery": 0,
+            "simplicity": 0,
+            "consistency": 2,
+            "planning": 1,
+            "replenishmentRelief": 0,
+            "autonomy": 0,
+            "commitmentComfort": 1
+          }
+        },
+        {
+          "id": "months-decided",
+          "label": "já deixa os próximos meses encaminhados.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 0,
+            "consistency": 1,
+            "planning": 2,
+            "replenishmentRelief": 2,
+            "autonomy": 0,
+            "commitmentComfort": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "adaptive-return",
+      "adaptive": true,
+      "presentation": "path",
+      "options": [
+        {
+          "id": "return-next-gesture",
+          "label": "Saber qual é o próximo gesto.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 2,
+            "simplicity": 1,
+            "consistency": 1,
+            "planning": 1,
+            "replenishmentRelief": 0,
+            "autonomy": 0,
+            "commitmentComfort": 0
+          }
+        },
+        {
+          "id": "return-other-time",
+          "label": "Poder voltar em outro horário.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 2,
+            "simplicity": 0,
+            "consistency": 0.5,
+            "planning": -1,
+            "replenishmentRelief": 0,
+            "autonomy": 2,
+            "commitmentComfort": 0
+          }
+        },
+        {
+          "id": "return-visible",
+          "label": "Encontrar o cuidado onde costumo passar.",
+          "impact": {
+            "startEase": 1,
+            "recovery": 1,
+            "simplicity": 1,
+            "consistency": 2,
+            "planning": 0,
+            "replenishmentRelief": 0,
+            "autonomy": 0,
+            "commitmentComfort": 0
+          }
+        },
+        {
+          "id": "return-replan",
+          "label": "Reorganizar a semana sem pressa.",
+          "impact": {
+            "startEase": -1,
+            "recovery": 1,
+            "simplicity": 0,
+            "consistency": 0,
+            "planning": 2,
+            "replenishmentRelief": 0,
+            "autonomy": 0,
+            "commitmentComfort": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "adaptive-supply",
+      "adaptive": true,
+      "presentation": "path",
+      "options": [
+        {
+          "id": "supply-near-end",
+          "label": "Decido só quando estiver perto do fim.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 0,
+            "consistency": 0,
+            "planning": -1,
+            "replenishmentRelief": -2,
+            "autonomy": 2,
+            "commitmentComfort": -2
+          }
+        },
+        {
+          "id": "supply-next-buy",
+          "label": "Anoto e resolvo na próxima compra.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 0,
+            "consistency": 1,
+            "planning": 1,
+            "replenishmentRelief": 0.5,
+            "autonomy": 0,
+            "commitmentComfort": 0.5
+          }
+        },
+        {
+          "id": "supply-anticipate",
+          "label": "Antecipar evita uma decisão no meio do caminho.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 0,
+            "consistency": 1,
+            "planning": 2,
+            "replenishmentRelief": 2,
+            "autonomy": 0,
+            "commitmentComfort": 1
+          }
+        },
+        {
+          "id": "supply-concentrate",
+          "label": "Concentro a escolha e fico um tempo sem pensar nisso.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 1,
+            "consistency": 0,
+            "planning": 2,
+            "replenishmentRelief": 2,
+            "autonomy": 1,
+            "commitmentComfort": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "adaptive-simple",
+      "adaptive": true,
+      "presentation": "path",
+      "options": [
+        {
+          "id": "simple-one-line",
+          "label": "cabe em uma frase.",
+          "impact": {
+            "startEase": 1,
+            "recovery": 0,
+            "simplicity": 2,
+            "consistency": 0,
+            "planning": -1,
+            "replenishmentRelief": 0,
+            "autonomy": 1,
+            "commitmentComfort": 0
+          }
+        },
+        {
+          "id": "simple-essential-free",
+          "label": "mostra o essencial e deixa o resto livre.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 2,
+            "consistency": 0,
+            "planning": -1,
+            "replenishmentRelief": 0,
+            "autonomy": 2,
+            "commitmentComfort": -1
+          }
+        },
+        {
+          "id": "simple-existing-habit",
+          "label": "se liga a algo que já acontece.",
+          "impact": {
+            "startEase": 1,
+            "recovery": 1,
+            "simplicity": 1,
+            "consistency": 2,
+            "planning": 0,
+            "replenishmentRelief": 0,
+            "autonomy": 0,
+            "commitmentComfort": 0
+          }
+        },
+        {
+          "id": "simple-next-visible",
+          "label": "deixa os próximos passos visíveis.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 0.5,
+            "consistency": 1,
+            "planning": 2,
+            "replenishmentRelief": 0,
+            "autonomy": 1,
+            "commitmentComfort": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "adaptive-real-life",
+      "adaptive": true,
+      "presentation": "path",
+      "options": [
+        {
+          "id": "real-before-perfect",
+          "label": "Começar antes de tudo estar perfeito.",
+          "impact": {
+            "startEase": 2,
+            "recovery": 1,
+            "simplicity": 1,
+            "consistency": 0,
+            "planning": -1,
+            "replenishmentRelief": 0,
+            "autonomy": 0,
+            "commitmentComfort": 0
+          }
+        },
+        {
+          "id": "real-visible-place",
+          "label": "Ter um lugar que me lembra.",
+          "impact": {
+            "startEase": 1,
+            "recovery": 0,
+            "simplicity": 1,
+            "consistency": 2,
+            "planning": 1,
+            "replenishmentRelief": 0,
+            "autonomy": 0,
+            "commitmentComfort": 0
+          }
+        },
+        {
+          "id": "real-adapt",
+          "label": "Poder adaptar sem sentir que perdi o fio.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 2,
+            "simplicity": 0,
+            "consistency": 1,
+            "planning": -1,
+            "replenishmentRelief": 0,
+            "autonomy": 2,
+            "commitmentComfort": 0
+          }
+        },
+        {
+          "id": "real-decide-around",
+          "label": "Resolver de uma vez as decisões ao redor.",
+          "impact": {
+            "startEase": 0,
+            "recovery": 0,
+            "simplicity": 0,
+            "consistency": 0,
+            "planning": 2,
+            "replenishmentRelief": 1,
+            "autonomy": 1,
+            "commitmentComfort": 1
+          }
+        }
+      ]
+    }
+  ],
+  "influence": {
+    "first-move:start-tiny-now": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "planning-dose:next-gesture": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "missed-day:resume-usual": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-supply:supply-near-end": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "30-days",
+        "90-days"
+      ]
+    },
+    "choice-lightness:see-essential": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "what-stays:small-commitment": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "what-stays:survives-change": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "what-stays:has-clear-place": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "what-stays:months-decided": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "choice-lightness:picture-routine": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "choice-lightness:information-at-hand": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "choice-lightness:repeat-fewer-decisions": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-supply:supply-next-buy": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-supply:supply-anticipate": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-supply:supply-concentrate": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "missed-day:make-smaller": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-return:return-next-gesture": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-return:return-other-time": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-return:return-visible": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-return:return-replan": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "missed-day:change-time": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "missed-day:reshape-days": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "planning-dose:few-days": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "planning-dose:week-shaped": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "planning-dose:future-decided": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "first-move:choose-a-place": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-real-life:real-before-perfect": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-real-life:real-visible-place": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-real-life:real-adapt": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-real-life:real-decide-around": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "90-days"
+      ]
+    },
+    "adaptive-simple:simple-one-line": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-simple:simple-essential-free": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-simple:simple-existing-habit": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "adaptive-simple:simple-next-visible": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "first-move:understand-first": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    },
+    "first-move:prepare-the-way": {
+      "profiles": [
+        "everything-at-hand",
+        "fits-now",
+        "marked-place",
+        "return-counts"
+      ],
+      "plans": [
+        "210-days",
+        "30-days",
+        "90-days"
+      ]
+    }
+  }
+}

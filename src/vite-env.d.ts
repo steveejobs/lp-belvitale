@@ -7,6 +7,7 @@ interface ImportMetaEnv {
   readonly VITE_QUIZ_PUBLICATION_STATUS?: string;
   readonly VITE_COMMERCIAL_PREVIEW?: string;
   readonly VITE_QUIZ_PREVIEW?: string;
+  readonly VITE_QUIZ_EXPERIMENT_VARIANT?: string;
   readonly VITE_SEO_PREVIEW?: string;
 }
 

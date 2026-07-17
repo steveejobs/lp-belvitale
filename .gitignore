@@ -26,6 +26,8 @@ artifacts/final-v2/*
 !artifacts/final-v2/scorecard.md
 !artifacts/final-v2/consumer-test-protocol.md
 !artifacts/final-v2/lighthouse-preview.json
+!artifacts/quiz-v3/
+!artifacts/quiz-v3/**
 design-system/
 .preview.*.log
 .vite.*.log

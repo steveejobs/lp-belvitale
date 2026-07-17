@@ -1,18 +1,28 @@
-import { isValidQuizOption, quizQuestions } from "../data/quizQuestions";
+import {
+  getQuizQuestion,
+  isValidQuizOption,
+  quizTotalSteps,
+  type QuizAnswer,
+} from "../data/quizQuestions";
 import { isQuizProfile, type QuizProfile } from "../data/quizProfiles";
+import {
+  getQuizQuestionPath,
+  sanitizeAnswersForPath,
+} from "./quizAdaptive";
 import {
   calculateQuizProfile,
   hasCompleteQuizAnswers,
-  type QuizAnswer,
+  isAnswerValidForCurrentPath,
 } from "./quizScoring";
 
 export const quizStorageKey = "belvitale:quiz:v1";
-export const quizStorageVersion = 2;
+export const quizStorageVersion = 3;
 export const quizStorageMaxAgeMs = 30 * 24 * 60 * 60 * 1000;
 
 export interface QuizStoredState {
   readonly answers: readonly QuizAnswer[];
   readonly currentStep: number;
+  readonly startedAt?: string;
   readonly profile?: QuizProfile;
   readonly completedAt?: string;
 }
@@ -40,11 +50,13 @@ const currentDocumentKeys = new Set([
   "savedAt",
   "answers",
   "currentStep",
+  "startedAt",
   "profile",
   "completedAt",
 ]);
 const legacyDocumentKeys = new Set([
   "version",
+  "savedAt",
   "answers",
   "currentStep",
   "profile",
@@ -76,38 +88,38 @@ function hasOnlyKeys(
   return Object.keys(value).every((key) => allowedKeys.has(key));
 }
 
+function isIsoDate(value: unknown): value is string {
+  return typeof value === "string" && !Number.isNaN(Date.parse(value));
+}
+
 function parseAnswers(value: unknown): readonly QuizAnswer[] | null {
   if (!Array.isArray(value)) return null;
+  const answers: QuizAnswer[] = [];
+  const seen = new Set<string>();
 
-  const answers = new Map<string, QuizAnswer>();
   for (const candidate of value) {
     if (
       !isRecord(candidate) ||
       !hasOnlyKeys(candidate, new Set(["questionId", "optionId"])) ||
       typeof candidate.questionId !== "string" ||
       typeof candidate.optionId !== "string" ||
-      !isValidQuizOption(candidate.questionId, candidate.optionId) ||
-      answers.has(candidate.questionId)
+      seen.has(candidate.questionId) ||
+      !isValidQuizOption(candidate.questionId, candidate.optionId)
     ) {
       return null;
     }
-    answers.set(candidate.questionId, {
+    seen.add(candidate.questionId);
+    answers.push({
       questionId: candidate.questionId,
       optionId: candidate.optionId,
     });
   }
 
-  return quizQuestions.flatMap((question) => {
-    const answer = answers.get(question.id);
-    return answer === undefined ? [] : [answer];
-  });
+  if (!isAnswerValidForCurrentPath(answers)) return null;
+  return sanitizeAnswersForPath(answers);
 }
 
-function isIsoDate(value: unknown): value is string {
-  return typeof value === "string" && !Number.isNaN(Date.parse(value));
-}
-
-function parseStateFields(
+function parseCurrentStateFields(
   value: Record<string, unknown>,
 ): QuizStoredState | null {
   const answers = parseAnswers(value.answers);
@@ -118,35 +130,129 @@ function parseStateFields(
     typeof rawStep !== "number" ||
     !Number.isInteger(rawStep) ||
     rawStep < -1 ||
-    rawStep > quizQuestions.length
+    rawStep > quizTotalSteps
   ) {
     return null;
   }
 
+  const startedAt = value.startedAt;
+  if (startedAt !== undefined && !isIsoDate(startedAt)) return null;
+  if (rawStep >= 0 && startedAt === undefined) return null;
+
   const hasProfile = value.profile !== undefined;
   const hasCompletedAt = value.completedAt !== undefined;
-  const complete = hasCompleteQuizAnswers(answers);
-
-  if (rawStep === quizQuestions.length) {
+  if (rawStep === quizTotalSteps) {
     if (
-      !complete ||
+      !hasCompleteQuizAnswers(answers) ||
       !isQuizProfile(value.profile) ||
       !isIsoDate(value.completedAt) ||
       calculateQuizProfile(answers) !== value.profile
     ) {
       return null;
     }
-
     return {
       answers,
       currentStep: rawStep,
+      ...(startedAt === undefined ? {} : { startedAt }),
       profile: value.profile,
       completedAt: value.completedAt,
     };
   }
 
   if (hasProfile || hasCompletedAt) return null;
-  return { answers, currentStep: rawStep };
+  return {
+    answers,
+    currentStep: rawStep,
+    ...(startedAt === undefined ? {} : { startedAt }),
+  };
+}
+
+const legacyQuestionMap: Readonly<
+  Record<string, Readonly<Record<string, QuizAnswer>>>
+> = {
+  "how-it-begins": {
+    "begin-small": { questionId: "first-move", optionId: "start-tiny-now" },
+    "begin-with-time": { questionId: "first-move", optionId: "choose-a-place" },
+    "begin-inside-routine": {
+      questionId: "first-move",
+      optionId: "prepare-the-way",
+    },
+  },
+  "what-breaks-the-rhythm": {
+    "week-changes": { questionId: "planning-dose", optionId: "few-days" },
+    "replacement-late": {
+      questionId: "planning-dose",
+      optionId: "future-decided",
+    },
+    "perfect-start": {
+      questionId: "planning-dose",
+      optionId: "next-gesture",
+    },
+    "one-day-break": { questionId: "planning-dose", optionId: "few-days" },
+  },
+  "after-a-missed-day": {
+    "resume-without-compensating": {
+      questionId: "missed-day",
+      optionId: "resume-usual",
+    },
+    "make-it-smaller": {
+      questionId: "missed-day",
+      optionId: "make-smaller",
+    },
+    "reorganize-week": {
+      questionId: "missed-day",
+      optionId: "reshape-days",
+    },
+  },
+};
+
+function migrateLegacyState(
+  value: Record<string, unknown>,
+  now: Date,
+): QuizStoredState | null {
+  if (!Array.isArray(value.answers)) return null;
+  const mapped = new Map<string, QuizAnswer>();
+
+  for (const candidate of value.answers) {
+    if (
+      !isRecord(candidate) ||
+      !hasOnlyKeys(candidate, new Set(["questionId", "optionId"])) ||
+      typeof candidate.questionId !== "string" ||
+      typeof candidate.optionId !== "string"
+    ) {
+      return null;
+    }
+    const answer = legacyQuestionMap[candidate.questionId]?.[candidate.optionId];
+    if (answer !== undefined) mapped.set(answer.questionId, answer);
+  }
+
+  const rawStep = value.currentStep;
+  if (
+    typeof rawStep !== "number" ||
+    !Number.isInteger(rawStep) ||
+    rawStep < -1 ||
+    rawStep > 5
+  ) {
+    return null;
+  }
+
+  const path = getQuizQuestionPath([...mapped.values()]);
+  const answers = path.flatMap((question) => {
+    const answer = mapped.get(question.id);
+    return answer === undefined ? [] : [answer];
+  });
+  const currentStep = rawStep < 0 ? -1 : rawStep <= 2 ? rawStep : 3;
+  return {
+    answers,
+    currentStep,
+    ...(currentStep < 0 ? {} : { startedAt: now.toISOString() }),
+  };
+}
+
+function isExpired(value: Record<string, unknown>, now: Date): boolean {
+  if (!isIsoDate(value.savedAt)) return false;
+  const age = now.getTime() - Date.parse(value.savedAt);
+  return age > quizStorageMaxAgeMs;
 }
 
 export function inspectQuizStoredState(
@@ -163,41 +269,39 @@ export function inspectQuizStoredState(
       return { state: createInitialQuizState(), status: "invalid" };
     }
 
-    const version = parsed.version;
-    if (version === quizStorageVersion) {
+    if (parsed.version === quizStorageVersion) {
       if (
         !hasOnlyKeys(parsed, currentDocumentKeys) ||
         !isIsoDate(parsed.savedAt)
       ) {
         return { state: createInitialQuizState(), status: "invalid" };
       }
-
-      const savedAt = Date.parse(parsed.savedAt);
-      if (now.getTime() - savedAt > quizStorageMaxAgeMs) {
+      if (isExpired(parsed, now)) {
         return { state: createInitialQuizState(), status: "expired" };
       }
-
-      const state = parseStateFields(parsed);
+      const state = parseCurrentStateFields(parsed);
       return state === null
         ? { state: createInitialQuizState(), status: "invalid" }
         : { state, status: "valid" };
     }
 
     if (
-      version !== undefined &&
-      version !== 1
+      parsed.version !== undefined &&
+      parsed.version !== 1 &&
+      parsed.version !== 2
     ) {
       return { state: createInitialQuizState(), status: "invalid" };
     }
-
     if (!hasOnlyKeys(parsed, legacyDocumentKeys)) {
       return { state: createInitialQuizState(), status: "invalid" };
     }
-
-    const state = parseStateFields(parsed);
-    return state === null
+    if (isExpired(parsed, now)) {
+      return { state: createInitialQuizState(), status: "expired" };
+    }
+    const migrated = migrateLegacyState(parsed, now);
+    return migrated === null
       ? { state: createInitialQuizState(), status: "invalid" }
-      : { state, status: "migrated" };
+      : { state: migrated, status: "migrated" };
   } catch {
     return { state: createInitialQuizState(), status: "invalid" };
   }
@@ -215,7 +319,6 @@ export function loadQuizState(
   now: Date = new Date(),
 ): QuizStoredState {
   if (storage === null) return createInitialQuizState();
-
   try {
     const result = inspectQuizStoredState(storage.getItem(quizStorageKey), now);
     if (result.status === "invalid" || result.status === "expired") {
@@ -242,7 +345,6 @@ export function saveQuizState(
   now: Date = new Date(),
 ): void {
   if (storage === null) return;
-
   const persisted = {
     version: quizStorageVersion,
     savedAt: now.toISOString(),
@@ -251,12 +353,12 @@ export function saveQuizState(
       optionId,
     })),
     currentStep: state.currentStep,
+    ...(state.startedAt === undefined ? {} : { startedAt: state.startedAt }),
     ...(state.profile === undefined ? {} : { profile: state.profile }),
     ...(state.completedAt === undefined
       ? {}
       : { completedAt: state.completedAt }),
   };
-
   try {
     storage.setItem(quizStorageKey, JSON.stringify(persisted));
   } catch {
@@ -273,4 +375,10 @@ export function clearQuizState(
   } catch {
     // Não há dado alternativo ou envio externo como fallback.
   }
+}
+
+export function getStoredQuestionCount(state: QuizStoredState): number {
+  return state.answers.filter(
+    (answer) => getQuizQuestion(answer.questionId) !== null,
+  ).length;
 }

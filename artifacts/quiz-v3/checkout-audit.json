@@ -1,0 +1,42 @@
+{
+  "auditedAt": "2026-07-17T00:38:47.116Z",
+  "scope": "Validação técnica de acesso e identificação; nenhuma compra foi realizada.",
+  "results": [
+    {
+      "plan": "30-days",
+      "expectedURL": "https://belvitale.pay.yampi.com.br/r/PWJOI4I112",
+      "finalOrigin": "https://belvitale.pay.yampi.com.br",
+      "httpStatus": 200,
+      "title": "Finalizar compra - Belvitale",
+      "celuClinPresent": true,
+      "durationPresent": true,
+      "emptyCartMessage": false,
+      "fivePlusTwoVisible": false,
+      "reachable": true
+    },
+    {
+      "plan": "90-days",
+      "expectedURL": "https://belvitale.pay.yampi.com.br/r/1E8NNCGJW9",
+      "finalOrigin": "https://belvitale.pay.yampi.com.br",
+      "httpStatus": 200,
+      "title": "Finalizar compra - Belvitale",
+      "celuClinPresent": true,
+      "durationPresent": true,
+      "emptyCartMessage": false,
+      "fivePlusTwoVisible": false,
+      "reachable": true
+    },
+    {
+      "plan": "210-days",
+      "expectedURL": "https://belvitale.pay.yampi.com.br/r/41CHX4MGPX",
+      "finalOrigin": "https://belvitale.pay.yampi.com.br",
+      "httpStatus": 200,
+      "title": "Finalizar compra - Belvitale",
+      "celuClinPresent": true,
+      "durationPresent": true,
+      "emptyCartMessage": false,
+      "fivePlusTwoVisible": true,
+      "reachable": true
+    }
+  ]
+}

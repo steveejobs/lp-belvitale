@@ -12,7 +12,10 @@
     "preview": "vite preview",
     "test:e2e": "playwright test",
     "test:production": "npm run build:production && node scripts/verify-production-assets.mjs",
-    "capture": "node scripts/capture-final-evidence.mjs"
+    "capture": "node scripts/capture-final-evidence.mjs",
+    "validate:quiz": "node scripts/generate-quiz-validation.mjs",
+    "capture:quiz": "node scripts/capture-quiz-evidence.mjs",
+    "audit:quiz-checkouts": "node scripts/audit-quiz-checkouts.mjs"
   },
   "dependencies": {
     "@fontsource-variable/figtree": "^5.2.10",
