@@ -1,442 +1,329 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
 import { expect, test, type Page } from "@playwright/test";
-import { quizOffers } from "../../src/features/quiz/content/offers";
-import { quizProfiles, quizProfileOrder } from "../../src/features/quiz/content/profiles";
-import { quizQuestions } from "../../src/features/quiz/content/questions";
-import { calculateRecommendedPlan } from "../../src/features/quiz/domain/quiz.recommendation";
+import { quizPromotion } from "../../src/features/quiz/campaign/campaign.config";
+import type { QuizPromotion } from "../../src/features/quiz/campaign/campaign.types";
+import { buildCheckoutUrl } from "../../src/features/quiz/checkout/checkout.utm";
+import { calculateRecommendedPlan, isConcernIndependentFromRecommendation } from "../../src/features/quiz/domain/quiz.recommendation";
 import { calculateQuizResult } from "../../src/features/quiz/domain/quiz.scoring";
-import {
-  quizPlanIds,
-  quizQuestionIds,
-  quizSceneIds,
-  quizVersion,
-  type QuizAnswerMap,
-  type QuizMachineState,
-  type QuizPlanId,
-  type QuizProfileId,
-} from "../../src/features/quiz/domain/quiz.types";
-import {
-  auditQuizQuestionContent,
-  hasCompleteQuizAnswers,
-} from "../../src/features/quiz/domain/quiz.validation";
-import {
-  createInitialQuizState,
-  quizMachineReducer,
-} from "../../src/features/quiz/state/quiz-machine";
-import {
-  loadQuizState,
-  quizStorageKey,
-  quizStorageTtlMs,
-  saveQuizState,
-} from "../../src/features/quiz/state/quiz-storage";
-import type { LocalQuizEvent } from "../../src/features/quiz/analytics/quiz.events";
+import { parseQuizSession } from "../../src/features/quiz/domain/quiz.schema";
+import { quizStageDefinitions } from "../../src/features/quiz/domain/quiz.machine";
+import { quizQuestionIds, QUIZ_VERSION, type QuizAnswers } from "../../src/features/quiz/domain/quiz.types";
+import { sanitizeFirstName } from "../../src/features/quiz/domain/quiz.validation";
+import { calculatePrice } from "../../src/features/quiz/pricing/pricing.calculate";
+import { issueReward } from "../../src/features/quiz/reward/reward.engine";
+import { calculatePromotionTime } from "../../src/features/quiz/timer/timer.machine";
+import { quizQuestions } from "../../src/features/quiz/content/questions";
 
-function enumerateAnswers(): readonly QuizAnswerMap[] {
-  const combinations: QuizAnswerMap[] = [];
-  const walk = (index: number, answers: QuizAnswerMap) => {
-    const question = quizQuestions[index];
-    if (question === undefined) {
-      combinations.push(answers);
-      return;
-    }
-    question.options.forEach((option) => {
-      walk(index + 1, { ...answers, [question.id]: option.id });
-    });
-  };
-  walk(0, {});
-  return combinations;
+const commercialBase: QuizAnswers = {
+  trigger: "clothes-fit",
+  concern: "cellulite",
+  impact: "care-restart",
+  attempts: "routine-tightened",
+  recovery: "restart-small",
+  "proof-preference": "authorized-experiences",
+  readiness: "months-ready",
+  continuity: "moderate-continuity",
+};
+
+async function waitForHeading(page: Page, name: RegExp) {
+  await expect(page.getByRole("heading", { name })).toBeVisible();
 }
 
-const combinations = enumerateAnswers();
-const evaluated = combinations.map((answers) => ({
-  answers,
-  result: calculateQuizResult(answers),
-  recommendation: calculateRecommendedPlan(answers),
-}));
-
-function findAnswersForPlan(plan: QuizPlanId): QuizAnswerMap {
-  const match = evaluated.find((candidate) => candidate.recommendation?.plan === plan);
-  if (match === undefined) throw new Error(`Plano inalcançável: ${plan}`);
-  return match.answers;
+async function choose(page: Page, name: RegExp) {
+  await page.getByRole("button", { name }).click();
 }
 
-async function startQuiz(page: Page) {
+async function completeToResult(page: Page) {
   await page.goto("/quiz");
-  await page.getByRole("button", { name: /Começar a descoberta/ }).click();
-  await expect(page.getByRole("heading", { name: quizQuestions[0]?.prompt ?? "" })).toBeVisible();
+  await choose(page, /Começar a descoberta/);
+  await choose(page, /Continuar sem informar/);
+  await choose(page, /roupa não veste/);
+  await choose(page, /Aparência da celulite/);
+  await waitForHeading(page, /Já apareceu um padrão/);
+  await choose(page, /^Continuar/);
+  await choose(page, /retomar algum cuidado/);
+  await choose(page, /Comecei animada/);
+  await waitForHeading(page, /saber o que fazer/);
+  await choose(page, /Ver como eu retomo/);
+  await choose(page, /Retomo com um gesto menor/);
+  await choose(page, /Continuar com esta resposta/);
+  await choose(page, /Ver experiências autorizadas/);
+  await waitForHeading(page, /vem primeiro nesta galeria/);
+  await choose(page, /Continuar com este contexto/);
+  await waitForHeading(page, /Já apareceu um padrão/);
+  await choose(page, /^Continuar/);
+  await choose(page, /organizar alguns meses/);
+  await choose(page, /continuidade sem planejar tão longe/);
+  await waitForHeading(page, /leitura está pronta/);
+  await choose(page, /Revelar meu resultado/);
+  await waitForHeading(page, /Retomar vale mais|Clareza antes|Confiança move|Estrutura reduz/);
 }
 
-async function answerCurrent(page: Page, label: string) {
-  await page.getByRole("button", { name: new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) }).click();
-}
-
-async function completeNarrative(page: Page, answers: QuizAnswerMap) {
-  await startQuiz(page);
-  await answerCurrent(page, quizQuestions[0]?.options.find((option) => option.id === answers["appearance-moment"])?.label ?? "");
-  await answerCurrent(page, quizQuestions[1]?.options.find((option) => option.id === answers["way-of-starting"])?.label ?? "");
-  await page.getByRole("button", { name: /Continuar/ }).click();
-  await answerCurrent(page, quizQuestions[2]?.options.find((option) => option.id === answers["routine-friction"])?.label ?? "");
-  await page.getByRole("button", { name: /Ver como eu retomo/ }).click();
-  await answerCurrent(page, quizQuestions[3]?.options.find((option) => option.id === answers["after-a-missed-day"])?.label ?? "");
-  await answerCurrent(page, quizQuestions[4]?.options.find((option) => option.id === answers["trust-language"])?.label ?? "");
-  await page.getByRole("button", { name: /Continuar com estes limites/ }).click();
-  await answerCurrent(page, quizQuestions[5]?.options.find((option) => option.id === answers["planning-horizon"])?.label ?? "");
-  await answerCurrent(page, quizQuestions[6]?.options.find((option) => option.id === answers["honest-commitment"])?.label ?? "");
-  await page.getByRole("button", { name: /Revelar meu resultado/ }).click();
-  await expect(page).toHaveURL(/\/quiz\/resultado(?:\?|$)/);
-}
-
-async function openStoredResult(page: Page, answers: QuizAnswerMap, scene: "result" | "offer" = "result") {
-  const timestamp = "2026-07-16T12:00:00.000Z";
-  const state: QuizMachineState = {
-    version: quizVersion,
-    scene,
-    answers,
-    direction: "forward",
-    startedAt: timestamp,
-    updatedAt: timestamp,
-    completedAt: timestamp,
-  };
-  await page.goto("/quiz");
-  await page.evaluate(({ key, value }) => localStorage.setItem(key, value), {
-    key: quizStorageKey,
-    value: JSON.stringify(state),
+test.describe("domínio do Quiz CeluClin 6.0", () => {
+  test("mantém 17 momentos, no máximo 8 perguntas e função explícita por etapa", () => {
+    expect(quizStageDefinitions).toHaveLength(17);
+    expect(quizQuestions).toHaveLength(8);
+    expect(quizQuestionIds).toHaveLength(8);
+    expect(quizStageDefinitions.every((stage) => stage.adds.length > 0)).toBe(true);
   });
-  await page.goto("/quiz/resultado");
-}
 
-test("arquitetura contém 14 momentos, 7 perguntas e pontuação cruzada", () => {
-  expect(quizSceneIds).toHaveLength(14);
-  expect(quizQuestions).toHaveLength(7);
-  expect(quizQuestionIds).toHaveLength(7);
-  expect(quizQuestions.filter((question) => question.commercial).map((question) => question.id)).toEqual([
-    "planning-horizon",
-    "honest-commitment",
-  ]);
-  expect(auditQuizQuestionContent()).toEqual({ valid: true, errors: [] });
-  for (const question of quizQuestions.slice(0, 5)) {
-    expect(`${question.prompt} ${question.context}`).not.toMatch(/kit|frasco|30 dias|90 dias|210 dias|reposição/i);
-  }
-});
-
-test("16.384 combinações cobrem perfis e ofertas sem domínio artificial", () => {
-  expect(combinations).toHaveLength(16_384);
-  const profiles = new Map<QuizProfileId, number>();
-  const plans = new Map<QuizPlanId, number>();
-  let invalid = 0;
-  for (const candidate of evaluated) {
-    if (candidate.result === null || candidate.recommendation === null) {
-      invalid += 1;
-      continue;
-    }
-    profiles.set(candidate.result.profile, (profiles.get(candidate.result.profile) ?? 0) + 1);
-    plans.set(candidate.recommendation.plan, (plans.get(candidate.recommendation.plan) ?? 0) + 1);
-  }
-  expect(invalid).toBe(0);
-  expect([...profiles.keys()].sort()).toEqual([...quizProfileOrder].sort());
-  expect([...plans.keys()].sort()).toEqual([...quizPlanIds].sort());
-  expect(Math.max(...plans.values()) / combinations.length).toBeLessThanOrEqual(0.7);
-  expect(Math.max(...profiles.values()) / combinations.length).toBeLessThanOrEqual(0.7);
-});
-
-test("duração ignora aparência, fricção, começo, retomada e tipo de prova", () => {
-  const groups = new Map<string, Set<QuizPlanId>>();
-  for (const candidate of evaluated) {
-    if (candidate.recommendation === null) continue;
-    const key = `${String(candidate.answers["planning-horizon"])}:${String(candidate.answers["honest-commitment"])}`;
-    const plans = groups.get(key) ?? new Set<QuizPlanId>();
-    plans.add(candidate.recommendation.plan);
-    groups.set(key, plans);
-  }
-  expect(groups.size).toBe(16);
-  for (const plans of groups.values()) expect(plans.size).toBe(1);
-});
-
-test("fronteiras de 30, 90 e 210 dias respeitam compromisso explícito", () => {
-  let invalid210 = 0;
-  let invalid30 = 0;
-  for (const candidate of evaluated) {
-    const plan = candidate.recommendation?.plan;
-    if (
-      plan === "210-days" &&
-      (candidate.answers["honest-commitment"] !== "explicit-long-commitment" ||
-        candidate.answers["planning-horizon"] === "one-step-first")
-    ) invalid210 += 1;
-    if (
-      plan === "30-days" &&
-      candidate.answers["honest-commitment"] !== "try-before-continuity" &&
-      candidate.answers["honest-commitment"] !== "not-ready-to-buy"
-    ) invalid30 += 1;
-  }
-  expect(invalid210).toBe(0);
-  expect(invalid30).toBe(0);
-  const conflict = {
-    ...combinations[0],
-    "planning-horizon": "one-step-first",
-    "honest-commitment": "explicit-long-commitment",
-  };
-  expect(calculateRecommendedPlan(conflict)?.plan).toBe("90-days");
-});
-
-test("resultado é determinístico, rejeita resposta inválida e não nasce incompleto", () => {
-  const answers = combinations[817];
-  expect(answers).toBeDefined();
-  if (answers === undefined) return;
-  const reordered = Object.fromEntries(Object.entries(answers).reverse());
-  expect(calculateQuizResult(reordered)).toEqual(calculateQuizResult(answers));
-  const incomplete = Object.fromEntries(Object.entries(answers).slice(1));
-  expect(hasCompleteQuizAnswers(incomplete)).toBe(false);
-  expect(calculateQuizResult(incomplete)).toBeNull();
-  expect(calculateQuizResult({ ...answers, "appearance-moment": "invalid" })).toBeNull();
-});
-
-test("storage v4 retoma, expira em 30 dias e rejeita schema inválido", () => {
-  const values = new Map<string, string>();
-  const storage = {
-    getItem: (key: string) => values.get(key) ?? null,
-    setItem: (key: string, value: string) => values.set(key, value),
-    removeItem: (key: string) => values.delete(key),
-  };
-  const now = Date.parse("2026-07-16T12:00:00.000Z");
-  const state: QuizMachineState = {
-    ...createInitialQuizState(new Date(now).toISOString()),
-    scene: "routine-friction",
-    answers: {
-      "appearance-moment": "clothes-waited",
-      "way-of-starting": "small-visible-cue",
-    },
-    startedAt: new Date(now).toISOString(),
-  };
-  saveQuizState(state, storage);
-  expect(loadQuizState(storage, now)).toEqual(state);
-  const expired = { ...state, updatedAt: new Date(now - quizStorageTtlMs - 1).toISOString() };
-  values.set(quizStorageKey, JSON.stringify(expired));
-  expect(loadQuizState(storage, now).scene).toBe("intro");
-  values.set(quizStorageKey, JSON.stringify({ ...state, email: "pessoa@exemplo.test", version: 3 }));
-  expect(loadQuizState(storage, now).scene).toBe("intro");
-});
-
-test("reducer permite voltar, revisar e atualizar sem perder respostas", () => {
-  const timestamp = "2026-07-16T12:00:00.000Z";
-  let state = createInitialQuizState(timestamp);
-  state = quizMachineReducer(state, { type: "START", now: timestamp });
-  state = quizMachineReducer(state, {
-    type: "ANSWER",
-    questionId: "appearance-moment",
-    optionId: "clothes-waited",
-    now: timestamp,
+  test("sanitiza e limita o primeiro nome sem transformar texto livre em analytics", () => {
+    expect(sanitizeFirstName("  M<ar!ina Silva  ")).toBe("Marina");
+    expect(sanitizeFirstName("Ana-Maria")).toBe("Ana-Maria");
+    expect(sanitizeFirstName("123")).toBe("");
+    expect(sanitizeFirstName("A".repeat(40))).toHaveLength(24);
   });
-  state = quizMachineReducer(state, { type: "NEXT", now: timestamp });
-  expect(state.scene).toBe("way-of-starting");
-  state = quizMachineReducer(state, { type: "BACK", now: timestamp });
-  expect(state.answers["appearance-moment"]).toBe("clothes-waited");
-  state = quizMachineReducer(state, {
-    type: "ANSWER",
-    questionId: "appearance-moment",
-    optionId: "noticed-and-lived",
-    now: timestamp,
+
+  test("isola preocupação visual da recomendação comercial", () => {
+    expect(isConcernIndependentFromRecommendation(commercialBase)).toBe(true);
   });
-  expect(state.answers["appearance-moment"]).toBe("noticed-and-lived");
-});
 
-test("ofertas têm checkout oficial, preço bloqueado e quantidade documentada", () => {
-  expect(quizOffers["30-days"].checkoutUrl).toContain("PWJOI4I112");
-  expect(quizOffers["90-days"].checkoutUrl).toContain("1E8NNCGJW9");
-  expect(quizOffers["210-days"].checkoutUrl).toContain("41CHX4MGPX");
-  expect(quizOffers["210-days"].bottles).toBe(7);
-  expect(quizOffers["210-days"].paidBottles).toBe(5);
-  expect(quizOffers["210-days"].additionalBottles).toBe(2);
-  for (const offer of Object.values(quizOffers)) expect(offer.priceStatus).toBe("blocked");
-});
+  test("distribui a matriz comercial em 25% / 56,25% / 18,75%", () => {
+    const readiness = quizQuestions.find((question) => question.id === "readiness");
+    const continuity = quizQuestions.find((question) => question.id === "continuity");
+    expect(readiness).toBeDefined();
+    expect(continuity).toBeDefined();
+    const plans = readiness?.options.flatMap((left) => continuity?.options.map((right) =>
+      calculateRecommendedPlan({ ...commercialBase, readiness: left.id, continuity: right.id })?.offerId,
+    ) ?? []) ?? [];
+    expect(plans.filter((plan) => plan === "one-month")).toHaveLength(4);
+    expect(plans.filter((plan) => plan === "three-months")).toHaveLength(9);
+    expect(plans.filter((plan) => plan === "seven-months")).toHaveLength(3);
+  });
 
-test("abertura mobile mostra produto inteiro, proposta, tempo e venda identificada", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/quiz");
-  await expect(page.getByRole("heading", { name: /O cuidado que cabe na vida/ })).toBeVisible();
-  await expect(page.getByAltText(/Frasco do suplemento alimentar CeluClin/)).toBeVisible();
-  await expect(page.getByText(/90–150 s/)).toBeVisible();
-  await expect(page.getByText(/recomendação comercial identificada/)).toBeVisible();
-  const product = page.getByAltText(/Frasco do suplemento alimentar CeluClin/);
-  const box = await product.boundingBox();
-  const stepsBox = await page.locator(".quiz-intro__window").boundingBox();
-  expect(box).not.toBeNull();
-  if (box !== null) {
-    expect(box.y).toBeGreaterThanOrEqual(0);
-    expect(box.y + box.height).toBeLessThanOrEqual(await page.evaluate(() => document.documentElement.scrollHeight));
-    expect(await product.evaluate((element) => getComputedStyle(element).objectFit)).toBe("contain");
-  }
-  if (box !== null && stepsBox !== null) {
-    const overlapWidth = Math.max(0, Math.min(box.x + box.width, stepsBox.x + stepsBox.width) - Math.max(box.x, stepsBox.x));
-    const overlapHeight = Math.max(0, Math.min(box.y + box.height, stepsBox.y + stepsBox.height) - Math.max(box.y, stepsBox.y));
-    expect(overlapWidth * overlapHeight).toBe(0);
-  }
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");
-});
-
-test("seleção responde em até 100 ms com estado forte e voltar preserva resposta", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await startQuiz(page);
-  const choice = page.getByRole("button", { name: /Uma roupa ficou no armário/ });
-  const feedback = await choice.evaluate(async (element) => {
-    const started = performance.now();
-    (element as HTMLButtonElement).click();
-    await Promise.resolve();
-    return {
-      elapsed: performance.now() - started,
-      selected: element.getAttribute("aria-pressed"),
-      transition: getComputedStyle(element).transitionDuration,
+  test("simula 10.000 combinações válidas sem resultado ou kit impossível", () => {
+    const combinations: QuizAnswers[] = [];
+    const walk = (index: number, answers: Record<string, string>) => {
+      if (combinations.length >= 10_000) return;
+      const question = quizQuestions[index];
+      if (question === undefined) {
+        combinations.push(answers);
+        return;
+      }
+      for (const option of question.options) {
+        walk(index + 1, { ...answers, [question.id]: option.id });
+        if (combinations.length >= 10_000) break;
+      }
     };
+    walk(0, {});
+    const profiles = new Set<string>();
+    const offers = new Set<string>();
+    for (const answers of combinations) {
+      const result = calculateQuizResult(answers);
+      const recommendation = calculateRecommendedPlan(answers);
+      expect(result).not.toBeNull();
+      expect(recommendation).not.toBeNull();
+      if (result !== null) profiles.add(result.id);
+      if (recommendation !== null) offers.add(recommendation.offerId);
+    }
+    expect(combinations).toHaveLength(10_000);
+    expect(profiles.size).toBeGreaterThanOrEqual(3);
+    expect(offers).toEqual(new Set(["one-month", "three-months", "seven-months"]));
   });
-  expect(feedback.selected).toBe("true");
-  expect(feedback.elapsed).toBeLessThan(100);
-  expect(Number.parseFloat(feedback.transition)).toBeLessThanOrEqual(0.1);
-  await expect.poll(async () => page.getByRole("heading").first().textContent()).toContain("Quando você decide cuidar");
-  await page.getByRole("button", { name: "Voltar um momento" }).click();
-  await expect(page.getByRole("button", { name: /Uma roupa ficou no armário/ })).toHaveAttribute("aria-pressed", "true");
+
+  test("calcula os três preços com precisão decimal", () => {
+    expect(calculatePrice(quizPromotion.offers["one-month"]).finalPrice).toBe(89.9);
+    expect(calculatePrice(quizPromotion.offers["three-months"]).savingsValue).toBe(421.1);
+    expect(calculatePrice(quizPromotion.offers["seven-months"]).savingsPercentage).toBe(56.71);
+  });
+
+  test("não emite reward comercial em campanha draft sem cupom validado", () => {
+    expect(issueReward(quizPromotion, "session-123")).toBeNull();
+  });
+
+  test("emite recompensa determinística uma única condição para a mesma sessão", () => {
+    const active: QuizPromotion = {
+      ...quizPromotion,
+      status: "active",
+      startsAt: "2026-01-01T00:00:00.000Z",
+      endsAt: "2027-01-01T00:00:00.000Z",
+      rewards: [
+        { id: "a", couponCode: "VALID-A", discountType: "fixed", discountValue: 10, eligibleOffers: ["one-month"], probabilityWeight: 1 },
+        { id: "b", couponCode: "VALID-B", discountType: "percentage", discountValue: 10, eligibleOffers: ["three-months"], probabilityWeight: 1 },
+      ],
+    };
+    const first = issueReward(active, "session-fixed", new Date("2026-07-17T12:00:00.000Z"));
+    const refresh = issueReward(active, "session-fixed", new Date("2026-07-17T12:00:01.000Z"));
+    expect(first?.rewardId).toBe(refresh?.rewardId);
+    expect(first?.couponCode).toBe(refresh?.couponCode);
+  });
+
+  test("usa tempo absoluto e cobre todos os estados do cronômetro", () => {
+    const expires = "2026-07-17T13:00:00.000Z";
+    expect(calculatePromotionTime(expires, Date.parse("2026-07-17T11:00:00.000Z")).state).toBe("normal");
+    expect(calculatePromotionTime(expires, Date.parse("2026-07-17T12:30:00.000Z")).state).toBe("under-hour");
+    expect(calculatePromotionTime(expires, Date.parse("2026-07-17T12:56:00.000Z")).state).toBe("under-five-minutes");
+    expect(calculatePromotionTime(expires, Date.parse("2026-07-17T12:59:30.000Z")).state).toBe("under-minute");
+    expect(calculatePromotionTime(expires, Date.parse("2026-07-17T13:00:01.000Z")).state).toBe("expired");
+  });
+
+  test("preserva UTMs e metadados do quiz no checkout", () => {
+    const url = new URL(buildCheckoutUrl(
+      quizPromotion.offers["three-months"].checkoutUrl,
+      "?utm_source=meta&utm_campaign=quiz-v6&utm_content=video-a",
+      { campaignId: quizPromotion.id, rewardId: "reward-1", offerId: "three-months" },
+    ));
+    expect(url.searchParams.get("utm_source")).toBe("meta");
+    expect(url.searchParams.get("campaignId")).toBe(quizPromotion.id);
+    expect(url.searchParams.get("rewardId")).toBe("reward-1");
+  });
+
+  test("reprova sessão expirada e aceita schema v6 íntegro", () => {
+    const state = {
+      version: QUIZ_VERSION,
+      sessionId: "session-valid",
+      stageId: "opening",
+      visitedStageIds: ["opening"],
+      answers: {},
+      firstName: "",
+      nameProvided: false,
+      savedAt: "2026-07-17T10:00:00.000Z",
+      expiresAt: "2026-07-18T10:00:00.000Z",
+    };
+    expect(parseQuizSession(state, Date.parse("2026-07-17T11:00:00.000Z"))).not.toBeNull();
+    expect(parseQuizSession(state, Date.parse("2026-07-19T11:00:00.000Z"))).toBeNull();
+  });
 });
 
-test("retomada após refresh conserva a cena e a resposta", async ({ page }) => {
-  await startQuiz(page);
-  await answerCurrent(page, "Uma roupa ficou no armário");
-  await expect(page.getByRole("heading", { name: quizQuestions[1]?.prompt ?? "" })).toBeVisible();
-  await page.reload();
-  await expect(page.getByRole("heading", { name: quizQuestions[1]?.prompt ?? "" })).toBeVisible();
-  await page.getByRole("button", { name: "Voltar um momento" }).click();
-  await expect(page.getByRole("button", { name: /Uma roupa ficou no armário/ })).toHaveAttribute("aria-pressed", "true");
-});
+test.describe("experiência mobile", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/quiz");
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+  });
 
-test("teclado, alvos de toque e reduced motion permanecem funcionais", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.setViewportSize({ width: 390, height: 844 });
-  await startQuiz(page);
-  const first = page.locator(".quiz-choice").first();
-  await first.focus();
-  await page.keyboard.press("Enter");
-  await expect(page.getByRole("heading", { name: quizQuestions[1]?.prompt ?? "" })).toBeVisible();
-  const boxes = await page.locator(".quiz-choice, .quiz-icon-button").evaluateAll((elements) =>
-    elements.map((element) => {
-      const rectangle = element.getBoundingClientRect();
-      return { width: rectangle.width, height: rectangle.height };
-    }),
-  );
-  for (const box of boxes) {
-    expect(box.width).toBeGreaterThanOrEqual(44);
-    expect(box.height).toBeGreaterThanOrEqual(44);
-  }
-  const duration = await page.locator(".quiz-question-stage").evaluate((element) => getComputedStyle(element).animationDuration);
-  expect(Number.parseFloat(duration)).toBeLessThanOrEqual(0.001);
-});
+  test("conclui a jornada, preserva imagens inteiras e alcança checkout", async ({ page }) => {
+    await completeToResult(page);
+    expect(page.url()).toContain("/quiz/resultado");
+    const resultImage = page.locator(".q6-result .q6-proof__viewer img");
+    await expect(resultImage).toBeVisible();
+    expect(await resultImage.evaluate((image) => getComputedStyle(image).objectFit)).toBe("contain");
+    await choose(page, /Ver preço, benefício e opções/);
+    await choose(page, /Desbloquear meu roteiro/);
+    await expect(page.getByRole("heading", { name: /Três regras/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /90 dias/ })).toBeVisible();
+    await expect(page.getByText("R$ 169,90").first()).toBeVisible();
+    const checkout = page.getByRole("link", { name: /Escolher 90 dias/ }).first();
+    await expect(checkout).toHaveAttribute("href", /1E8NNCGJW9/);
+  });
 
-test("fluxo completo entrega microinsights, resultado específico, prova e revisão", async ({ page }) => {
-  test.setTimeout(120_000);
-  const answers = findAnswersForPlan("90-days");
-  await completeNarrative(page, answers);
-  const result = calculateQuizResult(answers);
-  expect(result).not.toBeNull();
-  if (result === null) return;
-  await expect(page.getByRole("heading", { name: quizProfiles[result.profile].name })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Seu pequeno ritual de sete dias/ })).toBeVisible();
-  await expect(page.getByText(/Perfil e oferta foram calculados em trilhas separadas/)).toBeVisible();
-  await expect(page.getByText(/não apresentamos estas imagens como resultado causado pelo produto/)).toBeVisible();
-  await expect(page.getByRole("button", { name: /Ver recomendação e opções/ })).toBeVisible();
-  const proofImage = page.locator(".quiz-proof--result .quiz-proof__stage img");
-  await proofImage.scrollIntoViewIfNeeded();
-  await expect(proofImage).toBeVisible();
-  expect(await proofImage.evaluate((element) => getComputedStyle(element).objectFit)).toBe("contain");
-});
+  test("voltar preserva e permite trocar resposta", async ({ page }) => {
+    await choose(page, /Começar a descoberta/);
+    await choose(page, /Continuar sem informar/);
+    await choose(page, /roupa não veste/);
+    await waitForHeading(page, /Hoje, o que mais chama/);
+    await page.getByRole("button", { name: /Voltar à etapa anterior/ }).click();
+    await waitForHeading(page, /Qual momento mais/);
+    await expect(page.getByRole("button", { name: /roupa não veste/ })).toHaveAttribute("aria-pressed", "true");
+    await choose(page, /foto sem estar preparada/);
+    await waitForHeading(page, /Hoje, o que mais chama/);
+  });
 
-test("oferta explicita critérios, compara três opções e omite preço incompleto", async ({ page }) => {
-  const answers = findAnswersForPlan("210-days");
-  await openStoredResult(page, answers);
-  await page.getByRole("button", { name: /Ver recomendação e opções/ }).click();
-  await expect(page.getByRole("heading", { name: /5 \+ 2 frascos/ })).toBeVisible();
-  await expect(page.getByText(/Recomendamos esta opção porque/).first()).toBeVisible();
-  await expect(page.locator(".quiz-comparison-card")).toHaveCount(3);
-  await expect(page.getByText(/Preço não exibido/)).toBeVisible();
-  await expect(page.locator(".quiz-offer")).not.toContainText(/R\$\s*\d/);
-  await expect(page.getByRole("link", { name: /Ir ao checkout oficial/ })).toHaveAttribute("href", quizOffers["210-days"].checkoutUrl);
-  await page.locator(".quiz-comparison-card").first().click();
-  await expect(page.getByRole("link", { name: /Ir ao checkout oficial/ })).toHaveAttribute("href", quizOffers["30-days"].checkoutUrl);
-});
+  test("refresh preserva etapa, resposta e nome opcional", async ({ page }) => {
+    await choose(page, /Começar a descoberta/);
+    await page.getByLabel("Primeiro nome").fill("Marina");
+    await choose(page, /^Continuar$/);
+    await choose(page, /roupa não veste/);
+    await waitForHeading(page, /Hoje, o que mais chama/);
+    await page.reload();
+    await waitForHeading(page, /Hoje, o que mais chama/);
+    const stored = await page.evaluate(() => localStorage.getItem("belvitale.quiz.v6"));
+    expect(stored).toContain("Marina");
+  });
 
-test("resultado inválido recupera sem inventar perfil", async ({ page }) => {
-  await page.goto("/quiz/resultado");
-  await expect(page.getByRole("heading", { name: /sete escolhas válidas/ })).toBeVisible();
-  await page.getByRole("button", { name: "Começar o quiz" }).click();
-  await expect(page).toHaveURL(/\/quiz(?:\?|$)/);
-  await expect(page.getByRole("heading", { name: /O cuidado que cabe na vida/ })).toBeVisible();
-});
+  test("sincroniza a etapa entre duas abas sem ciclo de storage", async ({ page, context }) => {
+    const secondPage = await context.newPage();
+    await secondPage.setViewportSize({ width: 390, height: 844 });
+    await secondPage.goto("/quiz");
 
-test("analytics cobre o funil sem conteúdo de resposta", async ({ page }) => {
-  await page.addInitScript(() => {
-    const target = window as Window & { __QUIZ_EVENTS__?: LocalQuizEvent[] };
-    target.__QUIZ_EVENTS__ = [];
-    window.addEventListener("belvitale:quiz", (event) => {
-      target.__QUIZ_EVENTS__?.push((event as CustomEvent<LocalQuizEvent>).detail);
+    await choose(page, /Come.ar a descoberta/);
+    await waitForHeading(secondPage, /Como posso te chamar/);
+    await choose(page, /Continuar sem informar/);
+    await waitForHeading(secondPage, /Qual momento mais/);
+
+    await page.waitForTimeout(300);
+    const synchronizedStage = await secondPage.evaluate(() => {
+      const stored = localStorage.getItem("belvitale.quiz.v6");
+      if (stored === null) return null;
+      const parsed: unknown = JSON.parse(stored);
+      if (typeof parsed !== "object" || parsed === null || !("stageId" in parsed)) return null;
+      return typeof parsed.stageId === "string" ? parsed.stageId : null;
     });
+    expect(synchronizedStage).toBe("trigger");
+    await secondPage.close();
   });
-  await completeNarrative(page, findAnswersForPlan("30-days"));
-  await page.getByRole("button", { name: /Ver recomendação e opções/ }).click();
-  await page.locator(".quiz-comparison-card").nth(1).click();
-  const events = await page.evaluate(() =>
-    (window as Window & { __QUIZ_EVENTS__?: LocalQuizEvent[] }).__QUIZ_EVENTS__ ?? [],
-  );
-  const names = events.map((event) => event.event);
-  expect(names).toEqual(expect.arrayContaining([
-    "quiz_started",
-    "quiz_question_viewed",
-    "quiz_question_answered",
-    "quiz_insight_viewed",
-    "quiz_completed",
-    "quiz_profile_viewed",
-    "quiz_offer_recommended",
-    "quiz_offer_changed",
-  ]));
-  const allowed = new Set([
-    "quiz_version",
-    "question_id",
-    "step",
-    "insight_id",
-    "result_profile",
-    "recommended_plan",
-    "selected_plan",
-    "utm_source",
-    "utm_medium",
-    "utm_campaign",
-    "utm_content",
-    "utm_term",
-  ]);
-  for (const event of events) {
-    expect(Object.keys(event.payload).every((key) => allowed.has(key))).toBe(true);
-    expect(event.payload).not.toHaveProperty("answer_id");
-  }
-  expect(JSON.stringify(events)).not.toMatch(/clothes-waited|small-visible-cue|@|telefone|email/i);
-});
 
-test("zoom de texto a 200% não cria rolagem horizontal", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await startQuiz(page);
-  await page.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
-  const width = await page.evaluate(() => ({
-    client: document.documentElement.clientWidth,
-    scroll: document.documentElement.scrollWidth,
-  }));
-  expect(width.scroll).toBeLessThanOrEqual(width.client + 1);
-  await expect(page.locator(".quiz-choice").first()).toBeVisible();
-});
+  test("deduplica montagem e rejeita UTM com possivel dado pessoal", async ({ page }) => {
+    await page.addInitScript(() => {
+      const events: unknown[] = [];
+      Object.defineProperty(window, "__quizEvents", { value: events, writable: false });
+      window.addEventListener("belvitale:quiz-v6", (event) => {
+        events.push((event as CustomEvent).detail);
+      });
+    });
+    await page.goto("/quiz?utm_source=contato%40email.com&utm_campaign=12345678");
+    await choose(page, /Come.ar a descoberta/);
+    const events = await page.evaluate(() => (window as unknown as { __quizEvents: { event: string; properties: { utm: object } }[] }).__quizEvents);
+    expect(events.filter((event) => event.event === "quiz_opened")).toHaveLength(1);
+    expect(events.find((event) => event.event === "quiz_opened")?.properties.utm).toEqual({});
+    expect(JSON.stringify(events)).not.toContain("contato@email.com");
+  });
 
-test("feature não contém claims, diagnóstico ou coleta pessoal", () => {
-  const files = [
-    "src/features/quiz/content/questions.ts",
-    "src/features/quiz/content/profiles.ts",
-    "src/features/quiz/content/interstitials.ts",
-    "src/features/quiz/content/offers.ts",
-    "src/features/quiz/components/QuizExperience.tsx",
-    "src/features/quiz/components/ResultReveal.tsx",
-    "src/features/quiz/components/OfferRecommendation.tsx",
-  ];
-  const source = files.map((file) => readFileSync(path.resolve(process.cwd(), file), "utf8")).join("\n");
-  expect(source).not.toMatch(/\bcura\b|elimina celulite|queima gordura|resultado garantido|cientificamente comprovado|aprovado pela anvisa|duração (?:é|será) necessária|oferece maior eficácia|celulite extrema|\bsalvação\b/i);
-  expect(source).not.toMatch(/type=["'](?:email|tel|text)["']|name=["'](?:email|phone|telefone|nome|idade|peso)["']/i);
+  test("mantém controles com pelo menos 44 px e sem overflow horizontal", async ({ page }) => {
+    await choose(page, /Começar a descoberta/);
+    await choose(page, /Continuar sem informar/);
+    const geometry = await page.locator("button:visible, a:visible").evaluateAll((elements) => elements.map((element) => {
+      const rect = element.getBoundingClientRect();
+      return { width: rect.width, height: rect.height };
+    }));
+    expect(Math.min(...geometry.map((item) => item.height))).toBeGreaterThanOrEqual(44);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  });
+
+  test("galeria usa swipe, setas de 44 px e nunca recorta o arquivo", async ({ page }) => {
+    await page.evaluate(() => {
+      const now = new Date();
+      localStorage.setItem("belvitale.quiz.v6", JSON.stringify({
+        version: "6.0.0",
+        sessionId: "session-proof",
+        stageId: "proof",
+        visitedStageIds: ["opening", "proof"],
+        answers: {
+          trigger: "clothes-fit",
+          concern: "cellulite",
+          impact: "care-restart",
+          attempts: "routine-tightened",
+          recovery: "restart-small",
+          "proof-preference": "authorized-experiences"
+        },
+        firstName: "",
+        nameProvided: false,
+        savedAt: now.toISOString(),
+        expiresAt: new Date(now.getTime() + 86400000).toISOString()
+      }));
+    });
+    await page.reload();
+    const image = page.locator(".q6-proof__viewer img");
+    await expect(image).toBeVisible();
+    expect(await image.evaluate((node) => getComputedStyle(node).objectFit)).toBe("contain");
+    const buttons = page.locator(".q6-proof__controls button");
+    await expect(buttons).toHaveCount(2);
+    expect(await buttons.first().evaluate((node) => node.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+    const source = await image.getAttribute("src");
+    await buttons.nth(1).click();
+    await expect(image).not.toHaveAttribute("src", source ?? "");
+  });
+
+  test("reduced motion mantém conteúdo legível imediatamente", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.reload();
+    await expect(page.getByRole("heading", { name: /O que incomoda aparece/ })).toBeVisible();
+    const stage = page.locator(".q6-stage");
+    await expect(stage).toHaveAttribute("data-reduced-motion", "true");
+  });
+
+  test("não renderiza frasco em SVG nem cupom/urgência sem campanha válida", async ({ page }) => {
+    await expect(page.locator(".q6 svg")).toHaveCount(0);
+    await expect(page.getByText(/cupom validado|Esta condição fica reservada/)).toHaveCount(0);
+  });
 });

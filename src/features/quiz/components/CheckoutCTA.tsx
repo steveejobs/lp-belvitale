@@ -1,17 +1,30 @@
-import type { QuizOfferContent } from "../domain/quiz.types";
+import type { PromotionOffer } from "../campaign/campaign.types";
+import { quizPromotion } from "../campaign/campaign.config";
+import { buildCheckoutUrl } from "../checkout/checkout.utm";
+import { isOfficialCheckoutUrl } from "../checkout/checkout.validation";
+import { quizOffers } from "../content/offers";
 
 interface CheckoutCTAProps {
-  readonly offer: QuizOfferContent;
+  readonly offer: PromotionOffer;
+  readonly rewardId?: string;
   readonly onClick: () => void;
+  readonly className?: string;
 }
 
-export function CheckoutCTA({ offer, onClick }: CheckoutCTAProps) {
-  return (
-    <div className="quiz-checkout-cta">
-      <a href={offer.checkoutUrl} onClick={onClick}>
-        Ir ao checkout oficial — {offer.durationLabel} <span aria-hidden="true">↗</span>
-      </a>
-      <p>Você sairá para o checkout oficial da Belvitale. Nenhuma compra acontece neste clique.</p>
-    </div>
+export function CheckoutCTA({ offer, rewardId, onClick, className = "" }: CheckoutCTAProps) {
+  const valid = isOfficialCheckoutUrl(offer.id, offer.checkoutUrl);
+  const href = valid
+    ? buildCheckoutUrl(offer.checkoutUrl, window.location.search, {
+        campaignId: quizPromotion.id,
+        offerId: offer.id,
+        ...(rewardId === undefined ? {} : { rewardId }),
+      })
+    : undefined;
+  return valid && href !== undefined ? (
+    <a className={"q6-primary q6-checkout " + className} href={href} onClick={onClick}>
+      {quizOffers[offer.id].cta} <span aria-hidden="true">→</span>
+    </a>
+  ) : (
+    <button className={"q6-primary q6-checkout " + className} type="button" disabled>Checkout indisponível</button>
   );
 }

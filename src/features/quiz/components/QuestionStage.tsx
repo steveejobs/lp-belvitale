@@ -1,70 +1,49 @@
 import { useEffect, useRef } from "react";
 import type { QuizQuestion } from "../domain/quiz.types";
-import { getMotionFamilyAttribute } from "../motion/quiz.transitions";
 import { ChoiceCard } from "./ChoiceCard";
-import { ChoiceScale } from "./ChoiceScale";
-import { ChoiceScenario } from "./ChoiceScenario";
 
 interface QuestionStageProps {
   readonly question: QuizQuestion;
-  readonly selectedId: string | undefined;
-  readonly questionNumber: number;
+  readonly selectedOptionId: string | undefined;
+  readonly isConfirming: boolean;
   readonly onSelect: (optionId: string) => void;
+  readonly onContinue: () => void;
 }
 
 export function QuestionStage({
   question,
-  selectedId,
-  questionNumber,
+  selectedOptionId,
+  isConfirming,
   onSelect,
+  onContinue,
 }: QuestionStageProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => titleRef.current?.focus());
-    return () => cancelAnimationFrame(frame);
-  }, [question.id]);
-
-  const choices = question.presentation === "scale" ? (
-    <ChoiceScale options={question.options} selectedId={selectedId} onSelect={onSelect} />
-  ) : question.presentation === "scenario" ? (
-    <ChoiceScenario options={question.options} selectedId={selectedId} onSelect={onSelect} />
-  ) : (
-    <div className="quiz-choices quiz-choices--cards">
-      {question.options.map((option, index) => (
-        <ChoiceCard
-          key={option.id}
-          option={option}
-          index={index}
-          selected={option.id === selectedId}
-          onSelect={onSelect}
-        />
-      ))}
-    </div>
-  );
-
+  useEffect(() => { titleRef.current?.focus(); }, [question.id]);
   return (
-    <main
-      className="quiz-main quiz-main--question"
-      id="conteudo-quiz"
-      data-motion={getMotionFamilyAttribute("question")}
-    >
-      <div className="quiz-question-stage">
-        <section className="quiz-question-stage__prompt">
-          <p className="quiz-kicker">{question.eyebrow}</p>
-          <span className="quiz-question-number" aria-hidden="true">{String(questionNumber).padStart(2, "0")}</span>
-          <h1 ref={titleRef} tabIndex={-1}>{question.prompt}</h1>
-          <p className="quiz-question-context">{question.context}</p>
-          {question.commercial ? (
-            <span className="quiz-commercial-marker">Esta resposta participa da recomendação comercial</span>
-          ) : null}
-        </section>
-        <section className="quiz-question-stage__answers" aria-label={`Escolhas para: ${question.prompt}`}>
-          {choices}
-          <p className="quiz-selection-hint" aria-live="polite">
-            {selectedId === undefined ? "Escolha uma cena para continuar" : "Escolha registrada. Avançando…"}
-          </p>
-        </section>
+    <section className="q6-question" data-presentation={question.presentation} aria-labelledby={"q6-" + question.id + "-title"}>
+      <header className="q6-question__header">
+        <p className="q6-eyebrow"><span /> {question.eyebrow}</p>
+        <h1 id={"q6-" + question.id + "-title"} ref={titleRef} tabIndex={-1}>{question.prompt}</h1>
+        <p>{question.hint}</p>
+      </header>
+      <div className="q6-choices" role="group" aria-label="Escolha uma resposta">
+        {question.options.map((option) => {
+          const selected = selectedOptionId === option.id;
+          return (
+            <ChoiceCard
+              key={option.id}
+              option={option}
+              presentation={question.presentation}
+              selected={selected}
+              subdued={isConfirming && !selected}
+              onSelect={() => onSelect(option.id)}
+            />
+          );
+        })}
       </div>
-    </main>
+      {!question.autoAdvance && selectedOptionId !== undefined ? (
+        <button className="q6-primary q6-question__continue" type="button" onClick={onContinue}>Continuar com esta resposta</button>
+      ) : null}
+    </section>
   );
 }

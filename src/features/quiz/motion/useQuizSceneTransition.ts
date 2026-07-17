@@ -1,36 +1,38 @@
-import { useCallback } from "react";
-import { flushSync } from "react-dom";
+import { useEffect, useRef, useState } from "react";
+import type { QuizDirection, QuizStageId, QuizStagePhase } from "../domain/quiz.types";
+import { quizMotion } from "./motion.tokens";
 
-type QuizTransitionDirection = "forward" | "backward";
-
-interface NativeViewTransition {
-  readonly finished: Promise<void>;
+function prefersReducedMotion(): boolean {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-interface TransitionDocument {
-  startViewTransition?: (
-    update: () => void | Promise<void>,
-  ) => NativeViewTransition;
-}
+export function useQuizSceneTransition(stageId: QuizStageId, direction: QuizDirection) {
+  const [displayedStageId, setDisplayedStageId] = useState(stageId);
+  const [phase, setPhase] = useState<QuizStagePhase>("enter");
+  const previous = useRef(stageId);
 
-export function useQuizSceneTransition(reducedMotion: boolean) {
-  return useCallback((direction: QuizTransitionDirection, update: () => void) => {
-    const transitionDocument = document as unknown as TransitionDocument;
-    const root = document.documentElement;
-    root.dataset.quizDirection = direction;
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setPhase("active"));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
-    if (reducedMotion || transitionDocument.startViewTransition === undefined) {
-      update();
-      delete root.dataset.quizDirection;
-      return;
-    }
+  useEffect(() => {
+    if (stageId === previous.current) return;
+    const reduced = prefersReducedMotion();
+    setPhase("exit");
+    const exitTimer = window.setTimeout(() => {
+      previous.current = stageId;
+      setDisplayedStageId(stageId);
+      setPhase("enter");
+      requestAnimationFrame(() => requestAnimationFrame(() => setPhase("active")));
+    }, reduced ? 20 : quizMotion.exitMs);
+    return () => window.clearTimeout(exitTimer);
+  }, [stageId]);
 
-    const transition = transitionDocument.startViewTransition(() => {
-      flushSync(update);
-    });
-
-    void transition.finished.finally(() => {
-      delete root.dataset.quizDirection;
-    });
-  }, [reducedMotion]);
+  return {
+    displayedStageId,
+    phase,
+    direction,
+    reducedMotion: prefersReducedMotion(),
+  } as const;
 }

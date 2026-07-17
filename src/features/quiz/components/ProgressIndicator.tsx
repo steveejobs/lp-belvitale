@@ -1,38 +1,23 @@
-interface ProgressIndicatorProps {
-  readonly moment: number;
-  readonly totalMoments: number;
-  readonly answered: number;
-  readonly totalQuestions: number;
-}
+import { quizQuestionIds, type QuizAnswers } from "../domain/quiz.types";
 
-export function ProgressIndicator({
-  moment,
-  totalMoments,
-  answered,
-  totalQuestions,
-}: ProgressIndicatorProps) {
-  const percentage = Math.round((moment / totalMoments) * 100);
+export function ProgressIndicator({ answers }: { readonly answers: QuizAnswers }) {
+  const answered = quizQuestionIds.filter((id) => typeof answers[id] === "string").length;
   return (
-    <div className="quiz-progress">
+    <div className="q6-progress">
       <div
-        className="quiz-progress__track"
+        className="q6-progress__rail"
         role="progressbar"
-        aria-label="Progresso da descoberta"
-        aria-valuemin={1}
-        aria-valuemax={totalMoments}
-        aria-valuenow={moment}
-        aria-valuetext={`${String(moment)} de ${String(totalMoments)} momentos; ${String(answered)} de ${String(totalQuestions)} escolhas respondidas`}
+        aria-label="Progresso das escolhas"
+        aria-valuemin={0}
+        aria-valuemax={quizQuestionIds.length}
+        aria-valuenow={answered}
+        aria-valuetext={String(answered) + " de 8 escolhas"}
       >
-        <span className="quiz-progress__fill" style={{ width: `${String(percentage)}%` }} />
-        <span className="quiz-progress__capsules" aria-hidden="true">
-          {Array.from({ length: totalMoments }, (_, index) => (
-            <i key={index} data-filled={index < moment} />
-          ))}
-        </span>
+        {quizQuestionIds.map((id, index) => (
+          <span key={id} data-filled={index < answered} aria-hidden="true" />
+        ))}
       </div>
-      <span className="quiz-progress__label" aria-live="polite">
-        {answered}/{totalQuestions} escolhas
-      </span>
+      <span aria-hidden="true">{answered}/8</span>
     </div>
   );
 }

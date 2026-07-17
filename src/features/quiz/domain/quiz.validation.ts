@@ -1,61 +1,43 @@
-import { quizQuestions } from "../content/questions";
-import {
-  quizQuestionIds,
-  type QuizAnswerMap,
-  type QuizQuestionId,
-} from "./quiz.types";
+import { quizQuestionMap, quizQuestions } from "../content/questions";
+import type { QuizAnswers, QuizQuestion, QuizQuestionId } from "./quiz.types";
 
-export function isQuizQuestionId(value: string): value is QuizQuestionId {
-  return quizQuestionIds.some((id) => id === value);
+export function sanitizeFirstName(value: string): string {
+  return value
+    .normalize("NFKC")
+    .replace(/[^\p{L}\p{M}' -]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(" ")[0]
+    ?.slice(0, 24) ?? "";
 }
 
-export function isValidQuizAnswer(
-  questionId: QuizQuestionId,
-  optionId: string,
-): boolean {
-  const question = quizQuestions.find((candidate) => candidate.id === questionId);
-  return question?.options.some((option) => option.id === optionId) ?? false;
+export function isAnswerAllowed(questionId: QuizQuestionId, optionId: string): boolean {
+  return quizQuestionMap[questionId].options.some((option) => option.id === optionId);
 }
 
-export function sanitizeQuizAnswers(value: unknown): QuizAnswerMap {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) return {};
-  return Object.fromEntries(
-    Object.entries(value).filter(
-      (entry): entry is [QuizQuestionId, string] =>
-        isQuizQuestionId(entry[0]) &&
-        typeof entry[1] === "string" &&
-        isValidQuizAnswer(entry[0], entry[1]),
-    ),
-  );
-}
-
-export function hasCompleteQuizAnswers(answers: QuizAnswerMap): boolean {
-  return quizQuestionIds.every((questionId) => {
-    const optionId = answers[questionId];
-    return optionId !== undefined && isValidQuizAnswer(questionId, optionId);
+export function hasCompleteQuizAnswers(answers: QuizAnswers): boolean {
+  return quizQuestions.every((question) => {
+    const answer = answers[question.id];
+    return typeof answer === "string" && isAnswerAllowed(question.id, answer);
   });
 }
 
-export interface QuizContentAudit {
-  readonly valid: boolean;
-  readonly errors: readonly string[];
-}
-
-export function auditQuizQuestionContent(): QuizContentAudit {
-  const errors: string[] = [];
-  const optionIds = new Set<string>();
-  quizQuestions.forEach((question) => {
-    if (question.options.length < 3 || question.options.length > 5) {
-      errors.push(`${question.id}: deve ter entre 3 e 5 opções.`);
-    }
-    question.options.forEach((option) => {
-      if (optionIds.has(option.id)) errors.push(`${option.id}: id de opção duplicado.`);
-      optionIds.add(option.id);
-      const nonZeroImpacts = Object.values(option.impact).filter((value) => value !== 0);
-      if (nonZeroImpacts.length < 2) {
-        errors.push(`${question.id}/${option.id}: precisa pontuar em duas ou mais dimensões.`);
-      }
-    });
-  });
-  return { valid: errors.length === 0, errors };
+export function auditQuizQuestionContent(): Readonly<{
+  valid: boolean;
+  questionCount: number;
+  duplicatedPrompts: readonly string[];
+  genericRoutinePrompts: readonly string[];
+}> {
+  const questionCount: number = [...(quizQuestions as readonly QuizQuestion[])].length;
+  const normalized = quizQuestions.map((question) => question.prompt.toLocaleLowerCase("pt-BR"));
+  const duplicatedPrompts = normalized.filter((prompt, index) => normalized.indexOf(prompt) !== index);
+  const genericRoutinePrompts = quizQuestions
+    .filter((question) => /produtividade|meta diária|lista de tarefas/i.test(question.prompt))
+    .map((question) => question.id);
+  return {
+    valid: questionCount <= 8 && duplicatedPrompts.length === 0 && genericRoutinePrompts.length === 0,
+    questionCount,
+    duplicatedPrompts,
+    genericRoutinePrompts,
+  };
 }

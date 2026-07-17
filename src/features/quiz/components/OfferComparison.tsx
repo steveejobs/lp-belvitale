@@ -1,44 +1,44 @@
-import { quizOfferOrder, quizOffers } from "../content/offers";
-import type { QuizPlanId } from "../domain/quiz.types";
+import type { QuizPromotion } from "../campaign/campaign.types";
+import { quizOffers, quizOfferOrder } from "../content/offers";
+import type { OfferId } from "../domain/quiz.types";
+import { calculatePrice } from "../pricing/pricing.calculate";
+import { formatCurrency } from "../pricing/pricing.format";
 
 interface OfferComparisonProps {
-  readonly selected: QuizPlanId;
-  readonly recommended: QuizPlanId;
-  readonly onSelect: (plan: QuizPlanId) => void;
+  readonly campaign: QuizPromotion;
+  readonly recommendedOfferId: OfferId;
+  readonly selectedOfferId: OfferId;
+  readonly onSelect: (offerId: OfferId) => void;
 }
 
-export function OfferComparison({ selected, recommended, onSelect }: OfferComparisonProps) {
+export function OfferComparison({ campaign, recommendedOfferId, selectedOfferId, onSelect }: OfferComparisonProps) {
   return (
-    <section className="quiz-offer-comparison" aria-labelledby="offer-comparison-title">
-      <div className="quiz-offer-comparison__intro">
-        <p className="quiz-kicker">Comparação transparente</p>
-        <h2 id="offer-comparison-title">As três opções usam o mesmo produto e o mesmo modo de uso.</h2>
-        <p>A diferença é quantidade de frascos, estoque aproximado e frequência de reposição — não eficácia.</p>
-      </div>
-      <div className="quiz-offer-comparison__grid">
-        {quizOfferOrder.map((plan) => {
-          const offer = quizOffers[plan];
-          const isSelected = selected === plan;
+    <section className="q6-comparison" aria-labelledby="q6-comparison-title">
+      <header>
+        <p className="q6-eyebrow"><span /> As alternativas continuam abertas</p>
+        <h2 id="q6-comparison-title">Compare duração, reposição e preço.</h2>
+      </header>
+      <div className="q6-comparison__rail">
+        {quizOfferOrder.map((offerId) => {
+          const offer = campaign.offers[offerId];
+          const copy = quizOffers[offerId];
+          const price = calculatePrice(offer);
           return (
             <button
-              key={offer.id}
               type="button"
-              className="quiz-comparison-card"
-              data-selected={isSelected}
-              aria-pressed={isSelected}
-              onClick={() => onSelect(plan)}
+              className="q6-comparison__card"
+              key={offerId}
+              data-selected={selectedOfferId === offerId}
+              data-recommended={recommendedOfferId === offerId}
+              aria-pressed={selectedOfferId === offerId}
+              onClick={() => onSelect(offerId)}
             >
-              <span className="quiz-comparison-card__top">
-                {recommended === plan ? <em>Sua recomendação</em> : <i>Outra opção</i>}
-                <strong>{offer.title}</strong>
-              </span>
-              <span className="quiz-comparison-card__capsules" aria-hidden="true">
-                {Array.from({ length: offer.bottles }, (_, index) => <i key={index} />)}
-              </span>
-              <span>{offer.durationLabel}</span>
-              <small>{offer.bestFor}</small>
-              {offer.additionalBottles > 0 ? <b>Oferta oficial: 5 + 2 frascos</b> : null}
-              <u>{isSelected ? "Opção selecionada" : "Selecionar esta opção"}</u>
+              <span>{recommendedOfferId === offerId ? "Recomendada" : copy.badge}</span>
+              <img src={offer.imageSrc} alt="" loading="eager" decoding="async" />
+              <strong>{copy.title}</strong>
+              <small>{offer.quantity} {offer.quantity === 1 ? "frasco" : "frascos"} · ≈ {offer.approximateDays} dias</small>
+              <p>{copy.replenishment}</p>
+              <b>{formatCurrency(price.finalPrice)}</b>
             </button>
           );
         })}

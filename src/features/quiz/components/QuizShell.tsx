@@ -1,43 +1,25 @@
 import type { ReactNode } from "react";
-import type { QuizMachineState } from "../domain/quiz.types";
-import { QuizHeader } from "./QuizHeader";
+import type { QuizDirection, QuizStageId, QuizStagePhase } from "../domain/quiz.types";
 
 interface QuizShellProps {
-  readonly state: QuizMachineState;
-  readonly moment: number;
-  readonly answered: number;
-  readonly canGoBack: boolean;
-  readonly onBack: () => void;
-  readonly onRestart: () => void;
+  readonly stageId: QuizStageId;
+  readonly phase: QuizStagePhase;
+  readonly direction: QuizDirection;
+  readonly reducedMotion: boolean;
   readonly children: ReactNode;
 }
 
-export function QuizShell({
-  state,
-  moment,
-  answered,
-  canGoBack,
-  onBack,
-  onRestart,
-  children,
-}: QuizShellProps) {
+export function QuizShell({ stageId, phase, direction, reducedMotion, children }: QuizShellProps) {
   return (
-    <div
-      className="quiz-route"
-      data-scene={state.scene}
-      data-direction={state.direction}
+    <main
+      id="conteudo-quiz"
+      className="q6-stage"
+      data-stage={stageId}
+      data-phase={phase}
+      data-direction={direction}
+      data-reduced-motion={reducedMotion}
     >
-      <a className="quiz-skip-link" href="#conteudo-quiz">Ir para o conteúdo</a>
-      <QuizHeader
-        moment={moment}
-        totalMoments={14}
-        answered={answered}
-        totalQuestions={7}
-        canGoBack={canGoBack}
-        onBack={onBack}
-        onRestart={onRestart}
-      />
-      {children}
-    </div>
+      <div className="q6-stage__track">{children}</div>
+    </main>
   );
 }

@@ -1,134 +1,66 @@
-import type {
-  QuizProfileContent,
-  QuizProfileId,
-} from "../domain/quiz.types";
+import type { NarrativeDimension, NarrativeProfileId, QuizAnswers } from "../domain/quiz.types";
+import { getQuizOption } from "./questions";
 
-export const quizProfiles: Readonly<Record<QuizProfileId, QuizProfileContent>> = {
-  "fresta-no-dia": {
-    id: "fresta-no-dia",
-    name: "Uma fresta no dia",
-    recognition:
-      "Você não precisa transformar o cuidado no centro da vida; precisa encontrar uma abertura pequena que não desapareça quando o dia muda.",
-    starts:
-      "Seu começo tende a acontecer quando a escolha parece leve, possível e sem uma estrutura grande demais.",
-    interruptionRisk:
-      "O principal risco é depender do embalo inicial: quando a agenda aperta, o cuidado pode perder lugar antes de ganhar uma pista concreta.",
-    maintenance:
-      "Mantenha uma única âncora visível e reduza a decisão diária: mesmo lugar, mesma pista, próximo passo pequeno.",
-    sevenDayRitual: [
-      "Escolha uma pista visual para a rotina.",
-      "Observe em que momento ela foi fácil de notar.",
-      "Retire um passo desnecessário do caminho.",
-      "Se houver pausa, retome na próxima oportunidade.",
-      "Revise uma informação que ainda gere dúvida.",
-      "Repita o gesto no mesmo contexto.",
-      "Decida o que vale manter — sem exigir perfeição.",
-    ],
-    proofHelp:
-      "Você tende a decidir melhor com informação direta, curta e fácil de revisar antes do compromisso.",
-    center: {
-      dailyImpact: 72,
-      routineFriction: 62,
-      startStyle: 18,
-      recoveryCapacity: 48,
-      proofPreference: 44,
-    },
+export interface QuizProfileContent {
+  readonly id: NarrativeProfileId;
+  readonly title: string;
+  readonly recognition: string;
+  readonly friction: string;
+  readonly orientation: string;
+  readonly center: Readonly<Record<NarrativeDimension, number>>;
+}
+
+export const quizProfileOrder = [
+  "clear-first",
+  "return-ready",
+  "proof-led",
+  "continuity-minded",
+] as const satisfies readonly NarrativeProfileId[];
+
+export const quizProfiles: Readonly<Record<NarrativeProfileId, QuizProfileContent>> = {
+  "clear-first": {
+    id: "clear-first",
+    title: "Clareza antes do impulso",
+    recognition: "Você se move melhor quando entende o essencial e reduz o número de dúvidas antes do primeiro gesto.",
+    friction: "Informação demais pode prolongar a comparação até a decisão perder força.",
+    orientation: "Escolha um critério verificável, decida por ele e deixe os detalhes secundários para depois.",
+    center: { actionBias: 42, clarityNeed: 88, recoveryCapacity: 52, structurePreference: 58, proofNeed: 76 },
   },
-  "fio-que-volta": {
-    id: "fio-que-volta",
-    name: "O fio que se retoma",
-    recognition:
-      "Seu ritmo não é uma linha reta — e isso não o torna menos válido. O que sustenta a rotina é saber voltar sem transformar uma pausa em abandono.",
-    starts:
-      "Você costuma começar quando consegue encaixar o cuidado na vida como ela está, ajustando enquanto avança.",
-    interruptionRisk:
-      "Dias cheios podem quebrar a sequência; o risco aparece quando a pausa passa a parecer um recomeço completo.",
-    maintenance:
-      "Defina uma regra de retorno simples: perdeu um dia, volte na próxima oportunidade disponível, sem compensação e sem culpa.",
-    sevenDayRitual: [
-      "Nomeie a oportunidade mais fácil do dia.",
-      "Use essa oportunidade como ponto de retorno.",
-      "Anote qual fricção apareceu de verdade.",
-      "Diminua a rotina até ela caber nesse dia.",
-      "Volte sem tentar compensar uma pausa.",
-      "Reconheça a retomada, não a sequência.",
-      "Mantenha a regra de retorno para a semana seguinte.",
-    ],
-    proofHelp:
-      "Você ganha confiança quando a informação mostra limites e permite revisar a escolha sem pressão.",
-    center: {
-      dailyImpact: 42,
-      routineFriction: 74,
-      startStyle: 44,
-      recoveryCapacity: 82,
-      proofPreference: 48,
-    },
+  "return-ready": {
+    id: "return-ready",
+    title: "Retomar vale mais que recomeçar",
+    recognition: "Seu padrão não depende de uma sequência perfeita. Ele melhora quando a volta continua pequena e possível.",
+    friction: "Quando a pausa parece exigir um plano novo, a retomada fica maior do que precisa.",
+    orientation: "Defina um gesto de retorno que não compense nem aumente a meta: apenas reabre o caminho.",
+    center: { actionBias: 72, clarityNeed: 42, recoveryCapacity: 92, structurePreference: 48, proofNeed: 40 },
   },
-  "ancora-leve": {
-    id: "ancora-leve",
-    name: "Uma âncora leve",
-    recognition:
-      "Você se move melhor quando o cuidado ganha um lugar reconhecível — firme o bastante para ser lembrado, leve o bastante para não pesar.",
-    starts:
-      "Um horário, um objeto ou um gesto já existente costuma transformar intenção em começo para você.",
-    interruptionRisk:
-      "A rotina perde força quando fica invisível ou exige etapas demais para ser retomada.",
-    maintenance:
-      "Associe o cuidado a algo que já acontece todos os dias e deixe o necessário ao alcance dos olhos.",
-    sevenDayRitual: [
-      "Escolha um gesto diário que já existe.",
-      "Coloque a pista da nova rotina perto dele.",
-      "Teste se o acesso exige menos de um minuto.",
-      "Ajuste o lugar se a pista ficou invisível.",
-      "Revise as informações essenciais da escolha.",
-      "Repita sem adicionar novos passos.",
-      "Mantenha somente a âncora que funcionou.",
-    ],
-    proofHelp:
-      "Comparações organizadas e informações objetivas ajudam você a transformar dúvida em um próximo passo claro.",
-    center: {
-      dailyImpact: 52,
-      routineFriction: 68,
-      startStyle: 88,
-      recoveryCapacity: 56,
-      proofPreference: 58,
-    },
+  "proof-led": {
+    id: "proof-led",
+    title: "Confiança move sua escolha",
+    recognition: "Você parece depender mais de evidência compreensível do que de entusiasmo momentâneo.",
+    friction: "Promessas amplas ou imagens sem contexto aumentam sua distância em vez de acelerar a decisão.",
+    orientation: "Procure origem, limites e comparação clara. Se a informação não responde ao básico, não merece sua pressa.",
+    center: { actionBias: 44, clarityNeed: 78, recoveryCapacity: 46, structurePreference: 48, proofNeed: 94 },
   },
-  "olhar-de-lupa": {
-    id: "olhar-de-lupa",
-    name: "Olhar de lupa",
-    recognition:
-      "Sua confiança não nasce de pressa. Ela aparece quando critérios, origem e limites ficam visíveis o bastante para você formar a própria leitura.",
-    starts:
-      "Você tende a começar depois de entender o que está escolhendo e por que aquilo faz sentido para o seu momento.",
-    interruptionRisk:
-      "Informação incompleta ou uma promessa maior do que a evidência podem interromper a rotina antes mesmo de ela se consolidar.",
-    maintenance:
-      "Guarde uma fonte objetiva de consulta e defina antecipadamente quais dúvidas realmente precisam ser respondidas.",
-    sevenDayRitual: [
-      "Liste as duas informações essenciais para decidir.",
-      "Confira rótulo, modo de uso e avisos.",
-      "Separe fato documentado de expectativa.",
-      "Escolha uma pista simples para a rotina.",
-      "Observe se surgiu uma dúvida nova.",
-      "Revise somente a fonte necessária.",
-      "Decida com os limites da evidência visíveis.",
-    ],
-    proofHelp:
-      "Rótulo, critérios comparáveis e mídia autorizada em tamanho legível ajudam mais do que frases de efeito.",
-    center: {
-      dailyImpact: 38,
-      routineFriction: 42,
-      startStyle: 58,
-      recoveryCapacity: 42,
-      proofPreference: 92,
-    },
+  "continuity-minded": {
+    id: "continuity-minded",
+    title: "Estrutura reduz decisões",
+    recognition: "Você protege melhor uma escolha quando o próximo passo já está visível e não precisa ser reaberto toda semana.",
+    friction: "Começar sem uma âncora ou sem continuidade definida deixa a rotina vulnerável aos dias cheios.",
+    orientation: "Organize um ponto fixo, uma alternativa para dias fora do padrão e uma data simples de revisão.",
+    center: { actionBias: 60, clarityNeed: 56, recoveryCapacity: 64, structurePreference: 94, proofNeed: 48 },
   },
 };
 
-export const quizProfileOrder: readonly QuizProfileId[] = [
-  "fresta-no-dia",
-  "fio-que-volta",
-  "ancora-leve",
-  "olhar-de-lupa",
-];
+export function deriveRecognitions(answers: QuizAnswers): readonly [string, string, string] {
+  const attempt = typeof answers.attempts === "string" ? getQuizOption("attempts", answers.attempts) : null;
+  const recovery = typeof answers.recovery === "string" ? getQuizOption("recovery", answers.recovery) : null;
+  const proof = typeof answers["proof-preference"] === "string"
+    ? getQuizOption("proof-preference", answers["proof-preference"])
+    : null;
+  return [
+    attempt?.label ?? "Você reconhece o que costuma interromper a continuidade.",
+    recovery?.label ?? "Sua retomada depende de um próximo gesto claro.",
+    proof?.label ?? "Sua confiança cresce com informação compreensível.",
+  ];
+}

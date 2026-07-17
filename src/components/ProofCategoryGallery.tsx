@@ -199,7 +199,6 @@ export function ProofCategoryGallery({ category, assets }: ProofCategoryGalleryP
     !dragging;
   const stageStyle = {
     "--proof-drag": `${String(dragOffset)}px`,
-    "--proof-aspect": category.id === "localized-fat" ? "4 / 3" : "1 / 1",
   } as CSSProperties;
 
   return (

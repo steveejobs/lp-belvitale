@@ -1,95 +1,84 @@
-import { quizProfiles, quizProfileOrder } from "../content/profiles";
+import { quizProfileOrder, quizProfiles } from "../content/profiles";
 import { quizQuestions } from "../content/questions";
-import {
-  quizDimensionIds,
-  type QuizAnswerMap,
-  type QuizCalculation,
-  type QuizDimensionId,
-  type QuizDimensionVector,
-  type QuizProfileId,
+import type {
+  NarrativeDimension,
+  NarrativeProfileId,
+  QuizAnswers,
+  QuizProfileResult,
+  QuizQuestion,
 } from "./quiz.types";
 import { hasCompleteQuizAnswers } from "./quiz.validation";
 
-const emptyVector = (): Record<QuizDimensionId, number> =>
-  Object.fromEntries(quizDimensionIds.map((id) => [id, 0])) as Record<
-    QuizDimensionId,
-    number
-  >;
-
-const dimensionRanges = Object.fromEntries(
-  quizDimensionIds.map((dimension) => {
-    const minimum = quizQuestions.reduce(
-      (total, question) =>
-        total + Math.min(...question.options.map((option) => option.impact[dimension] ?? 0)),
-      0,
-    );
-    const maximum = quizQuestions.reduce(
-      (total, question) =>
-        total + Math.max(...question.options.map((option) => option.impact[dimension] ?? 0)),
-      0,
-    );
-    return [dimension, { minimum, maximum }];
-  }),
-) as Readonly<Record<QuizDimensionId, { readonly minimum: number; readonly maximum: number }>>;
-
-export function calculateDimensionVector(answers: QuizAnswerMap): QuizDimensionVector {
-  const raw = emptyVector();
-  quizQuestions.forEach((question) => {
-    const answer = answers[question.id];
-    const option = question.options.find((candidate) => candidate.id === answer);
-    if (option === undefined) return;
-    quizDimensionIds.forEach((dimension) => {
-      raw[dimension] += option.impact[dimension] ?? 0;
-    });
-  });
-  return Object.fromEntries(
-    quizDimensionIds.map((dimension) => {
-      const range = dimensionRanges[dimension];
-      const span = range.maximum - range.minimum;
-      const normalized = span === 0 ? 50 : ((raw[dimension] - range.minimum) / span) * 100;
-      return [dimension, Math.round(Math.max(0, Math.min(100, normalized)) * 10) / 10];
-    }),
-  ) as unknown as QuizDimensionVector;
-}
-
-const profileDimensions = [
-  "dailyImpact",
-  "routineFriction",
-  "startStyle",
+const dimensions: readonly NarrativeDimension[] = [
+  "actionBias",
+  "clarityNeed",
   "recoveryCapacity",
-  "proofPreference",
+  "structurePreference",
+  "proofNeed",
+];
+
+const narrativeQuestionIds = [
+  "trigger",
+  "impact",
+  "attempts",
+  "recovery",
+  "proof-preference",
 ] as const;
 
-function distanceToProfile(
-  dimensions: QuizDimensionVector,
-  profileId: QuizProfileId,
+function clamp(value: number): number {
+  return Math.min(100, Math.max(0, value));
+}
+
+export function calculateDimensionVector(
+  answers: QuizAnswers,
+): Readonly<Record<NarrativeDimension, number>> {
+  return Object.fromEntries(dimensions.map((dimension) => {
+    let selectedTotal = 0;
+    let minimumTotal = 0;
+    let maximumTotal = 0;
+    for (const questionId of narrativeQuestionIds) {
+      const question: QuizQuestion | undefined = quizQuestions.find((candidate) => candidate.id === questionId);
+      if (question === undefined) continue;
+      const values = question.options.map((option) => option.narrative?.[dimension] ?? 0);
+      const selected = question.options.find((option) => option.id === answers[questionId]);
+      selectedTotal += selected?.narrative?.[dimension] ?? 0;
+      minimumTotal += Math.min(...values);
+      maximumTotal += Math.max(...values);
+    }
+    const normalized = maximumTotal === minimumTotal
+      ? 50
+      : ((selectedTotal - minimumTotal) / (maximumTotal - minimumTotal)) * 100;
+    return [dimension, Math.round(clamp(normalized) * 10) / 10];
+  })) as Readonly<Record<NarrativeDimension, number>>;
+}
+
+function distance(
+  vector: Readonly<Record<NarrativeDimension, number>>,
+  profileId: NarrativeProfileId,
 ): number {
   const center = quizProfiles[profileId].center;
-  const squared = profileDimensions.reduce((total, dimension) => {
-    const difference = dimensions[dimension] - center[dimension];
-    return total + difference * difference;
+  const total = dimensions.reduce((sum, dimension) => {
+    const difference = (vector[dimension] - center[dimension]) / 100;
+    return sum + difference ** 2;
   }, 0);
-  return Math.sqrt(squared / profileDimensions.length);
+  return Math.sqrt(total / dimensions.length);
 }
 
-export function calculateQuizResult(answers: QuizAnswerMap): QuizCalculation | null {
+export function calculateQuizResult(answers: QuizAnswers): QuizProfileResult | null {
   if (!hasCompleteQuizAnswers(answers)) return null;
-  const dimensions = calculateDimensionVector(answers);
+  const vector = calculateDimensionVector(answers);
   const distances = Object.fromEntries(
-    quizProfileOrder.map((profile) => [
-      profile,
-      Math.round(distanceToProfile(dimensions, profile) * 100) / 100,
-    ]),
-  ) as Readonly<Record<QuizProfileId, number>>;
-  const profile = [...quizProfileOrder].sort((left, right) => {
-    const difference = distances[left] - distances[right];
-    return difference === 0
-      ? quizProfileOrder.indexOf(left) - quizProfileOrder.indexOf(right)
-      : difference;
-  })[0];
-  return profile === undefined ? null : { profile, dimensions, distances };
-}
-
-export function getDimensionRanges() {
-  return dimensionRanges;
+    quizProfileOrder.map((profileId) => [profileId, distance(vector, profileId)]),
+  ) as Readonly<Record<NarrativeProfileId, number>>;
+  const ranking = [...quizProfileOrder].sort((left, right) =>
+    distances[left] - distances[right] || quizProfileOrder.indexOf(left) - quizProfileOrder.indexOf(right),
+  );
+  const first = ranking[0] ?? "clear-first";
+  const second = ranking[1] ?? first;
+  return {
+    id: first,
+    confidence: distances[second] - distances[first] >= 0.08 ? "clear" : "blended",
+    distances,
+    dimensions: vector,
+  };
 }

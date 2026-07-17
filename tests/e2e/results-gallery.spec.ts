@@ -6,6 +6,17 @@ test("galeria avança visível, pausa no hover e retoma depois da interação", 
   await page.goto("/");
   await page.locator("#resultados-cellulite").scrollIntoViewIfNeeded();
   const gallery = page.locator('.proof-gallery[data-category="cellulite"]');
+  const currentImage = gallery.locator('.proof-figure[data-position="current"] img');
+  await expect(currentImage).toBeVisible();
+  const ratios = await currentImage.evaluate((element) => {
+    const source = element as HTMLImageElement;
+    const rectangle = source.getBoundingClientRect();
+    return {
+      natural: source.naturalWidth / source.naturalHeight,
+      rendered: rectangle.width / rectangle.height,
+    };
+  });
+  expect(ratios.rendered).toBeCloseTo(ratios.natural, 2);
   const initial = await gallery.getAttribute("data-active-index");
 
   await expect(gallery).toHaveAttribute("data-autoplay", "true");
@@ -57,9 +68,11 @@ test("reduced motion interrompe completamente o autoplay", async ({ browser }) =
   await context.close();
 });
 
-test("cada categoria mantém no DOM somente atual, anterior e próxima", async ({
+test("cada imagem ocupa sua proporção nativa inteira no mobile", async ({
   page,
 }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   for (const category of ["cellulite", "laxity", "localized-fat"]) {
     const section = page.locator(`[data-proof-category="${category}"]`);
@@ -80,6 +93,33 @@ test("cada categoria mantém no DOM somente atual, anterior e próxima", async (
     });
     for (const padding of framePadding) {
       expect(padding).toBeGreaterThanOrEqual(4);
+    }
+
+    const dots = gallery.locator(".proof-gallery__dot");
+    const total = await dots.count();
+    for (let index = 0; index < total; index += 1) {
+      await dots.nth(index).click();
+      await expect(gallery).toHaveAttribute("data-active-index", String(index));
+      const image = gallery.locator('.proof-figure[data-position="current"] img');
+      await expect(image).toBeVisible();
+      const geometry = await image.evaluate((element) => {
+        const source = element as HTMLImageElement;
+        const imageRect = source.getBoundingClientRect();
+        const stageRect = source.closest(".proof-gallery__stage")?.getBoundingClientRect();
+        return {
+          naturalRatio: source.naturalWidth / source.naturalHeight,
+          renderedRatio: imageRect.width / imageRect.height,
+          fullyInsideStage:
+            stageRect !== undefined &&
+            imageRect.left >= stageRect.left - 0.5 &&
+            imageRect.right <= stageRect.right + 0.5 &&
+            imageRect.top >= stageRect.top - 0.5 &&
+            imageRect.bottom <= stageRect.bottom + 0.5,
+        };
+      });
+      expect(geometry.naturalRatio).toBeGreaterThan(0);
+      expect(geometry.renderedRatio).toBeCloseTo(geometry.naturalRatio, 2);
+      expect(geometry.fullyInsideStage).toBe(true);
     }
   }
 });

@@ -1,56 +1,81 @@
+import { quizQuestions } from "../content/questions";
 import {
-  quizSceneIds,
-  quizVersion,
-  type QuizMachineState,
-  type QuizQuestionId,
-  type QuizSceneId,
+  QUIZ_VERSION,
+  quizStageIds,
+  type OfferId,
+  type QuizAnswers,
+  type QuizSessionState,
+  type QuizStageId,
 } from "./quiz.types";
-import {
-  isQuizQuestionId,
-  sanitizeQuizAnswers,
-} from "./quiz.validation";
+
+const offerIds: readonly OfferId[] = ["one-month", "three-months", "seven-months"];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function isIsoDate(value: unknown): value is string {
-  return (
-    typeof value === "string" &&
-    value.length >= 20 &&
-    Number.isFinite(Date.parse(value))
-  );
+  return typeof value === "string" && Number.isFinite(Date.parse(value));
 }
 
-function isQuizSceneId(value: unknown): value is QuizSceneId {
-  return typeof value === "string" && quizSceneIds.some((scene) => scene === value);
+function isStageId(value: unknown): value is QuizStageId {
+  return typeof value === "string" && quizStageIds.some((id) => id === value);
 }
 
-function optionalQuestionId(value: unknown): QuizQuestionId | undefined {
-  return typeof value === "string" && isQuizQuestionId(value) ? value : undefined;
+function parseAnswers(value: unknown): QuizAnswers | null {
+  if (!isRecord(value)) return null;
+  const parsed: Record<string, string> = {};
+  for (const [questionId, optionId] of Object.entries(value)) {
+    const question = quizQuestions.find((candidate) => candidate.id === questionId);
+    if (
+      question === undefined ||
+      typeof optionId !== "string" ||
+      !question.options.some((option) => option.id === optionId)
+    ) {
+      return null;
+    }
+    parsed[question.id] = optionId;
+  }
+  return parsed;
 }
 
-export function parseQuizMachineState(value: unknown): QuizMachineState | null {
+export function parseQuizSession(value: unknown, now = Date.now()): QuizSessionState | null {
+  if (!isRecord(value) || value.version !== QUIZ_VERSION) return null;
+  const answers = parseAnswers(value.answers);
   if (
-    !isRecord(value) ||
-    value.version !== quizVersion ||
-    !isQuizSceneId(value.scene) ||
-    !isIsoDate(value.updatedAt) ||
-    (value.direction !== "forward" && value.direction !== "backward")
+    answers === null ||
+    typeof value.sessionId !== "string" ||
+    value.sessionId.length < 8 ||
+    !isStageId(value.stageId) ||
+    !Array.isArray(value.visitedStageIds) ||
+    !value.visitedStageIds.every(isStageId) ||
+    typeof value.firstName !== "string" ||
+    value.firstName.length > 24 ||
+    typeof value.nameProvided !== "boolean" ||
+    !isIsoDate(value.savedAt) ||
+    !isIsoDate(value.expiresAt) ||
+    Date.parse(value.expiresAt) <= now
   ) {
     return null;
   }
-  const startedAt = isIsoDate(value.startedAt) ? value.startedAt : undefined;
-  const completedAt = isIsoDate(value.completedAt) ? value.completedAt : undefined;
-  const reviewFrom = optionalQuestionId(value.reviewFrom);
+
+  const selectedOfferId = offerIds.find((id) => id === value.selectedOfferId);
+  if (value.selectedOfferId !== undefined && selectedOfferId === undefined) return null;
+  if (value.startedAt !== undefined && !isIsoDate(value.startedAt)) return null;
+  if (value.completedAt !== undefined && !isIsoDate(value.completedAt)) return null;
+
   return {
-    version: quizVersion,
-    scene: value.scene,
-    answers: sanitizeQuizAnswers(value.answers),
-    direction: value.direction,
-    updatedAt: value.updatedAt,
-    ...(startedAt === undefined ? {} : { startedAt }),
-    ...(completedAt === undefined ? {} : { completedAt }),
-    ...(reviewFrom === undefined ? {} : { reviewFrom }),
+    version: QUIZ_VERSION,
+    sessionId: value.sessionId,
+    stageId: value.stageId,
+    visitedStageIds: value.visitedStageIds,
+    answers,
+    firstName: value.firstName,
+    nameProvided: value.nameProvided,
+    ...(selectedOfferId === undefined ? {} : { selectedOfferId }),
+    ...(typeof value.startedAt === "string" ? { startedAt: value.startedAt } : {}),
+    ...(typeof value.completedAt === "string" ? { completedAt: value.completedAt } : {}),
+    savedAt: value.savedAt,
+    expiresAt: value.expiresAt,
   };
 }

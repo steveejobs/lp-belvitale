@@ -1,0 +1,57 @@
+# Campanha e precos — Quiz CeluClin 6.0
+
+## Estado da campanha
+
+Fonte unica: `src/features/quiz/campaign/campaign.config.ts`.
+
+| Campo | Valor auditado |
+| --- | --- |
+| campaignId | celuclin-quiz-v6-checkout-snapshot |
+| versao | 2026-07-17.1 |
+| status | draft |
+| snapshot dos checkouts | 17/07/2026 14:40:56 UTC |
+| cupom validado | nao |
+| parcelamento validado | nao apareceu no estado inicial |
+
+A campanha permanece em rascunho. A interface mostra apenas os precos que estavam presentes nos tres checkouts oficiais no momento da auditoria. Como nenhum codigo de cupom e nenhum prazo promocional foram aprovados, `rewards` permanece vazio e a interface nao cria desconto adicional, cupom ou cronometro.
+
+## Ofertas auditadas
+
+| Oferta | Quantidade | Dias aproximados | Preco cheio | Preco atual | Economia | Checkout oficial |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 30 dias | 1 | 30 | R$ 197,00 | R$ 89,90 | R$ 107,10 (54,37%) | PWJOI4I112 |
+| 90 dias | 3 | 90 | R$ 591,00 | R$ 169,90 | R$ 421,10 (71,25%) | 1E8NNCGJW9 |
+| 210 dias | 7 | 210 | R$ 1.379,00 | R$ 597,00 | R$ 782,00 (56,71%) | 41CHX4MGPX |
+
+Os calculos ficam em `pricing/pricing.calculate.ts`, usam centavos inteiros e sao testados fora da camada visual. URLs ficam em `checkout/checkout.urls.ts`. A apresentacao nunca recalcula nem inventa valor.
+
+## Recompensa ativa nesta versao
+
+A recompensa visivel e um roteiro personalizado de retomada de sete dias. Ela e um beneficio de conteudo, nao altera preco e nao simula sorte. Por isso o fluxo usa reveal, e nao roleta.
+
+O motor comercial independente ja esta preparado para uma campanha futura e persiste:
+
+- rewardId;
+- campaignId;
+- couponCode;
+- issuedAt;
+- expiresAt;
+- sessionId;
+- eligibleOfferIds;
+- promotionVersion.
+
+A emissao e deterministica e ocorre uma unica vez por sessao. A animacao apenas representa o resultado previamente emitido. Nao ha `Math.random()` na decisao comercial.
+
+## Condicoes para ativar cupom e cronometro
+
+Antes de mudar o status da campanha para active:
+
+1. aprovar juridica e comercialmente o beneficio;
+2. validar o codigo em cada checkout elegivel;
+3. definir inicio e termino absolutos no servidor;
+4. confirmar preco final e arredondamento;
+5. executar novamente as jornadas, a auditoria dos checkouts e o timer entre abas;
+6. publicar somente depois do gate de preview.
+
+Sem essas condicoes, o reward engine retorna `null` e o CTA de cupom nao e montado.
+
