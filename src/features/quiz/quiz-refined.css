@@ -1,0 +1,144 @@
+/* Quiz refinement: the same feminine editorial language as the homepage. */
+.q7 {
+  --q7-home-radius: 1.5rem;
+}
+
+.q7 .q7-primary {
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+.q7 .q7-primary:hover:not(:disabled) {
+  box-shadow: 0 0.7rem 1.5rem rgb(216 11 112 / 16%);
+  transform: translateY(-1px);
+}
+
+.q7 .q7-header {
+  border-bottom-color: transparent;
+  background: rgb(255 250 248 / 86%);
+  backdrop-filter: blur(16px) saturate(120%);
+}
+
+.q7 .q7-brand img {
+  width: 5.8rem;
+}
+
+.q7 .q7-choice {
+  min-height: 4rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--q7-home-radius);
+  background: rgb(255 255 255 / 60%);
+}
+
+.q7 .q7-choice[data-selected="true"] {
+  background: var(--q7-plum);
+}
+
+.q7 .q7-choice__copy strong {
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.q7 .q7-name input {
+  border-radius: var(--q7-home-radius);
+  background: rgb(255 255 255 / 70%);
+}
+
+.q7 .q7-text-button {
+  text-decoration-color: var(--q7-pink);
+}
+
+.q7 .q7-insight {
+  background:
+    radial-gradient(circle at 84% 17%, rgb(245 190 212 / 10%), transparent 22%),
+    var(--q7-deep);
+}
+
+.q7 .q7-insight__visual {
+  border-radius: 50% 50% var(--q7-home-radius) var(--q7-home-radius);
+}
+
+.q7 .q7-insight__visual figcaption {
+  font-size: 1.1rem;
+}
+
+.q7 .q7-result {
+  padding-top: 2rem;
+}
+
+.q7 .q7-result > * {
+  border-right: 0;
+  border-left: 0;
+}
+
+.q7 .q7-result__hero {
+  border-radius: var(--q7-home-radius) var(--q7-home-radius) 0 0;
+}
+
+.q7 .q7-result__hero h1,
+.q7 .q7-result h2,
+.q7 .q7-offer__intro h1,
+.q7 .q7-offer-main__copy h2,
+.q7 .q7-comparison header h2 {
+  font-weight: 470;
+}
+
+.q7 .q7-result-proof {
+  background: var(--q7-rose);
+}
+
+.q7 .q7-result-proof__rail figure,
+.q7 .q7-result-proof__image {
+  border-radius: var(--q7-home-radius);
+}
+
+.q7 .q7-result-proof__image {
+  border-radius: var(--q7-home-radius) var(--q7-home-radius) 0 0;
+}
+
+.q7 .q7-result__transition {
+  border-radius: 0 0 var(--q7-home-radius) var(--q7-home-radius);
+}
+
+.q7 .q7-result__transition img {
+  border-radius: 50% 50% var(--q7-home-radius) var(--q7-home-radius);
+}
+
+.q7 .q7-offer-main,
+.q7 .q7-comparison__card,
+.q7 .q7-price {
+  border-radius: var(--q7-home-radius);
+}
+
+.q7 .q7-offer-main {
+  box-shadow: 0 1.5rem 4rem rgb(37 17 31 / 7%);
+}
+
+.q7 .q7-offer-main__media {
+  border-radius: var(--q7-home-radius) var(--q7-home-radius) 0 0;
+}
+
+.q7 .q7-offer-main__media img {
+  border-radius: 50%;
+}
+
+.q7 .q7-comparison__card[data-selected="true"] {
+  border-width: 1px;
+  border-color: var(--q7-magenta);
+}
+
+@media (min-width: 48rem) {
+  .q7 .q7-insight__visual {
+    border-radius: 50% 50% var(--q7-home-radius) var(--q7-home-radius);
+  }
+
+  .q7 .q7-offer-main__media {
+    border-radius: var(--q7-home-radius) 0 0 var(--q7-home-radius);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .q7 .q7-primary:hover:not(:disabled) {
+    transform: none;
+  }
+}

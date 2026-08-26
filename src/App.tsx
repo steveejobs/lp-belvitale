@@ -16,6 +16,7 @@ import { regulatoryFacts } from "./data/regulatoryFacts";
 import { useAccessibleHashFocus } from "./hooks/useAccessibleHashFocus";
 import { isQuizPath } from "./quiz/quizRouting";
 import "./home.css";
+import "./home-refined.css";
 
 const QuizRoute = lazy(() =>
   import("./components/QuizRoute").then((module) => ({ default: module.QuizRoute })),

@@ -6,11 +6,6 @@ export function EducationSection() {
 
   return (
     <section className="skin-context" aria-labelledby="education-title">
-      <div className="skin-context__ticker" aria-hidden="true">
-        {education.counters.map((item) => (
-          <span key={item}>{item} ≠ celulite</span>
-        ))}
-      </div>
       <Reveal className="skin-context__layout section-shell" effect="slide-right" stagger>
         <p className="eyebrow">{education.eyebrow}</p>
         <h2 id="education-title">{education.title}</h2>

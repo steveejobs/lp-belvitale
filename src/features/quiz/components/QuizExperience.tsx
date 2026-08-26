@@ -21,6 +21,7 @@ import { QuizHeader } from "./QuizHeader";
 import { QuizIntro } from "./QuizIntro";
 import { QuizShell } from "./QuizShell";
 import "../quiz.css";
+import "../quiz-refined.css";
 
 const loadResultStage = () => import("./ResultStage");
 const loadOfferStage = () => import("./OfferStage");

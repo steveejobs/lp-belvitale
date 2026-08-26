@@ -49,6 +49,7 @@ export function CampaignHero() {
           data-media-status="approved"
           {...pointerMotion}
         >
+          <span className="campaign-hero__visual-wash" aria-hidden="true" />
           <picture>
             <source
               media="(max-width: 47.99rem)"
@@ -65,6 +66,7 @@ export function CampaignHero() {
             />
           </picture>
           <span className="campaign-hero__category">CeluClin</span>
+          <p className="campaign-hero__visual-note">Uma rotina que volta a caber.</p>
         </div>
       </div>
     </section>
