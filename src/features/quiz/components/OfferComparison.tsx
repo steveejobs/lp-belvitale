@@ -13,12 +13,12 @@ interface OfferComparisonProps {
 
 export function OfferComparison({ campaign, recommendedOfferId, selectedOfferId, onSelect }: OfferComparisonProps) {
   return (
-    <section className="q6-comparison" aria-labelledby="q6-comparison-title">
+    <section className="q7-comparison" aria-labelledby="q7-comparison-title">
       <header>
-        <p className="q6-eyebrow"><span /> As alternativas continuam abertas</p>
-        <h2 id="q6-comparison-title">Compare duração, reposição e preço.</h2>
+        <p className="q7-step-label">As alternativas continuam abertas</p>
+        <h2 id="q7-comparison-title">Compare duração, reposição e preço.</h2>
       </header>
-      <div className="q6-comparison__rail">
+      <div className="q7-comparison__rail">
         {quizOfferOrder.map((offerId) => {
           const offer = campaign.offers[offerId];
           const copy = quizOffers[offerId];
@@ -26,7 +26,7 @@ export function OfferComparison({ campaign, recommendedOfferId, selectedOfferId,
           return (
             <button
               type="button"
-              className="q6-comparison__card"
+              className="q7-comparison__card"
               key={offerId}
               data-selected={selectedOfferId === offerId}
               data-recommended={recommendedOfferId === offerId}
@@ -34,7 +34,14 @@ export function OfferComparison({ campaign, recommendedOfferId, selectedOfferId,
               onClick={() => onSelect(offerId)}
             >
               <span>{recommendedOfferId === offerId ? "Recomendada" : copy.badge}</span>
-              <img src={offer.imageSrc} alt="" loading="eager" decoding="async" />
+              <img
+                src={offer.imageSrc}
+                width={offerId === "seven-months" ? 1200 : offerId === "three-months" ? 1000 : 800}
+                height={offerId === "seven-months" ? 760 : 700}
+                alt=""
+                loading="eager"
+                decoding="sync"
+              />
               <strong>{copy.title}</strong>
               <small>{offer.quantity} {offer.quantity === 1 ? "frasco" : "frascos"} · ≈ {offer.approximateDays} dias</small>
               <p>{copy.replenishment}</p>

@@ -35,7 +35,7 @@ export function auditQuizQuestionContent(): Readonly<{
     .filter((question) => /produtividade|meta diária|lista de tarefas/i.test(question.prompt))
     .map((question) => question.id);
   return {
-    valid: questionCount <= 8 && duplicatedPrompts.length === 0 && genericRoutinePrompts.length === 0,
+    valid: questionCount === 12 && duplicatedPrompts.length === 0 && genericRoutinePrompts.length === 0,
     questionCount,
     duplicatedPrompts,
     genericRoutinePrompts,

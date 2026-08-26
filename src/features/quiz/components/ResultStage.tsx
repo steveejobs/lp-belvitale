@@ -1,72 +1,67 @@
 import { useEffect, useRef } from "react";
-import { quizOffers } from "../content/offers";
-import { deriveRecognitions, quizProfiles } from "../content/profiles";
-import type { ConcernId, QuizAnswers, QuizProfileResult, QuizRecommendation } from "../domain/quiz.types";
-import { ProofStage } from "./ProofStage";
-import { ResultReasoning } from "./ResultReasoning";
+import { getQuizOption } from "../content/questions";
+import type { QuizAnswers, QuizRecommendation } from "../domain/quiz.types";
+import { ResultProof } from "./ResultProof";
 
 interface ResultStageProps {
   readonly name: string;
   readonly answers: QuizAnswers;
-  readonly concern: ConcernId;
-  readonly result: QuizProfileResult;
   readonly recommendation: QuizRecommendation;
   readonly onContinue: () => void;
 }
 
-export function ResultStage({ name, answers, concern, result, recommendation, onContinue }: ResultStageProps) {
-  const profile = quizProfiles[result.id];
-  const offer = quizOffers[recommendation.offerId];
-  const recognitions = deriveRecognitions(answers);
+export function ResultStage({ name, answers, recommendation, onContinue }: ResultStageProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
-  useEffect(() => { titleRef.current?.focus(); }, [result.id]);
+  useEffect(() => { titleRef.current?.focus(); }, []);
+
+  const recognition = [
+    typeof answers.perception === "string" ? getQuizOption("perception", answers.perception)?.label : null,
+    typeof answers["decision-weight"] === "string" ? getQuizOption("decision-weight", answers["decision-weight"])?.label : null,
+    typeof answers["future-goal"] === "string" ? getQuizOption("future-goal", answers["future-goal"])?.label : null,
+  ].filter((value): value is string => typeof value === "string");
 
   return (
-    <article className="q6-result" aria-labelledby="q6-result-title">
-      <header className="q6-result__hero">
-        <p className="q6-eyebrow"><span /> Sua leitura de decisão</p>
-        <span className="q6-result__index" aria-hidden="true">01</span>
-        <h1 id="q6-result-title" ref={titleRef} tabIndex={-1}>{profile.title}</h1>
-        <p>{name.length > 0 ? name + ", " : ""}{profile.recognition.charAt(0).toLocaleLowerCase("pt-BR") + profile.recognition.slice(1)}</p>
-        <small>Perfil comportamental · não é diagnóstico</small>
+    <article className="q7-result" aria-labelledby="q7-result-title">
+      <header className="q7-result__hero">
+        <p className="q7-step-label">{name.length > 0 ? `Seu resultado, ${name}` : "Seu resultado"}</p>
+        <h1 id="q7-result-title" ref={titleRef} tabIndex={-1}>
+          O seu maior desafio hoje <em>não parece ser a celulite.</em>
+        </h1>
+        <p>Pelas suas respostas, ela acabou se tornando um lembrete constante de que você gostaria de voltar a se cuidar - mas sem transformar isso em mais uma obrigação impossível de manter.</p>
       </header>
 
-      <section className="q6-result__recognitions" aria-labelledby="q6-recognitions-title">
-        <p className="q6-eyebrow"><span /> Três respostas sustentam isso</p>
-        <h2 id="q6-recognitions-title">O que foi percebido.</h2>
-        <ol>
-          {recognitions.map((recognition, index) => (
-            <li key={recognition}><span>{String(index + 1).padStart(2, "0")}</span><p>{recognition}</p></li>
-          ))}
-        </ol>
+      <section className="q7-result__observations" aria-labelledby="q7-observations-title">
+        <div>
+          <p className="q7-step-label">Sua leitura</p>
+          <h2 id="q7-observations-title">O que percebemos</h2>
+        </div>
+        <ul>
+          <li>Você já reconhece o momento em que a insegurança aparece.</li>
+          <li>Você não parece estar procurando uma solução milagrosa.</li>
+          <li>Você busca algo que caiba na rotina real.</li>
+        </ul>
       </section>
 
-      <section className="q6-result__guidance">
-        <div>
-          <p className="q6-eyebrow"><span /> Principal fricção</p>
-          <h2>{profile.friction}</h2>
-        </div>
-        <blockquote>{profile.orientation}</blockquote>
+      <aside className="q7-result__echo" aria-label="Respostas que sustentam o resultado">
+        <p>Esse resultado veio do que você acabou de contar:</p>
+        <ol>{recognition.map((item, index) => <li key={item}><span>0{index + 1}</span>{item}</li>)}</ol>
+      </aside>
+
+      <section className="q7-result__meaning">
+        <p className="q7-step-label">O que isso significa</p>
+        <p>Quando o cuidado depende apenas da motivação, ele costuma durar pouco. Quando esse cuidado encontra espaço na rotina, fica muito mais fácil manter a constância.</p>
       </section>
 
-      <ProofStage concern={concern} compact />
-      <ResultReasoning recommendation={recommendation} />
+      <ResultProof />
 
-      <section className="q6-result__recommendation" aria-labelledby="q6-result-offer-title">
+      <section className="q7-result__transition">
+        <img src="/product/celuclin-hand.webp" width="1122" height="1402" alt="Mão segurando o frasco de CeluClin" loading="lazy" decoding="async" />
         <div>
-          <p className="q6-eyebrow"><span /> Recomendação</p>
-          <h2 id="q6-result-offer-title">{offer.title} · {offer.badge}</h2>
-          <p>{offer.summary}</p>
+          <p className="q7-step-label">Próximo passo</p>
+          <h2>Pensando exatamente nesse perfil, selecionamos a opção que melhor combina com o que você demonstrou buscar ao longo desta experiência.</h2>
+          <p>{recommendation.reasons[0]}</p>
+          <button className="q7-primary" type="button" onClick={onContinue}>Ver minha sugestão <span aria-hidden="true">→</span></button>
         </div>
-        <img
-          src={recommendation.offerId === "one-month" ? "/offers/celuclin-one.webp" : recommendation.offerId === "three-months" ? "/offers/celuclin-three.webp" : "/offers/celuclin-seven.webp"}
-          width={recommendation.offerId === "seven-months" ? 1200 : recommendation.offerId === "three-months" ? 1000 : 800}
-          height={recommendation.offerId === "seven-months" ? 760 : 700}
-          alt={recommendation.offerId === "one-month" ? "Kit real com um frasco de CeluClin" : recommendation.offerId === "three-months" ? "Kit real com três frascos de CeluClin" : "Kit real com sete frascos de CeluClin"}
-          loading="eager"
-          decoding="async"
-        />
-        <button className="q6-primary" type="button" onClick={onContinue}>Ver preço, benefício e opções</button>
       </section>
     </article>
   );

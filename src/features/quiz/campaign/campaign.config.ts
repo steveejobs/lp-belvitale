@@ -2,7 +2,7 @@ import { checkoutUrls } from "../checkout/checkout.urls";
 import type { QuizPromotion } from "./campaign.types";
 
 export const quizPromotion: QuizPromotion = {
-  id: "celuclin-quiz-v6-checkout-snapshot",
+  id: "celuclin-quiz-v7-checkout-snapshot",
   version: "2026-07-17.1",
   status: "draft",
   startsAt: "2026-07-17T14:40:56.778Z",

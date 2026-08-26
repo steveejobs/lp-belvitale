@@ -11,13 +11,16 @@ interface QuizHeaderProps {
 
 export function QuizHeader({ stageId, answers, canGoBack, onBack, onRestart }: QuizHeaderProps) {
   return (
-    <header className="q6-header" data-stage={stageId}>
-      <div className="q6-header__top">
-        <button className="q6-icon-button" type="button" onClick={onBack} disabled={!canGoBack} aria-label="Voltar à etapa anterior">
+    <header className="q7-header" data-stage={stageId}>
+      <div className="q7-header__top">
+        <button className="q7-icon-button" type="button" onClick={onBack} disabled={!canGoBack} aria-label="Voltar à etapa anterior">
           <span aria-hidden="true">←</span>
         </button>
-        <a className="q6-brand" href="/quiz">BELVITALE <strong>CELUCLIN</strong></a>
-        <button className="q6-restart" type="button" onClick={onRestart}>Reiniciar</button>
+        <a className="q7-brand" href="/quiz" aria-label="Belvitale CeluClin">
+          <img src="/brand/belvitale-wordmark-dark.webp" width="496" height="369" alt="Belvitale" />
+          <span>CeluClin</span>
+        </a>
+        <button className="q7-restart" type="button" onClick={onRestart}>Reiniciar</button>
       </div>
       <ProgressIndicator answers={answers} />
     </header>

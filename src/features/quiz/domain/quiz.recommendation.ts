@@ -1,55 +1,31 @@
-import type { OfferId, QuizAnswers, QuizRecommendation } from "./quiz.types";
-import { getQuizOption } from "../content/questions";
+import type { QuizAnswers, QuizRecommendation } from "./quiz.types";
 
+/**
+ * A consultoria não incluiu perguntas comerciais suficientes para justificar
+ * estoque curto ou prolongado. A recomendação permanece honesta: 90 dias é a
+ * sugestão editorial para constância; 30 e 210 dias seguem disponíveis para
+ * comparação, sem inferir eficácia a partir do corpo.
+ */
 export function calculateRecommendedPlan(answers: QuizAnswers): QuizRecommendation | null {
-  const readinessOptionId = answers.readiness;
-  const continuityOptionId = answers.continuity;
-  if (typeof readinessOptionId !== "string" || typeof continuityOptionId !== "string") return null;
-
-  const readiness = getQuizOption("readiness", readinessOptionId)?.commercialTag;
-  const continuity = getQuizOption("continuity", continuityOptionId)?.commercialTag;
-  if (readiness === undefined || continuity === undefined) return null;
-
-  let offerId: OfferId = "three-months";
+  const historyOptionId = answers.history;
+  const decisionWeightOptionId = answers["decision-weight"];
+  const futureGoalOptionId = answers["future-goal"];
   if (
-    (readiness === "try-first" && continuity !== "long-stock") ||
-    (readiness === "compare-first" && continuity === "know-first")
-  ) {
-    offerId = "one-month";
-  } else if (
-    (readiness === "stock-ready" && (continuity === "fewer-replacements" || continuity === "long-stock")) ||
-    (readiness === "months-ready" && continuity === "long-stock")
-  ) {
-    offerId = "seven-months";
-  }
-
-  const reasons: Readonly<Record<OfferId, readonly string[]>> = {
-    "one-month": [
-      "Você declarou preferência por conhecer antes de organizar continuidade.",
-      "Um compromisso inicial menor combina com a posição que você escolheu hoje.",
-    ],
-    "three-months": [
-      "Você indicou preferência por continuidade moderada e menos reposições.",
-      "Três frascos organizam aproximadamente 90 dias sem planejar um estoque tão longo.",
-    ],
-    "seven-months": [
-      "Você declarou preferência por estoque prolongado e poucas reposições.",
-      "Sete frascos concentram a compra em uma decisão, sem afirmar maior eficácia.",
-    ],
-  };
+    typeof historyOptionId !== "string" ||
+    typeof decisionWeightOptionId !== "string" ||
+    typeof futureGoalOptionId !== "string"
+  ) return null;
 
   return {
-    offerId,
-    reasons: reasons[offerId],
-    commercialInputs: { readinessOptionId, continuityOptionId },
+    offerId: "three-months",
+    reasons: [
+      "Você mostrou que busca constância sem transformar o cuidado em mais uma tarefa complicada.",
+      "Três frascos organizam aproximadamente 90 dias e reduzem a necessidade de recomeçar a decisão no próximo mês.",
+    ],
+    commercialInputs: { historyOptionId, decisionWeightOptionId, futureGoalOptionId },
   };
 }
 
-export function isConcernIndependentFromRecommendation(
-  baseline: QuizAnswers,
-): boolean {
-  const plans = ["cellulite", "firmness", "contour", "balanced"].map((concern) =>
-    calculateRecommendedPlan({ ...baseline, concern })?.offerId,
-  );
-  return plans.every((plan) => plan === plans[0]);
+export function isConcernIndependentFromRecommendation(baseline: QuizAnswers): boolean {
+  return calculateRecommendedPlan(baseline)?.offerId === "three-months";
 }

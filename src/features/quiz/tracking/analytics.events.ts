@@ -39,7 +39,7 @@ export function trackQuizEvent(
     properties: {
       ...properties,
       campaignId: quizPromotion.id,
-      experimentVariant: "reveal-proof-before-offer-v6",
+      experimentVariant: "consultoria-conversa-v7",
       deviceClass: typeof window !== "undefined" && window.matchMedia("(max-width: 47.99rem)").matches ? "mobile" : "desktop",
       utm: attribution(),
     },

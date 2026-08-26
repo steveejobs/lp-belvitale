@@ -186,7 +186,7 @@ function quizPublicationSeo(
       const tags = [
         `<link rel="canonical" href="${quizUrl}" />`,
         '<meta property="og:title" content="Quiz de rotina | Belvitale" />',
-        '<meta property="og:description" content="Sete escolhas e sete momentos narrativos sobre rotina, prova e compromisso, com recomendação comercial transparente." />',
+        '<meta property="og:description" content="Uma conversa em 12 perguntas para entender como a celulite influencia sua rotina e encontrar um caminho de cuidado sem pressão." />',
         '<meta property="og:type" content="website" />',
         `<meta property="og:url" content="${quizUrl}" />`,
       ].join("\n    ");

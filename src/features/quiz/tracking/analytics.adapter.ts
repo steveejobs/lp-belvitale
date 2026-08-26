@@ -11,7 +11,7 @@ export function registerAnalyticsAdapter(adapter: AnalyticsAdapter): () => void 
 
 export function dispatchToAnalyticsAdapters(event: QuizTrackedEvent): void {
   if (typeof window === "undefined") return;
-  window.dispatchEvent(new CustomEvent("belvitale:quiz-v6", { detail: event }));
+  window.dispatchEvent(new CustomEvent("belvitale:quiz-v7", { detail: event }));
   if (window.__BELVITALE_ANALYTICS_CONSENT__ === true) {
     adapters.forEach((adapter) => adapter(event));
   }

@@ -18,23 +18,26 @@ export function NameStage({ initialName, onContinue }: NameStageProps) {
   };
 
   return (
-    <section className="q6-name" aria-labelledby="q6-name-title">
-      <p className="q6-eyebrow"><span /> Antes da primeira cena</p>
-      <h1 id="q6-name-title" ref={titleRef} tabIndex={-1}>Como posso te chamar?</h1>
-      <p>É opcional. Usaremos apenas em quatro momentos desta experiência e nunca enviaremos o nome cru para analytics.</p>
+    <section className="q7-name" aria-labelledby="q7-name-title">
+      <p className="q7-step-label">Antes de começarmos</p>
+      <h1 id="q7-name-title" ref={titleRef} tabIndex={-1}>Como posso te chamar?</h1>
+      <p>É opcional. Se você informar seu nome, a experiência fica mais personalizada.</p>
       <form onSubmit={submit}>
-        <label htmlFor="q6-first-name">Primeiro nome</label>
+        <label htmlFor="q7-first-name">Seu primeiro nome</label>
         <input
-          id="q6-first-name"
+          id="q7-first-name"
           value={name}
           onChange={(event) => setName(event.currentTarget.value.slice(0, 24))}
           inputMode="text"
           autoComplete="given-name"
           maxLength={24}
           placeholder="Ex.: Marina"
+          autoFocus
         />
-        <button className="q6-primary" type="submit">Continuar</button>
-        <button className="q6-secondary" type="button" onClick={() => onContinue("", false)}>Continuar sem informar</button>
+        <button className="q7-primary" type="submit">Continuar <span aria-hidden="true">→</span></button>
+        <button className="q7-text-button" type="button" onClick={() => onContinue("", false)}>
+          Prefiro continuar sem informar
+        </button>
       </form>
     </section>
   );

@@ -1,4 +1,4 @@
-# Manifesto de assets — Quiz CeluClin 6.0
+# Manifesto de assets — Quiz CeluClin 7.0
 
 Inspeção visual concluída em 17/07/2026. Os arquivos abaixo foram abertos pelo conteúdo, não classificados apenas pelo nome.
 
@@ -6,10 +6,10 @@ Inspeção visual concluída em 17/07/2026. Os arquivos abaixo foram abertos pel
 
 | Arquivo | Classe | Dimensão/uso | Status |
 | --- | --- | --- | --- |
-| /product/celuclin-front-01.webp | frasco frontal | abertura mobile/desktop | aprovado |
+| /product/celuclin-front-01.webp | frasco frontal | reserva | aprovado |
 | /product/celuclin-front-02.webp | frasco frontal alternativo | reserva | aprovado |
 | /product/celuclin-angle.webp | frasco em ângulo | antecipação | aprovado |
-| /product/celuclin-hand.webp | produto na mão | lifestyle/prova de escala | aprovado, não usado no fluxo principal |
+| /product/celuclin-hand.webp | produto na mão | transição do resultado para a oferta | aprovado |
 | /product/celuclin-capsules.webp | cápsulas | apoio editorial | aprovado, não preload |
 | /offers/celuclin-one.webp | kit 1 frasco | oferta 30 dias | aprovado |
 | /offers/celuclin-three.webp | kit 3 frascos | oferta 90 dias | aprovado |
@@ -27,8 +27,8 @@ Nenhum frasco SVG, frasco desenhado em CSS ou mockup sintético é renderizado n
 | Arquivo | Classe | Uso | Status |
 | --- | --- | --- | --- |
 | /lifestyle/celuclin-hero.webp | lifestyle com produto | reserva | aprovado |
-| /lifestyle/freedom-01.webp | lifestyle | reserva | aprovado |
-| /lifestyle/routine-01.webp | rotina | interlúdio narrativo | aprovado |
+| /lifestyle/freedom-01.webp | lifestyle | abertura sem antecipar a solução | aprovado |
+| /lifestyle/routine-01.webp | rotina | segundo insight | aprovado |
 
 ## Prova visual
 
@@ -49,9 +49,10 @@ Contrato visual:
 - figura com proporção estável;
 - width e height em 100%, object-fit contain;
 - sem alteração de pele, cor, textura, iluminação ou enquadramento relevante;
-- uma mídia dominante no mobile;
-- swipe, setas de 44 × 44 px, contador e categoria fora da imagem;
-- resultado repete apenas uma prova relevante, não a galeria inteira.
+- trilho horizontal com `scroll-snap` no mobile e grade de três registros no desktop;
+- categoria e identificação do registro fora da imagem;
+- resultado usa três registros autorizados de celulite, com carregamento tardio e aviso de variabilidade;
+- nenhuma legenda atribui cronologia, causalidade, identidade ou duração.
 
 ## Duplicados e inadequados
 

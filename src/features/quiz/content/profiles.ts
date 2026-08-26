@@ -53,14 +53,14 @@ export const quizProfiles: Readonly<Record<NarrativeProfileId, QuizProfileConten
 };
 
 export function deriveRecognitions(answers: QuizAnswers): readonly [string, string, string] {
-  const attempt = typeof answers.attempts === "string" ? getQuizOption("attempts", answers.attempts) : null;
-  const recovery = typeof answers.recovery === "string" ? getQuizOption("recovery", answers.recovery) : null;
-  const proof = typeof answers["proof-preference"] === "string"
-    ? getQuizOption("proof-preference", answers["proof-preference"])
+  const history = typeof answers.history === "string" ? getQuizOption("history", answers.history) : null;
+  const weight = typeof answers["decision-weight"] === "string"
+    ? getQuizOption("decision-weight", answers["decision-weight"])
     : null;
+  const future = typeof answers["future-goal"] === "string" ? getQuizOption("future-goal", answers["future-goal"]) : null;
   return [
-    attempt?.label ?? "Você reconhece o que costuma interromper a continuidade.",
-    recovery?.label ?? "Sua retomada depende de um próximo gesto claro.",
-    proof?.label ?? "Sua confiança cresce com informação compreensível.",
+    history?.label ?? "Você reconhece o que costuma interromper a continuidade.",
+    weight?.label ?? "Sua retomada depende de um próximo gesto claro.",
+    future?.label ?? "Você busca um cuidado que caiba na rotina real.",
   ];
 }

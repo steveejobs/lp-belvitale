@@ -13,13 +13,13 @@ export function QuizShell({ stageId, phase, direction, reducedMotion, children }
   return (
     <main
       id="conteudo-quiz"
-      className="q6-stage"
+      className="q7-stage"
       data-stage={stageId}
       data-phase={phase}
       data-direction={direction}
       data-reduced-motion={reducedMotion}
     >
-      <div className="q6-stage__track">{children}</div>
+      <div className="q7-stage__track">{children}</div>
     </main>
   );
 }

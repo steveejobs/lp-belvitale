@@ -1,76 +1,69 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { quizQuestionMap } from "../content/questions";
 import { calculateRecommendedPlan } from "../domain/quiz.recommendation";
 import { getNextStage, getPreviousStage } from "../domain/quiz.machine";
 import {
   quizQuestionIds,
   quizStageIds,
-  type ConcernId,
   type QuizDirection,
-  type QuizProfileResult,
   type QuizQuestionId,
   type QuizStageId,
 } from "../domain/quiz.types";
-import { quizQuestionMap } from "../content/questions";
 import { quizMotion } from "../motion/motion.tokens";
 import { useQuizSceneTransition } from "../motion/useQuizSceneTransition";
 import { QuizProvider } from "../state/QuizProvider";
 import { useQuiz } from "../state/quiz.context";
 import { trackQuizEvent } from "../tracking/analytics.events";
-import { AnticipationStage } from "./AnticipationStage";
 import { InsightStage } from "./InsightStage";
 import { NameStage } from "./NameStage";
 import { QuestionStage } from "./QuestionStage";
 import { QuizHeader } from "./QuizHeader";
 import { QuizIntro } from "./QuizIntro";
 import { QuizShell } from "./QuizShell";
-import { StoryStage } from "./StoryStage";
 import "../quiz.css";
 
-const loadProofStage = () => import("./ProofStage");
 const loadResultStage = () => import("./ResultStage");
 const loadOfferStage = () => import("./OfferStage");
-
-const ProofStage = lazy(() => loadProofStage().then((module) => ({ default: module.ProofStage })));
 const ResultStage = lazy(() => loadResultStage().then((module) => ({ default: module.ResultStage })));
 const OfferStage = lazy(() => loadOfferStage().then((module) => ({ default: module.OfferStage })));
 
-function concernFromAnswer(value: string | undefined): ConcernId {
-  if (value === "cellulite" || value === "firmness" || value === "contour") return value;
-  return "balanced";
-}
-
-function insightOne(triggerId: string | undefined): readonly [string, string] {
-  if (triggerId === "self-last") {
-    return ["Seu ponto de partida parece ser retomada, não cobrança.", "A cena escolhida fala de voltar a se incluir no dia — não de aumentar pressão."];
-  }
-  if (triggerId === "unexpected-photo") {
-    return ["Seu incômodo aparece de surpresa, antes de existir um plano.", "Por isso, a próxima parte separa reação imediata de uma escolha que consiga continuar."];
-  }
-  return ["O incômodo ficou concreto porque apareceu dentro de uma cena real.", "Isso torna a leitura mais específica do que perguntar apenas se você quer melhorar a rotina."];
-}
-
-function insightTwo(attemptId: string | undefined, proofId: string | undefined): readonly [string, string] {
-  if (attemptId === "research-delayed" || proofId === "composition-use") {
-    return ["Sua escolha parece depender mais de confiança do que de impulso.", "Você pediu informação objetiva; a oferta precisará explicar origem, limites e diferença entre as opções."];
-  }
-  if (attemptId === "routine-tightened") {
-    return ["Quando a rotina falha, o problema parece ser retomada, não começo.", "Seu resultado vai priorizar um ponto de retorno pequeno em vez de uma meta maior."];
-  }
-  return ["Você não precisa abrir todas as decisões ao mesmo tempo.", "Prova, continuidade e compra serão apresentadas em camadas separadas para reduzir confusão."];
-}
+const insights = {
+  "insight-one": {
+    sequence: 1 as const,
+    eyebrow: "Primeira leitura",
+    title: "Até aqui, percebemos uma coisa interessante.",
+    explanation: "Suas respostas mostram que o incômodo não aparece o tempo todo. Ele costuma surgir em momentos específicos. É assim que, quase sem perceber, muitas mulheres começam a deixar a insegurança influenciar pequenas escolhas do dia a dia.",
+    cta: "Continuar",
+    note: "Nenhum diagnóstico milagroso. Nenhuma IA. Apenas uma observação humana.",
+  },
+  "insight-two": {
+    sequence: 2 as const,
+    eyebrow: "Uma mudança de perspectiva",
+    title: "Talvez o problema nunca tenha sido falta de vontade.",
+    explanation: "Até aqui, suas respostas mostram um padrão comum. Você parece saber que gostaria de mudar. O difícil não é decidir. É conseguir manter a decisão quando a rotina volta ao normal.",
+    cta: "Faz sentido",
+    image: {
+      src: "/lifestyle/routine-01.webp",
+      alt: "Mulher servindo água em um copo durante uma rotina cotidiana",
+      caption: "A rotina real é feita de gestos que cabem no dia.",
+    },
+  },
+  "insight-three": {
+    sequence: 3 as const,
+    eyebrow: "Sua leitura está pronta",
+    title: "Sua dificuldade parece estar menos ligada à disciplina do que à forma como você tenta recomeçar.",
+    explanation: "Muitas mulheres acreditam que precisam de mais força de vontade. Mas, na prática, elas precisam de uma rotina simples o bastante para ser mantida até nos dias corridos. É exatamente por isso que algumas estratégias duram poucos dias, enquanto outras conseguem fazer parte da vida.",
+    cta: "Ver meu resultado",
+  },
+} as const;
 
 function QuizJourney() {
   const { state, dispatch, restart } = useQuiz();
   const [direction, setDirection] = useState<QuizDirection>("forward");
   const [confirming, setConfirming] = useState(false);
-  const [outcome, setOutcome] = useState<{ readonly answerKey: string; readonly result: QuizProfileResult | null } | null>(null);
   const advanceTimer = useRef<number | null>(null);
   const transition = useQuizSceneTransition(state.stageId, direction);
-  const concern = concernFromAnswer(state.answers.concern);
   const recommendation = calculateRecommendedPlan(state.answers);
-  const answerKey = quizQuestionIds.map((questionId) => state.answers[questionId] ?? "").join("|");
-  const result = outcome?.answerKey === answerKey ? outcome.result : null;
-  const resultResolved = outcome?.answerKey === answerKey;
 
   const goTo = useCallback((stageId: QuizStageId, nextDirection: QuizDirection = "forward") => {
     if (advanceTimer.current !== null) window.clearTimeout(advanceTimer.current);
@@ -89,24 +82,9 @@ function QuizJourney() {
   }, []);
 
   useEffect(() => {
-    // Carrega cada bloco apenas quando a jornada se aproxima dele. As imagens
-    // da galeria continuam lazy e nao entram no carregamento da abertura.
-    if (state.stageId === "recovery" || state.stageId === "proof-preference") void loadProofStage();
-    if (state.stageId === "readiness" || state.stageId === "continuity") void loadResultStage();
-    if (state.stageId === "anticipation" || state.stageId === "result") void loadOfferStage();
+    if (state.stageId === "future-goal" || state.stageId === "insight-three") void loadResultStage();
+    if (state.stageId === "result") void loadOfferStage();
   }, [state.stageId]);
-
-  useEffect(() => {
-    const complete = quizQuestionIds.every((questionId) => typeof state.answers[questionId] === "string");
-    if (!complete) return;
-
-    let active = true;
-    void import("../domain/quiz.scoring").then(({ calculateQuizResult }) => {
-      if (!active) return;
-      setOutcome({ answerKey, result: calculateQuizResult(state.answers) });
-    });
-    return () => { active = false; };
-  }, [answerKey, state.answers]);
 
   useEffect(() => {
     trackQuizEvent("quiz_opened", { sessionId: state.sessionId }, "opened");
@@ -122,29 +100,25 @@ function QuizJourney() {
     trackQuizEvent("quiz_stage_viewed", {
       sessionId: state.sessionId,
       stageId: transition.displayedStageId,
-      concernId: concern,
-      ...(result === null ? {} : { profileId: result.id }),
       ...(recommendation === null ? {} : { recommendedOfferId: recommendation.offerId }),
     }, transition.displayedStageId);
-    if (transition.displayedStageId === "proof") {
-      trackQuizEvent("quiz_proof_viewed", { sessionId: state.sessionId, stageId: "proof", concernId: concern }, "proof");
+    if (transition.displayedStageId.startsWith("insight-")) {
+      trackQuizEvent("quiz_insight_viewed", {
+        sessionId: state.sessionId,
+        stageId: transition.displayedStageId,
+      }, transition.displayedStageId);
     }
-    if (transition.displayedStageId === "insight-one" || transition.displayedStageId === "insight-two") {
-      trackQuizEvent("quiz_insight_viewed", { sessionId: state.sessionId, stageId: transition.displayedStageId }, transition.displayedStageId);
-    }
-  }, [concern, recommendation, result, state.sessionId, transition.displayedStageId, transition.phase]);
+  }, [recommendation, state.sessionId, transition.displayedStageId, transition.phase]);
 
   useEffect(() => {
-    let redirectTimer: number | undefined;
-    if (state.stageId === "result" && resultResolved && (result === null || recommendation === null)) {
-      redirectTimer = window.setTimeout(() => goTo("opening", "backward"), 0);
-    } else if ((state.stageId === "result" || state.stageId === "offer") && window.location.pathname !== "/quiz/resultado") {
+    if ((state.stageId === "result" || state.stageId === "offer") && recommendation === null) {
+      const timer = window.setTimeout(() => goTo("opening", "backward"), 0);
+      return () => window.clearTimeout(timer);
+    }
+    if ((state.stageId === "result" || state.stageId === "offer") && window.location.pathname !== "/quiz/resultado") {
       window.history.replaceState({}, "", "/quiz/resultado" + window.location.search);
     }
-    return () => {
-      if (redirectTimer !== undefined) window.clearTimeout(redirectTimer);
-    };
-  }, [goTo, recommendation, result, resultResolved, state.stageId]);
+  }, [goTo, recommendation, state.stageId]);
 
   const answer = (questionId: QuizQuestionId, optionId: string) => {
     if (confirming) return;
@@ -157,18 +131,7 @@ function QuizJourney() {
       questionId,
       optionId,
     });
-    const question = quizQuestionMap[questionId];
-    if (question.autoAdvance) {
-      advanceTimer.current = window.setTimeout(() => goTo(getNextStage(questionId)), quizMotion.autoAdvanceDelayMs);
-    } else {
-      window.setTimeout(() => setConfirming(false), quizMotion.selectionMs);
-    }
-  };
-
-  const back = () => {
-    if (state.stageId === "opening") return;
-    trackQuizEvent("quiz_back_clicked", { sessionId: state.sessionId, stageId: state.stageId });
-    goTo(getPreviousStage(state.stageId), "backward");
+    advanceTimer.current = window.setTimeout(() => goTo(getNextStage(questionId)), quizMotion.autoAdvanceDelayMs);
   };
 
   const start = () => {
@@ -189,15 +152,14 @@ function QuizJourney() {
           stageId: "name",
           nameProvided: provided,
         }, "name");
-        goTo("trigger");
+        goTo("perception");
       }} />;
     }
     if (quizQuestionIds.some((id) => id === stageId)) {
       const questionId = stageId as QuizQuestionId;
-      const question = quizQuestionMap[questionId];
       return (
         <QuestionStage
-          question={question}
+          question={quizQuestionMap[questionId]}
           selectedOptionId={state.answers[questionId]}
           isConfirming={confirming}
           onSelect={(optionId) => answer(questionId, optionId)}
@@ -205,60 +167,49 @@ function QuizJourney() {
         />
       );
     }
-    if (stageId === "insight-one") {
-      const copy = insightOne(state.answers.trigger);
-      return <InsightStage sequence={1} name={state.firstName} insight={copy[0]} explanation={copy[1]} onContinue={() => goTo("impact")} />;
-    }
-    if (stageId === "story") return <StoryStage onContinue={() => goTo("recovery")} />;
-    if (stageId === "proof") return <ProofStage concern={concern} onContinue={() => goTo("insight-two")} />;
-    if (stageId === "insight-two") {
-      const copy = insightTwo(state.answers.attempts, state.answers["proof-preference"]);
-      return <InsightStage sequence={2} name="" insight={copy[0]} explanation={copy[1]} onContinue={() => goTo("readiness")} />;
-    }
-    if (stageId === "anticipation") {
-      return <AnticipationStage name={state.firstName} onReveal={() => {
-        const now = new Date().toISOString();
-        dispatch({ type: "COMPLETE", now });
-        setDirection("forward");
-        window.history.pushState({}, "", "/quiz/resultado" + window.location.search);
-        trackQuizEvent("quiz_completed", {
-          sessionId: state.sessionId,
-          concernId: concern,
-          ...(result === null ? {} : { profileId: result.id }),
-          ...(recommendation === null ? {} : { recommendedOfferId: recommendation.offerId }),
-        }, "completed");
+    if (stageId === "insight-one" || stageId === "insight-two" || stageId === "insight-three") {
+      const insight = insights[stageId];
+      return <InsightStage {...insight} onContinue={() => {
+        if (stageId === "insight-three") {
+          const now = new Date().toISOString();
+          dispatch({ type: "COMPLETE", now });
+          trackQuizEvent("quiz_completed", {
+            sessionId: state.sessionId,
+            ...(recommendation === null ? {} : { recommendedOfferId: recommendation.offerId }),
+          }, "completed");
+          return;
+        }
+        goTo(getNextStage(stageId));
       }} />;
     }
-    if (stageId === "result" && result !== null && recommendation !== null) {
-      return <ResultStage name={state.firstName} answers={state.answers} concern={concern} result={result} recommendation={recommendation} onContinue={() => {
+    if (stageId === "result" && recommendation !== null) {
+      return <ResultStage name={state.firstName} answers={state.answers} recommendation={recommendation} onContinue={() => {
         trackQuizEvent("quiz_profile_revealed", {
           sessionId: state.sessionId,
           stageId: "result",
-          profileId: result.id,
-          concernId: concern,
           recommendedOfferId: recommendation.offerId,
-        }, result.id);
+        }, "routine-real");
         goTo("offer");
       }} />;
     }
-    if (stageId === "offer" && result !== null && recommendation !== null) {
+    if (stageId === "offer" && recommendation !== null) {
       const selectedOfferId = state.selectedOfferId ?? recommendation.offerId;
-      return <OfferStage sessionId={state.sessionId} profileId={result.id} recommendation={recommendation} selectedOfferId={selectedOfferId} onSelectOffer={(offerId) => dispatch({ type: "SELECT_OFFER", offerId })} />;
+      return <OfferStage sessionId={state.sessionId} recommendation={recommendation} selectedOfferId={selectedOfferId} onSelectOffer={(offerId) => dispatch({ type: "SELECT_OFFER", offerId })} />;
     }
-    if ((stageId === "result" || stageId === "offer") && !resultResolved) {
-      return <div className="q6-stage-loading" role="status">Preparando sua leituraâ€¦</div>;
-    }
-    return <QuizIntro onStart={start} />;
+    return <div className="q7-loading" role="status">Preparando sua leitura…</div>;
   })();
 
   return (
-    <div className="quiz-route q6" data-version="6.0.0">
-      <a className="q6-skip" href="#conteudo-quiz">Ir para o conteúdo do quiz</a>
+    <div className="quiz-route q7" data-version="7.0.0">
+      <a className="q7-skip" href="#conteudo-quiz">Ir para o conteúdo do quiz</a>
       <QuizHeader
         stageId={state.stageId}
         answers={state.answers}
         canGoBack={state.stageId !== "opening"}
-        onBack={back}
+        onBack={() => {
+          trackQuizEvent("quiz_back_clicked", { sessionId: state.sessionId, stageId: state.stageId });
+          goTo(getPreviousStage(state.stageId), "backward");
+        }}
         onRestart={() => {
           trackQuizEvent("quiz_restarted", { sessionId: state.sessionId, stageId: state.stageId });
           restart();
@@ -270,12 +221,12 @@ function QuizJourney() {
         direction={transition.direction}
         reducedMotion={transition.reducedMotion}
       >
-        <Suspense fallback={<div className="q6-stage-loading" role="status">Preparando esta parteâ€¦</div>}>
+        <Suspense fallback={<div className="q7-loading" role="status">Preparando esta parte…</div>}>
           <div key={transition.displayedStageId}>{content}</div>
         </Suspense>
       </QuizShell>
-      <div className="q6-announcer sr-only" aria-live="polite">
-        Momento {quizStageIds.indexOf(transition.displayedStageId) + 1} de 17.
+      <div className="q7-announcer sr-only" aria-live="polite">
+        Etapa {quizStageIds.indexOf(transition.displayedStageId) + 1} de {quizStageIds.length}.
       </div>
     </div>
   );

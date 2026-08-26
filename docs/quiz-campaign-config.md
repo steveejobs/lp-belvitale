@@ -1,4 +1,4 @@
-# Campanha e precos — Quiz CeluClin 6.0
+# Campanha e preços — Quiz CeluClin 7.0
 
 ## Estado da campanha
 
@@ -6,7 +6,7 @@ Fonte unica: `src/features/quiz/campaign/campaign.config.ts`.
 
 | Campo | Valor auditado |
 | --- | --- |
-| campaignId | celuclin-quiz-v6-checkout-snapshot |
+| campaignId | celuclin-quiz-v7-checkout-snapshot |
 | versao | 2026-07-17.1 |
 | status | draft |
 | snapshot dos checkouts | 17/07/2026 14:40:56 UTC |
@@ -25,9 +25,9 @@ A campanha permanece em rascunho. A interface mostra apenas os precos que estava
 
 Os calculos ficam em `pricing/pricing.calculate.ts`, usam centavos inteiros e sao testados fora da camada visual. URLs ficam em `checkout/checkout.urls.ts`. A apresentacao nunca recalcula nem inventa valor.
 
-## Recompensa ativa nesta versao
+## Recompensa ativa nesta versão
 
-A recompensa visivel e um roteiro personalizado de retomada de sete dias. Ela e um beneficio de conteudo, nao altera preco e nao simula sorte. Por isso o fluxo usa reveal, e nao roleta.
+Não existe recompensa visível nesta versão. A consultoria pede uma transição direta entre resultado e oferta; remover o reveal reduz atrito e evita custo de interface sem benefício comercial validado.
 
 O motor comercial independente ja esta preparado para uma campanha futura e persiste:
 
@@ -54,4 +54,3 @@ Antes de mudar o status da campanha para active:
 6. publicar somente depois do gate de preview.
 
 Sem essas condicoes, o reward engine retorna `null` e o CTA de cupom nao e montado.
-

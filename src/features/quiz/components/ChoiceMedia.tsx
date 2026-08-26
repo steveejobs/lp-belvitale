@@ -7,5 +7,5 @@ export function ChoiceMedia(props: {
   readonly subdued: boolean;
   readonly onSelect: () => void;
 }) {
-  return <ChoiceCard {...props} presentation="media" />;
+  return <ChoiceCard {...props} index={0} presentation="media" />;
 }

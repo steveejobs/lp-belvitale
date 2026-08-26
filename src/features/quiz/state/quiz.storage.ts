@@ -1,7 +1,7 @@
 import { parseQuizSession } from "../domain/quiz.schema";
 import { QUIZ_VERSION, type QuizSessionState } from "../domain/quiz.types";
 
-export const quizStorageKey = "belvitale.quiz.v6";
+export const quizStorageKey = "belvitale.quiz.v7";
 export const quizSessionDurationMs = 24 * 60 * 60 * 1000;
 
 function sessionId(): string {

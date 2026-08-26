@@ -18,11 +18,12 @@ const dimensions: readonly NarrativeDimension[] = [
 ];
 
 const narrativeQuestionIds = [
-  "trigger",
-  "impact",
-  "attempts",
-  "recovery",
-  "proof-preference",
+  "first-thought",
+  "deepest-impact",
+  "history",
+  "dropoff",
+  "decision-weight",
+  "future-goal",
 ] as const;
 
 function clamp(value: number): number {

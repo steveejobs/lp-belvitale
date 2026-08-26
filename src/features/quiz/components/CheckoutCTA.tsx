@@ -21,10 +21,10 @@ export function CheckoutCTA({ offer, rewardId, onClick, className = "" }: Checko
       })
     : undefined;
   return valid && href !== undefined ? (
-    <a className={"q6-primary q6-checkout " + className} href={href} onClick={onClick}>
+    <a className={"q7-primary q7-checkout " + className} href={href} onClick={onClick}>
       {quizOffers[offer.id].cta} <span aria-hidden="true">→</span>
     </a>
   ) : (
-    <button className={"q6-primary q6-checkout " + className} type="button" disabled>Checkout indisponível</button>
+    <button className={"q7-primary q7-checkout " + className} type="button" disabled>Checkout indisponível</button>
   );
 }

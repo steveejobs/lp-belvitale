@@ -1,21 +1,23 @@
-export const QUIZ_VERSION = "6.0.0" as const;
+export const QUIZ_VERSION = "7.0.0" as const;
 
 export const quizStageIds = [
   "opening",
   "name",
-  "trigger",
-  "concern",
+  "perception",
+  "first-thought",
+  "situation-weight",
   "insight-one",
-  "impact",
-  "attempts",
-  "story",
-  "recovery",
-  "proof-preference",
-  "proof",
+  "reaction",
+  "avoidance",
+  "deepest-impact",
+  "restart-trigger",
   "insight-two",
-  "readiness",
-  "continuity",
-  "anticipation",
+  "history",
+  "dropoff",
+  "decision-weight",
+  "future-scene",
+  "future-goal",
+  "insight-three",
   "result",
   "offer",
 ] as const;
@@ -23,14 +25,18 @@ export const quizStageIds = [
 export type QuizStageId = (typeof quizStageIds)[number];
 
 export const quizQuestionIds = [
-  "trigger",
-  "concern",
-  "impact",
-  "attempts",
-  "recovery",
-  "proof-preference",
-  "readiness",
-  "continuity",
+  "perception",
+  "first-thought",
+  "situation-weight",
+  "reaction",
+  "avoidance",
+  "deepest-impact",
+  "restart-trigger",
+  "history",
+  "dropoff",
+  "decision-weight",
+  "future-scene",
+  "future-goal",
 ] as const;
 
 export type QuizQuestionId = (typeof quizQuestionIds)[number];
@@ -42,13 +48,7 @@ export type NarrativeProfileId =
   | "proof-led"
   | "continuity-minded";
 
-export type QuestionPresentation =
-  | "scenario"
-  | "media"
-  | "binary"
-  | "sentence"
-  | "scale"
-  | "comparison";
+export type QuestionPresentation = "scenario" | "sentence" | "compact" | "media";
 
 export type NarrativeDimension =
   | "actionBias"
@@ -62,24 +62,15 @@ export interface QuizOption {
   readonly label: string;
   readonly detail?: string;
   readonly shortLabel?: string;
-  readonly concern?: ConcernId;
   readonly narrative?: Readonly<Partial<Record<NarrativeDimension, number>>>;
-  readonly commercialTag?:
-    | "try-first"
-    | "months-ready"
-    | "stock-ready"
-    | "compare-first"
-    | "know-first"
-    | "moderate-continuity"
-    | "fewer-replacements"
-    | "long-stock";
 }
 
 export interface QuizQuestion {
   readonly id: QuizQuestionId;
+  readonly block: "Identificação" | "Rotina" | "Histórico" | "Futuro";
   readonly eyebrow: string;
   readonly prompt: string;
-  readonly hint: string;
+  readonly hint?: string;
   readonly presentation: QuestionPresentation;
   readonly autoAdvance: boolean;
   readonly options: readonly QuizOption[];
@@ -98,8 +89,9 @@ export interface QuizRecommendation {
   readonly offerId: OfferId;
   readonly reasons: readonly string[];
   readonly commercialInputs: Readonly<{
-    readinessOptionId: string;
-    continuityOptionId: string;
+    historyOptionId: string;
+    decisionWeightOptionId: string;
+    futureGoalOptionId: string;
   }>;
 }
 
