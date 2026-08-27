@@ -101,6 +101,19 @@ export const campaignAssets = {
       "Uso visual autorizado pelo proprietário para a homepage em 15/07/2026.",
     dominantColor: "#EDE2D9",
   },
+  lifestyleConfidence: {
+    id: "lifestyle-confidence",
+    kind: "lifestyle",
+    src: "/lifestyle/confidence-hero.webp",
+    mobileSrc: "/lifestyle/confidence-hero-640.webp",
+    width: 992,
+    height: 1056,
+    alt: "Cena editorial ilustrativa de uma mulher adulta sentada, segurando um frasco CeluClin.",
+    status: "owner-authorized",
+    productionNote:
+      "Imagem enviada e autorizada pelo proprietário para a reformulação da homepage em 27/08/2026.",
+    dominantColor: "#4A3934",
+  },
   lifestyleRoutine: {
     id: "lifestyle-routine",
     kind: "lifestyle",

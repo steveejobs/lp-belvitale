@@ -86,7 +86,7 @@ test("home reduz culpa e encerra com liberdade sem inventar história", async ({
   await page.goto("/");
   await expect(
     page.getByRole("heading", {
-      name: "Celulite não mede disciplina, cuidado ou valor.",
+      name: "Seu corpo não falhou. E culpa nunca foi um bom plano de cuidado.",
     }),
   ).toBeVisible();
   await expect(page.locator(".skin-context")).toContainText(
@@ -94,7 +94,7 @@ test("home reduz culpa e encerra com liberdade sem inventar história", async ({
   );
   await expect(
     page.getByRole("heading", {
-      name: /Sua pele não precisa ser perfeita/,
+      name: /Talvez o que você queira não seja perfeição/,
     }),
   ).toBeVisible();
   await expect(page.locator("body")).not.toContainText(

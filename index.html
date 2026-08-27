@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#fffaf8" />
-    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" href="/favicon.ico?v=2" sizes="16x16 32x32 48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
     <link
       rel="preload"
       href="/node_modules/@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2"
@@ -15,6 +15,14 @@
       type="font/woff2"
       crossorigin
     />
+    <link
+      rel="preload"
+      href="/node_modules/@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="preload" as="image" href="/lifestyle/confidence-hero-640.webp" media="(max-width: 47.99rem)" />
     <meta name="robots" content="noindex, nofollow" />
     <meta
       name="description"
@@ -25,7 +33,7 @@
     <meta property="og:site_name" content="Belvitale" />
     <meta
       property="og:title"
-      content="A celulite não precisa decidir o que você veste. | Belvitale"
+      content="Quantas vezes a sua pele escolheu a roupa antes de você? | Belvitale"
     />
     <meta
       property="og:description"
@@ -43,6 +51,13 @@
         font-display: swap;
         src: url("/node_modules/@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2") format("woff2-variations");
       }
+      @font-face {
+        font-family: "Fraunces Variable";
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url("/node_modules/@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2") format("woff2-variations");
+      }
       * { box-sizing: border-box; }
       html { min-width: 320px; background: #fffaf8; }
       body { min-width: 320px; margin: 0; color: #171216; background: #fffaf8; font-family: "Figtree Variable", Arial, sans-serif; }
@@ -51,19 +66,19 @@
       .bootstrap__logo { width: 7.5rem; height: 2rem; display: grid; place-items: center; overflow: hidden; }
       .bootstrap__logo img { width: 8rem; height: auto; }
       .bootstrap__header a:last-child { min-height: 2.75rem; display: inline-flex; align-items: center; color: inherit; font-size: .85rem; font-weight: 750; text-decoration: none; }
-      .bootstrap__hero { width: min(calc(100% - 2rem), 82rem); min-height: calc(100svh - 4.25rem); margin-inline: auto; padding: 1rem 0 1.5rem; display: grid; grid-template-areas: "visual" "copy"; align-content: start; gap: .9rem; }
+      .bootstrap__hero { width: min(calc(100% - 2rem), 82rem); min-height: calc(100svh - 4.25rem); margin-inline: auto; padding: 2.5rem 0 3.5rem; display: grid; grid-template-areas: "copy" "visual"; align-content: start; gap: 1.75rem; }
       .bootstrap__copy { grid-area: copy; padding: .6rem 0 0; }
       .bootstrap__eyebrow { margin: 0; color: #a70b58; font-size: .72rem; font-weight: 750; text-transform: uppercase; }
-      .bootstrap h1 { max-width: 12ch; margin: .85rem 0 0; font-size: clamp(2.8rem, 12vw, 3.8rem); font-weight: 620; line-height: .98; }
+      .bootstrap h1 { max-width: 12.5ch; margin: .85rem 0 0; font-family: "Fraunces Variable", Georgia, serif; font-size: clamp(3rem, 11.5vw, 3.8rem); font-weight: 470; letter-spacing: -.065em; line-height: .92; }
       .bootstrap h1 em { display: block; color: #b40860; font-style: normal; }
       .bootstrap__lead { max-width: 34rem; margin: 1rem 0 0; color: #62585e; font-size: 1rem; line-height: 1.55; }
       .bootstrap__actions { display: flex; margin-top: 1.15rem; flex-wrap: wrap; gap: .625rem; }
       .bootstrap__actions a { min-height: 3.25rem; display: inline-flex; padding: .75rem 1rem; align-items: center; justify-content: center; border: 1px solid #171216; border-radius: 4px; color: #171216; font-size: .9rem; font-weight: 750; text-decoration: none; }
       .bootstrap__actions a:first-child { color: #fff; background: #171216; }
       .bootstrap__facts { margin: 1rem 0 0; font-size: .8rem; font-weight: 700; }
-      .bootstrap__visual { grid-area: visual; height: clamp(16.5rem, 70vw, 18rem); overflow: hidden; border-radius: 6px; background: #f3e4e7; }
+      .bootstrap__visual { grid-area: visual; height: clamp(19rem, 84vw, 27rem); overflow: hidden; border-radius: 3.5rem 3.5rem 1.75rem 1.75rem; background: #5b4c47; }
       .bootstrap__visual picture, .bootstrap__visual img { width: 100%; height: 100%; display: block; }
-      .bootstrap__visual img { object-fit: contain; object-position: center 53%; }
+      .bootstrap__visual img { object-fit: cover; object-position: center 42%; }
       @media (min-width: 56rem) {
         .bootstrap__header, .bootstrap__hero { width: min(calc(100% - 5rem), 82rem); }
         .bootstrap__hero { grid-template-areas: "copy visual"; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 4rem; padding-block: 1.5rem; }
@@ -86,19 +101,19 @@
         <main>
           <section class="bootstrap__hero" id="inicio">
             <div class="bootstrap__copy">
-              <p class="bootstrap__eyebrow">Belvitale · suplemento alimentar em cápsulas</p>
-              <h1>A celulite não precisa <em>decidir o que você veste.</em></h1>
-              <p class="bootstrap__lead">CeluClin é um suplemento alimentar em cápsulas para uma rotina simples: duas ao dia, com composição e rótulo à vista.</p>
+              <p class="bootstrap__eyebrow">Para mulheres cansadas de se esconder</p>
+              <h1>Quantas vezes a sua pele <em>escolheu a roupa antes de você?</em></h1>
+              <p class="bootstrap__lead">CeluClin entra na rotina como um gesto de cuidado possível: duas cápsulas ao dia, fórmula e rótulo à vista — sem milagre, sem segredo.</p>
               <div class="bootstrap__actions">
-                <a href="#ofertas">Escolher meu CeluClin</a>
+                <a href="#ofertas">Quero escolher por mim</a>
                 <a href="#resultados">Ver resultados reais</a>
               </div>
               <p class="bootstrap__facts">60 cápsulas · 2 ao dia · 30 dias</p>
             </div>
             <div class="bootstrap__visual">
               <picture>
-                <source media="(max-width: 47.99rem)" type="image/webp" srcset="/product/celuclin-front-02-hero-mobile.webp" />
-                <img src="/product/celuclin-front-02.webp" width="1122" height="1402" alt="Frasco CeluClin em vista frontal." fetchpriority="high" />
+                <source media="(max-width: 47.99rem)" type="image/webp" srcset="/lifestyle/confidence-hero-640.webp" />
+                <img src="/lifestyle/confidence-hero.webp" width="992" height="1056" alt="Cena editorial ilustrativa de uma mulher adulta sentada, segurando um frasco CeluClin." fetchpriority="high" />
               </picture>
             </div>
           </section>

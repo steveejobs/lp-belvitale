@@ -15,7 +15,9 @@ export const quizPromotion: QuizPromotion = {
       campaignPrice: 89.9,
       quantity: 1,
       approximateDays: 30,
-      imageSrc: "/offers/celuclin-one.webp",
+      imageSrc: "/offers/celuclin-one-editorial.webp",
+      imageWidth: 683,
+      imageHeight: 740,
     },
     "three-months": {
       id: "three-months",
@@ -24,7 +26,9 @@ export const quizPromotion: QuizPromotion = {
       campaignPrice: 169.9,
       quantity: 3,
       approximateDays: 90,
-      imageSrc: "/offers/celuclin-three.webp",
+      imageSrc: "/offers/celuclin-three-editorial.webp",
+      imageWidth: 686,
+      imageHeight: 778,
     },
     "seven-months": {
       id: "seven-months",
@@ -33,7 +37,9 @@ export const quizPromotion: QuizPromotion = {
       campaignPrice: 597,
       quantity: 7,
       approximateDays: 210,
-      imageSrc: "/offers/celuclin-seven.webp",
+      imageSrc: "/offers/celuclin-seven-editorial.webp",
+      imageWidth: 720,
+      imageHeight: 717,
     },
   },
   // Nenhum código foi aprovado ou validado no checkout. A lista vazia impede

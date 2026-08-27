@@ -260,6 +260,7 @@ test("CTAs preservam somente UTMs permitidas", async ({ page }) => {
   await page.goto(
     "/?utm_source=instagram&utm_medium=social&utm_campaign=julho&utm_content=video&utm_term=celuclin&fbclid=remover&foo=bar",
   );
+  await page.locator("#ofertas").scrollIntoViewIfNeeded();
   const checkoutLinks = page.locator("#ofertas .offer-card__cta");
   await expect(checkoutLinks).toHaveCount(3);
   const hrefs = await checkoutLinks.evaluateAll((links) =>
@@ -285,7 +286,10 @@ test("CTA fixo mobile surge após o hero e some ao chegar nas ofertas", async ({
   await page.goto("/");
   const sticky = page.locator(".mobile-offer-cta");
   await expect(sticky).toHaveAttribute("data-visible", "false");
-  await page.evaluate(() => scrollTo({ top: 950, behavior: "instant" }));
+  const heroEnd = await page.locator(".campaign-hero").evaluate(
+    (element) => element.getBoundingClientRect().bottom + window.scrollY,
+  );
+  await page.evaluate((top) => scrollTo({ top, behavior: "instant" }), heroEnd + 120);
   await expect(sticky).toHaveAttribute("data-visible", "true");
   const box = await sticky.boundingBox();
   expect(box?.height).toBeGreaterThanOrEqual(48);

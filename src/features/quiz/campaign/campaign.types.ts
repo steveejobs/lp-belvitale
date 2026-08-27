@@ -10,6 +10,8 @@ export interface PromotionOffer {
   readonly quantity: number;
   readonly approximateDays: number;
   readonly imageSrc: string;
+  readonly imageWidth: number;
+  readonly imageHeight: number;
 }
 
 export interface QuizReward {

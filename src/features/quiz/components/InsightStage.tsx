@@ -7,16 +7,18 @@ interface InsightStageProps {
   readonly explanation: string;
   readonly cta: string;
   readonly note?: string;
+  readonly signals: readonly string[];
   readonly image?: {
     readonly src: string;
-    readonly srcSet?: string;
     readonly alt: string;
     readonly caption: string;
+    readonly width: number;
+    readonly height: number;
   };
   readonly onContinue: () => void;
 }
 
-export function InsightStage({ sequence, eyebrow, title, explanation, cta, note, image, onContinue }: InsightStageProps) {
+export function InsightStage({ sequence, eyebrow, title, explanation, cta, note, signals, image, onContinue }: InsightStageProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => { titleRef.current?.focus(); }, [sequence]);
 
@@ -29,15 +31,17 @@ export function InsightStage({ sequence, eyebrow, title, explanation, cta, note,
           {title}
         </h1>
         <p>{explanation}</p>
+        <ul className="q7-insight__signals" aria-label="Respostas que sustentam esta leitura">
+          {signals.map((signal) => <li key={signal}>{signal}</li>)}
+        </ul>
         {note === undefined ? null : <p className="q7-insight__note">{note}</p>}
       </div>
       {image === undefined ? null : (
         <figure className="q7-insight__visual">
           <img
             src={image.src}
-            {...(image.srcSet === undefined ? {} : { srcSet: image.srcSet, sizes: "(min-width: 768px) 38vw, 100vw" })}
-            width="1122"
-            height="1402"
+            width={image.width}
+            height={image.height}
             alt={image.alt}
             loading="lazy"
             decoding="async"

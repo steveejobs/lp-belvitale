@@ -16,10 +16,10 @@ export function OfferRecommendation({ offer, recommendation, onCheckout }: Offer
     <section className="q7-offer-main" aria-labelledby="q7-offer-main-title">
       <div className="q7-offer-main__media">
         <span>{content.badge}</span>
-        <img src={offer.imageSrc} width={offer.id === "seven-months" ? 1200 : offer.id === "three-months" ? 1000 : 800} height={offer.id === "seven-months" ? 760 : 700} alt={"Kit real de CeluClin com " + String(offer.quantity) + (offer.quantity === 1 ? " frasco" : " frascos")} />
+        <img src={offer.imageSrc} width={offer.imageWidth} height={offer.imageHeight} alt={"Kit de CeluClin com " + String(offer.quantity) + (offer.quantity === 1 ? " frasco" : " frascos")} />
       </div>
       <div className="q7-offer-main__copy">
-        <p className="q7-step-label">Opção selecionada</p>
+        <p className="q7-step-label">Seu caminho selecionado</p>
         <h2 id="q7-offer-main-title">{content.title} · {offer.quantity} {offer.quantity === 1 ? "frasco" : "frascos"}</h2>
         <p>{content.summary}</p>
         <dl className="q7-offer-facts" aria-label="Conteúdo e duração aproximada da opção">
@@ -28,7 +28,10 @@ export function OfferRecommendation({ offer, recommendation, onCheckout }: Offer
           <div><dt>≈ {offer.approximateDays}</dt><dd>dias*</dd></div>
         </dl>
         <small className="q7-offer-facts__note">*Considerando 2 cápsulas ao dia, conforme o rótulo.</small>
-        <ul>{recommendation.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
+        <div className="q7-offer-main__reasoning">
+          <strong>Por que isso conversa com o seu resultado</strong>
+          <ul>{recommendation.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
+        </div>
         <PriceStack offer={offer} />
         <CheckoutCTA offer={offer} onClick={onCheckout} />
       </div>

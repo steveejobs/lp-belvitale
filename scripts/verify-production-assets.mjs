@@ -102,15 +102,15 @@ for (const forbiddenReference of [
 }
 
 for (const requiredCopy of [
-  "A celulite não precisa",
-  "decidir o que você veste",
-  "Celulite não mede disciplina",
-  "Frasco real. Informação à vista",
-  "Resultados reais, para observar",
+  "Quantas vezes a sua pele",
+  "escolheu a roupa antes de você",
+  "Seu corpo não falhou",
+  "Um cuidado honesto começa",
+  "Não pedimos fé em promessa",
   "Resultados reais autorizados",
   "Confira o rótulo original",
   "Dois por dia",
-  "Sua pele não precisa ser perfeita",
+  "Talvez o que você queira não seja perfeição",
   "61.493.515/0001-65",
   "(63) 99108-1785",
 ]) {
@@ -123,8 +123,8 @@ for (const requiredCopy of [
 
 const mainHtml = await fs.readFile(path.join(dist, "index.html"), "utf8");
 assert.equal(mainHtml.includes("noindex, nofollow"), true);
-assert.equal(mainHtml.includes("A celulite não precisa"), true);
-assert.equal(mainHtml.includes("Escolher meu CeluClin"), true);
+assert.equal(mainHtml.includes("Quantas vezes a sua pele"), true);
+assert.equal(mainHtml.includes("Quero escolher por mim"), true);
 assert.equal(mainHtml.includes("60 cápsulas · 2 ao dia · 30 dias"), true);
 assert.equal(mainHtml.includes("pay.yampi.com.br"), false);
 assert.equal(mainHtml.includes("example.test"), false);
@@ -197,7 +197,7 @@ try {
   assert.equal(await page.locator('a[href*="pay.yampi.com.br"]').count(), 0);
   assert.equal(await page.locator('link[rel="canonical"]').count(), 0);
   assert.equal(await page.locator('meta[name="robots"]').getAttribute("content"), "noindex, nofollow");
-  assert.match(await page.locator("h1").innerText(), /A celulite não precisa/);
+  assert.match(await page.locator("h1").innerText(), /Quantas vezes a sua pele/);
   assert.equal(
     await page.locator('.campaign-hero__visual[data-media-status="approved"]').count(),
     1,

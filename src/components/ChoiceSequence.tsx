@@ -11,8 +11,8 @@ export function ChoiceSequence() {
       <Reveal className="choice-sequence__heading section-shell" effect="slide-right" stagger>
         <p className="eyebrow">{emotional.eyebrow}</p>
         <h2 id="choice-title">
-          Uma roupa não deveria
-          <em>virar uma negociação inteira.</em>
+          {emotional.titleLead}
+          <em>{emotional.titleAccent}</em>
         </h2>
       </Reveal>
 
@@ -28,7 +28,7 @@ export function ChoiceSequence() {
             loading="lazy"
             decoding="async"
           />
-          <figcaption>{emotional.title}</figcaption>
+          <figcaption>{emotional.caption}</figcaption>
         </figure>
 
         <div className="choice-sequence__story">
@@ -43,7 +43,7 @@ export function ChoiceSequence() {
             ))}
           </ul>
           <p className="choice-sequence__aside">
-            Escolher por vontade, não por insegurança.
+            {emotional.release}
           </p>
         </div>
       </Reveal>

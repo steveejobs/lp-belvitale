@@ -1,46 +1,51 @@
 export const homeContent = {
   hero: {
-    eyebrow: "Belvitale · suplemento alimentar em cápsulas",
-    titleLead: "A celulite não precisa",
-    titleAccent: "decidir o que você veste.",
+    eyebrow: "Para mulheres cansadas de se esconder",
+    titleLead: "Quantas vezes a sua pele",
+    titleAccent: "escolheu a roupa antes de você?",
     lead:
-      "CeluClin é um suplemento alimentar em cápsulas para uma rotina simples: duas ao dia, com composição e rótulo à vista.",
-    primaryAction: "Escolher meu CeluClin",
+      "CeluClin entra na rotina como um gesto de cuidado possível: duas cápsulas ao dia, fórmula e rótulo à vista — sem milagre, sem segredo.",
+    primaryAction: "Quero escolher por mim",
     secondaryAction: "Ver resultados reais",
     meta: "60 cápsulas · 2 ao dia · 30 dias",
-    notice: "Suplemento alimentar. Não é medicamento.",
+    notice: "Suplemento alimentar. Não é medicamento. · 9 registros autorizados.",
+    visualNote: "A escolha pode voltar a ser sua.",
   },
   emotional: {
-    eyebrow: "Escolhas que voltam a ser simples",
-    title: "Você escolhe. Sem negociar com o espelho.",
+    eyebrow: "A ferida que quase ninguém vê",
+    titleLead: "Não é só sobre a pele.",
+    titleAccent: "É sobre o espaço que ela ocupa na sua cabeça.",
+    caption: "Você merece aparecer por inteiro na própria vida.",
     beats: [
       {
-        thought: "Vestir o short.",
-        release: "Porque você quis, sem reconsiderar no caminho.",
+        thought: "Trocar de roupa antes de sair.",
+        release: "Mesmo quando você amava a primeira escolha.",
       },
       {
-        thought: "Aparecer na foto.",
-        release: "Sem procurar primeiro o ângulo que esconde.",
+        thought: "Ficar atrás na foto.",
+        release: "Para aparecer menos, quando queria viver mais.",
       },
       {
-        thought: "Usar algo justo.",
-        release: "Sem transformar uma roupa em uma explicação.",
+        thought: "Evitar o short, a praia ou a intimidade.",
+        release: "Não por falta de vontade — por excesso de autoconsciência.",
       },
     ],
+    release:
+      "Você não precisa esperar uma pele perfeita para voltar a ocupar a própria vida.",
   },
   education: {
-    eyebrow: "Sem culpa no provador",
-    title: "Celulite não mede disciplina, cuidado ou valor.",
+    eyebrow: "Cuidado sem punição",
+    title: "Seu corpo não falhou. E culpa nunca foi um bom plano de cuidado.",
     body:
-      "Ela é comum em corpos diferentes e sua aparência não se resume a uma causa simples. Informação útil não transforma pele em falha.",
+      "A celulite é comum em corpos diferentes e sua aparência não se resume a uma causa simples. Você pode desejar mudança sem transformar a própria pele em inimiga.",
     counters: ["peso", "disciplina", "falta de cuidado"],
     sourceLabel: "Contexto educativo. Não é diagnóstico.",
   },
   product: {
-    eyebrow: "CeluClin de perto",
-    title: "Frasco real. Informação à vista.",
+    eyebrow: "Antes de acreditar, olhe de perto",
+    title: "Um cuidado honesto começa pelo que não fica escondido.",
     body:
-      "Alterne entre frente e ângulo para observar o produto inteiro. A identidade, a quantidade e o uso informado continuam visíveis antes da escolha.",
+      "Veja o frasco por inteiro, consulte a composição e entenda o uso informado. A sua decisão merece clareza antes de merecer confiança.",
     stages: [
       {
         id: "presence",
@@ -65,8 +70,8 @@ export const homeContent = {
     ],
   },
   formula: {
-    eyebrow: "Composição em foco",
-    title: "O que entra na rotina precisa aparecer por inteiro.",
+    eyebrow: "Nada atrás de uma promessa bonita",
+    title: "Se entra na sua rotina, você merece saber o que existe dentro.",
     body:
       "A porção informada corresponde a duas cápsulas. Selecione um ingrediente para conferir a quantidade indicada no rótulo.",
     source: "Quantidade por porção · rótulo oficial",
@@ -74,24 +79,24 @@ export const homeContent = {
       "Para consultar todos os itens e avisos da embalagem, abra o rótulo original.",
   },
   proof: {
-    eyebrow: "Resultados autorizados",
-    titleLead: "Histórias que a pele conta",
-    titleAccent: "melhor do que qualquer promessa.",
+    eyebrow: "Resultados reais autorizados",
+    titleLead: "Não pedimos fé em promessa.",
+    titleAccent: "Convidamos você a observar.",
     context:
-      "Nove imagens autorizadas, separadas por categoria e exibidas sem corte, filtro ou contexto inventado.",
+      "Nove imagens autorizadas, separadas por categoria e exibidas sem corte, filtro, prazo ou história inventada.",
   },
   routine: {
-    eyebrow: "Baixe o ritmo",
+    eyebrow: "Cuidado que cabe na vida real",
     titleLead: "Dois por dia.",
-    titleAccent: "Um momento que cabe.",
+    titleAccent: "Sem ritual impossível.",
     body:
       "Sessenta cápsulas divididas pelo uso informado de duas ao dia correspondem a 30 dias.",
   },
   commercial: {
-    eyebrow: "Opções CeluClin",
-    title: "Escolha o tempo que cabe na sua rotina.",
+    eyebrow: "Seu ritmo, sua decisão",
+    title: "Comece no tempo que respeita a sua escolha.",
     body:
-      "Compare pela duração que cabe na sua rotina. A condição comercial atual aparece no checkout da Belvitale.",
+      "Um, três ou sete meses: compare com calma e escolha sem cronômetro de corpo ideal. A condição comercial atual aparece no checkout da Belvitale.",
     labels: {
       "one-month": "Começar",
       "three-months": "Continuar",
@@ -99,11 +104,11 @@ export const homeContent = {
     },
   },
   closing: {
-    eyebrow: "A última palavra é sua",
-    titleLead: "Sua pele não precisa ser perfeita",
-    titleAccent: "para você voltar a se sentir livre.",
+    eyebrow: "A última palavra continua sendo sua",
+    titleLead: "Talvez o que você queira não seja perfeição.",
+    titleAccent: "Seja parar de pensar na sua pele o tempo todo.",
     body:
-      "Você já viu o produto, o uso, os resultados e as opções. A decisão continua sendo sua.",
-    action: "Ver opções do CeluClin",
+      "CeluClin não promete um corpo ideal. Ele pode fazer parte de uma rotina honesta de cuidado, com tudo o que você precisa saber antes de escolher.",
+    action: "Escolher no meu tempo",
   },
 } as const;

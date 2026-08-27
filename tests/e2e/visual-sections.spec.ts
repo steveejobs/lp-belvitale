@@ -23,15 +23,15 @@ test("hero entrega tese, categoria, produto e ação na primeira dobra", async (
     const hero = page.locator(".campaign-hero");
     await expect(
       hero.getByRole("heading", {
-        name: "A celulite não precisa decidir o que você veste.",
+        name: "Quantas vezes a sua pele escolheu a roupa antes de você?",
       }),
     ).toBeVisible();
     await expect(
-      hero.getByRole("link", { name: "Escolher meu CeluClin" }),
+      hero.getByRole("link", { name: "Quero escolher por mim" }),
     ).toBeInViewport();
     await expect(hero.getByText("60 cápsulas · 2 ao dia · 30 dias")).toBeInViewport();
-    await expect(hero.locator('img[src="/product/celuclin-front-02.webp"]')).toBeInViewport();
-    await expect(hero).toContainText("suplemento alimentar em cápsulas");
+    await expect(hero.locator('img[src="/lifestyle/confidence-hero.webp"]')).toBeInViewport();
+    await expect(hero).toContainText("duas cápsulas ao dia");
     await expect(hero).toContainText("Não é medicamento");
   }
 });
@@ -77,7 +77,7 @@ test("assets reais cumprem funções distintas e o rótulo só aparece na transp
   );
   expect(sources).toEqual(
     expect.arrayContaining([
-      "/product/celuclin-front-02.webp",
+      "/lifestyle/confidence-hero.webp",
       "/product/celuclin-angle.webp",
       "/product/celuclin-hand.webp",
       "/product/celuclin-capsules.webp",
@@ -97,7 +97,7 @@ test("assets reais cumprem funções distintas e o rótulo só aparece na transp
   await expect(page.locator('#composicao img[src*="/label/"]')).toHaveCount(0);
 
   for (const uniqueSource of [
-    "/product/celuclin-front-02.webp",
+    "/lifestyle/confidence-hero.webp",
     "/product/celuclin-angle.webp",
     "/product/celuclin-hand.webp",
     "/product/celuclin-capsules.webp",
@@ -220,20 +220,39 @@ test("reduced motion preserva a campanha e reduz transições a um frame", async
     .evaluate((element) => getComputedStyle(element).transitionDuration);
   expect(Number.parseFloat(duration)).toBeLessThanOrEqual(0.001);
   await expect(
-    page.getByRole("link", { name: "Escolher meu CeluClin" }),
+    page.getByRole("link", { name: "Quero escolher por mim" }),
   ).toBeVisible();
   await context.close();
 });
 
-test("HTML inicial prioriza apenas marca e produto aprovados", async () => {
+test("seções entram, saem e retornam com motion sutil durante o scroll", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const reveal = page.locator(".product-story__intro.bv-reveal");
+  await expect(reveal).toHaveAttribute("data-visible", "false");
+  await reveal.scrollIntoViewIfNeeded();
+  await expect(reveal).toHaveAttribute("data-visible", "true");
+  const transitionSeconds = await reveal.evaluate((element) =>
+    Number.parseFloat(getComputedStyle(element).transitionDuration),
+  );
+  expect(transitionSeconds).toBeGreaterThanOrEqual(0.56);
+  expect(transitionSeconds).toBeLessThanOrEqual(0.68);
+
+  await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
+  await expect(reveal).toHaveAttribute("data-visible", "false");
+});
+
+test("HTML inicial prioriza apenas marca e hero aprovada", async () => {
   const html = await fs.readFile("index.html", "utf8");
   expect(html).toContain("/brand/belvitale-wordmark-dark.webp");
-  expect(html).toContain("/product/celuclin-front-02-hero-mobile.webp");
-  expect(html).not.toMatch(/\/proof\/|\/lifestyle\/|\/label\//);
+  expect(html).toContain("/lifestyle/confidence-hero-640.webp");
+  expect(html).not.toMatch(/\/proof\/|\/label\//);
   expect(html).not.toContain("celuclin-label-front-hero");
   expect(html).not.toContain("example.test");
-  expect(html).toContain("A celulite não precisa");
-  expect(html).toContain("Escolher meu CeluClin");
+  expect(html).toContain("Quantas vezes a sua pele");
+  expect(html).toContain("Quero escolher por mim");
   expect(html).toContain("noindex, nofollow");
 });
 

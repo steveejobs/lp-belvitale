@@ -110,8 +110,8 @@ test("âncora da fórmula leva ao rótulo e transfere foco ao título", async ({
 
 test("HTML inicial contém os fatos críticos sem oferta ou claim", async () => {
   const html = await fs.readFile("index.html", "utf8");
-  expect(html).toContain("A celulite não precisa");
-  expect(html).toContain("Escolher meu CeluClin");
+  expect(html).toContain("Quantas vezes a sua pele");
+  expect(html).toContain("Quero escolher por mim");
   expect(html).toContain("60 cápsulas · 2 ao dia · 30 dias");
   expect(html).toContain("noindex, nofollow");
   expect(html).not.toMatch(/R\$|checkout|Yampi|cura|elimina/i);

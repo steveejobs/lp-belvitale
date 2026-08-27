@@ -11,9 +11,10 @@ Inspeção visual concluída em 17/07/2026. Os arquivos abaixo foram abertos pel
 | /product/celuclin-angle.webp | frasco em ângulo | antecipação | aprovado |
 | /product/celuclin-hand.webp | produto na mão | transição do resultado para a oferta | aprovado |
 | /product/celuclin-capsules.webp | cápsulas | apoio editorial | aprovado, não preload |
-| /offers/celuclin-one.webp | kit 1 frasco | oferta 30 dias | aprovado |
-| /offers/celuclin-three.webp | kit 3 frascos | oferta 90 dias | aprovado |
-| /offers/celuclin-seven.webp | kit 7 frascos | oferta 210 dias | aprovado |
+| /offers/celuclin-one-editorial.webp | kit 1 frasco | oferta 30 dias | aprovado nesta rodada |
+| /offers/celuclin-three-editorial.webp | kit 3 frascos | oferta 90 dias | aprovado nesta rodada |
+| /offers/celuclin-seven-editorial.webp | kit 7 frascos (5 + 2) | oferta 210 dias | aprovado nesta rodada |
+| /brand/belvitale-wordmark-editorial.webp | wordmark recortado | cabeçalho do quiz | aprovado nesta rodada |
 | /brand/belvitale-wordmark-dark.webp | logo escuro | reserva | aprovado |
 | /brand/belvitale-wordmark-light.webp | logo claro | reserva | aprovado |
 | /brand/belvitale-monogram-light.webp | monograma | reserva | aprovado |
@@ -29,6 +30,7 @@ Nenhum frasco SVG, frasco desenhado em CSS ou mockup sintético é renderizado n
 | /lifestyle/celuclin-hero.webp | lifestyle com produto | reserva | aprovado |
 | /lifestyle/freedom-01.webp | lifestyle | abertura sem antecipar a solução | aprovado |
 | /lifestyle/routine-01.webp | rotina | segundo insight | aprovado |
+| /lifestyle/celuclin-self-care.webp | corpo e autocuidado | insight personalizado e transição do resultado | aprovado nesta rodada |
 
 ## Prova visual
 
@@ -51,7 +53,7 @@ Contrato visual:
 - sem alteração de pele, cor, textura, iluminação ou enquadramento relevante;
 - trilho horizontal com `scroll-snap` no mobile e grade de três registros no desktop;
 - categoria e identificação do registro fora da imagem;
-- resultado usa três registros autorizados de celulite, com carregamento tardio e aviso de variabilidade;
+- resultado prioriza três registros autorizados da categoria selecionada (celulite, flacidez ou contorno), com carregamento tardio e aviso de variabilidade;
 - nenhuma legenda atribui cronologia, causalidade, identidade ou duração.
 
 ## Duplicados e inadequados

@@ -50,8 +50,8 @@
   --bv-duration-press: 90ms;
   --bv-duration-fast: 160ms;
   --bv-duration-medium: 280ms;
-  --bv-duration-enter: 420ms;
-  --bv-duration-exit: 220ms;
+  --bv-duration-enter: 620ms;
+  --bv-duration-exit: 620ms;
   --bv-easing-standard: cubic-bezier(0.22, 1, 0.36, 1);
-  --bv-easing-exit: cubic-bezier(0.4, 0, 1, 1);
+  --bv-easing-exit: cubic-bezier(0.22, 1, 0.36, 1);
 }

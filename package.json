@@ -14,6 +14,7 @@
     "test:production": "npm run build:production && node scripts/verify-production-assets.mjs",
     "capture": "node scripts/capture-final-evidence.mjs",
     "validate:quiz": "node scripts/generate-quiz-validation.mjs",
+    "simulate:quiz-audience": "node scripts/simulate-quiz-audience.mjs",
     "capture:quiz": "node scripts/capture-quiz-evidence.mjs",
     "audit:quiz-checkouts": "node scripts/audit-quiz-checkouts.mjs"
   },

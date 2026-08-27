@@ -19,8 +19,8 @@ export function calculateRecommendedPlan(answers: QuizAnswers): QuizRecommendati
   return {
     offerId: "three-months",
     reasons: [
-      "Você mostrou que busca constância sem transformar o cuidado em mais uma tarefa complicada.",
-      "Três frascos organizam aproximadamente 90 dias e reduzem a necessidade de recomeçar a decisão no próximo mês.",
+      "Você deixou claro que não quer depender de um novo susto no espelho para voltar a se escolher.",
+      "Três frascos organizam aproximadamente 90 dias e tiram do próximo mês a pergunta que costuma interromper tudo: ‘continuo ou paro de novo?’",
     ],
     commercialInputs: { historyOptionId, decisionWeightOptionId, futureGoalOptionId },
   };

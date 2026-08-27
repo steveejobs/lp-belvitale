@@ -138,19 +138,9 @@
 }
 
 .q7-brand img {
-  width: 5.25rem;
-  height: 2.25rem;
+  width: 8.75rem;
+  height: auto;
   object-fit: contain;
-}
-
-.q7-brand span {
-  padding-left: 0.6rem;
-  border-left: 1px solid var(--q7-line);
-  color: var(--q7-magenta);
-  font-size: 0.68rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .q7-progress {
@@ -1302,6 +1292,10 @@
 @media (min-width: 48rem) {
   .q7-header {
     padding-inline: 2rem;
+  }
+
+  .q7-brand img {
+    width: 11rem;
   }
 
   .q7-opening {

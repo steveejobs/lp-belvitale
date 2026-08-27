@@ -15,8 +15,8 @@ export function OfferComparison({ campaign, recommendedOfferId, selectedOfferId,
   return (
     <section className="q7-comparison" aria-labelledby="q7-comparison-title">
       <header>
-        <p className="q7-step-label">As alternativas continuam abertas</p>
-        <h2 id="q7-comparison-title">Compare duração, reposição e preço.</h2>
+        <p className="q7-step-label">A decisão continua sendo sua</p>
+        <h2 id="q7-comparison-title">1, 3 ou 7 frascos: escolha o compromisso que você consegue sustentar.</h2>
       </header>
       <div className="q7-comparison__rail">
         {quizOfferOrder.map((offerId) => {
@@ -36,14 +36,14 @@ export function OfferComparison({ campaign, recommendedOfferId, selectedOfferId,
               <span>{recommendedOfferId === offerId ? "Recomendada" : copy.badge}</span>
               <img
                 src={offer.imageSrc}
-                width={offerId === "seven-months" ? 1200 : offerId === "three-months" ? 1000 : 800}
-                height={offerId === "seven-months" ? 760 : 700}
+                width={offer.imageWidth}
+                height={offer.imageHeight}
                 alt=""
                 loading="eager"
                 decoding="sync"
               />
               <strong>{copy.title}</strong>
-              <small>{offer.quantity} {offer.quantity === 1 ? "frasco" : "frascos"} · ≈ {offer.approximateDays} dias</small>
+              <small>{offerId === "seven-months" ? "5 + 2 frascos" : `${String(offer.quantity)} ${offer.quantity === 1 ? "frasco" : "frascos"}`} · ≈ {offer.approximateDays} dias</small>
               <p>{copy.replenishment}</p>
               <b>{formatCurrency(price.finalPrice)}</b>
             </button>

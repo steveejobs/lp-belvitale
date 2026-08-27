@@ -15,7 +15,10 @@ export function ProofStories() {
     <section className="proof-stories" id="resultados" aria-labelledby="proof-title">
       <Reveal className="proof-stories__heading section-shell" effect="slide-left" stagger>
         <p className="eyebrow">{proof.eyebrow}</p>
-        <h2 id="proof-title">Resultados reais, para observar com calma.</h2>
+        <h2 id="proof-title">
+          {proof.titleLead}
+          <em>{proof.titleAccent}</em>
+        </h2>
         <p>{proof.context}</p>
       </Reveal>
 

@@ -55,11 +55,11 @@ export function App() {
         <ChoiceSequence />
         <EducationSection />
         <ProductStory />
-        <FormulaSection />
-        <RoutineSection />
         <Suspense fallback={<div className="section-placeholder section-placeholder--proof" aria-hidden="true" />}>
           <ProofStories />
         </Suspense>
+        <FormulaSection />
+        <RoutineSection />
         <Suspense fallback={<div className="section-placeholder" aria-hidden="true" />}>
           <CommercialSection />
         </Suspense>

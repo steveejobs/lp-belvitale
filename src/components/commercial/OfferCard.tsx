@@ -43,7 +43,7 @@ export function OfferCard({ offer, index, checkoutReady }: OfferCardProps) {
         className="offer-card__packshots"
         data-count={bottles}
         role="img"
-        aria-label={`${String(bottles)} frascos de CeluClin`}
+        aria-label={`Composição ilustrativa com ${String(bottles)} frascos de CeluClin`}
       >
         {showProduct ? (
           <img
@@ -56,6 +56,7 @@ export function OfferCard({ offer, index, checkoutReady }: OfferCardProps) {
           />
         ) : null}
       </div>
+      <small className="offer-card__visual-note">{presentation.visual.note}</small>
 
       <div className="offer-card__summary">
         <strong>{presentation.contents}</strong>

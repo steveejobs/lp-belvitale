@@ -1,6 +1,7 @@
 import { build, preview } from "vite";
 
 export default async function globalSetup() {
+  const previewPort = Number.parseInt(process.env.PREVIEW_PORT ?? "4173", 10);
   await build({
     mode: "test",
     logLevel: "silent",
@@ -14,7 +15,7 @@ export default async function globalSetup() {
   const server = await preview({
     preview: {
       host: "127.0.0.1",
-      port: 4173,
+      port: previewPort,
       strictPort: true,
     },
     logLevel: "silent",

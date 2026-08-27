@@ -12,6 +12,10 @@ O proprietário da Belvitale declarou neste briefing possuir a documentação e 
 
 A autorização não confirma identidade, data, duração, cronologia ou qual lado de uma montagem veio primeiro. Esses dados não podem ser inferidos. Os arquivos-fonte permanecem preservados sem retoque, e a publicação deve usar a nota: **“Resultados reais autorizados. Experiências individuais podem variar.”**
 
+## Adendo de assets editoriais — 27/08/2026
+
+O proprietário enviou e solicitou o uso das novas imagens de modelo e das composições de 1, 3 e 7 frascos. Elas podem ser usadas como imagens ilustrativas da campanha e dos kits, sem serem tratadas como prova, depoimento, fotografia documental do rótulo ou fonte de claims. A interface deve manter a identificação “composição ilustrativa” junto aos kits; as informações factuais continuam vindo do rótulo oficial e dos dados comerciais confirmados.
+
 ## Fatos confirmados
 
 - Marca: Belvitale.

@@ -39,26 +39,6 @@ try {
     }
   }
 
-  function New-RoundedRectanglePath {
-    param(
-      [System.Drawing.RectangleF]$Bounds,
-      [float]$Radius
-    )
-
-    $diameter = $Radius * 2
-    $arc = [System.Drawing.RectangleF]::new($Bounds.X, $Bounds.Y, $diameter, $diameter)
-    $path = [System.Drawing.Drawing2D.GraphicsPath]::new()
-    $path.AddArc($arc, 180, 90)
-    $arc.X = $Bounds.Right - $diameter
-    $path.AddArc($arc, 270, 90)
-    $arc.Y = $Bounds.Bottom - $diameter
-    $path.AddArc($arc, 0, 90)
-    $arc.X = $Bounds.Left
-    $path.AddArc($arc, 90, 90)
-    $path.CloseFigure()
-    return $path
-  }
-
   function New-FaviconBitmap {
     param([int]$Size)
 
@@ -74,25 +54,8 @@ try {
       $graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
       $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
 
-      $inset = [Math]::Max(0.5, $Size * 0.015)
-      $tileBounds = [System.Drawing.RectangleF]::new(
-        [float]$inset,
-        [float]$inset,
-        [float]($Size - 2 * $inset),
-        [float]($Size - 2 * $inset)
-      )
-      $tilePath = New-RoundedRectanglePath -Bounds $tileBounds -Radius ([float]($Size * 0.22))
-      $whiteBrush = [System.Drawing.SolidBrush]::new([System.Drawing.Color]::White)
-
-      try {
-        $graphics.FillPath($whiteBrush, $tilePath)
-      }
-      finally {
-        $whiteBrush.Dispose()
-        $tilePath.Dispose()
-      }
-
-      $markSize = [int][Math]::Round($Size * 0.74)
+      # O monograma oficial permanece sem fundo, como no asset de origem.
+      $markSize = [int][Math]::Round($Size * 0.9)
       $markOffset = [int][Math]::Round(($Size - $markSize) / 2)
       $markBounds = [System.Drawing.Rectangle]::new(
         $markOffset,

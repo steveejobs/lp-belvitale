@@ -7,20 +7,20 @@ export function QuizIntro({ onStart }: { readonly onStart: () => void }) {
   return (
     <section className="q7-opening" aria-labelledby="q7-opening-title">
       <div className="q7-opening__copy">
-        <p className="q7-kicker">Uma conversa sobre a sua rotina</p>
+        <p className="q7-kicker">Um espelho mais honesto — sem crueldade</p>
         <h1 id="q7-opening-title" ref={titleRef} tabIndex={-1}>
-          Descubra por que cuidar de você parece sempre <em>recomeçar do zero.</em>
+          Quanto da sua vida ainda é decidido pela <em>celulite ou flacidez?</em>
         </h1>
         <p className="q7-opening__lead">
-          Em poucos minutos, vamos entender como a celulite passou a influenciar pequenas decisões do seu dia a dia e mostrar qual caminho faz mais sentido para retomar uma rotina sem pressão.
+          A roupa trocada. A foto apagada. O biquíni que fica na gaveta. Em 2 minutos, você vai enxergar o padrão por trás dessas escolhas — e o tipo de cuidado que pode caber na sua vida real.
         </p>
         <button className="q7-primary" type="button" onClick={onStart}>
-          Começar agora <span aria-hidden="true">→</span>
+          Quero entender o que está por trás <span aria-hidden="true">→</span>
         </button>
         <ul className="q7-opening__trust" aria-label="Informações sobre a experiência">
           <li><strong>2 min</strong><span>para responder</span></li>
-          <li><strong>12</strong><span>perguntas simples</span></li>
-          <li><strong>Sem</strong><span>julgamentos</span></li>
+          <li><strong>12</strong><span>perguntas que conectam</span></li>
+          <li><strong>Sem</strong><span>culpa ou promessa vazia</span></li>
         </ul>
       </div>
 
@@ -34,7 +34,7 @@ export function QuizIntro({ onStart }: { readonly onStart: () => void }) {
           alt="Mulher em um ambiente claro durante um momento cotidiano"
           fetchPriority="high"
         />
-        <figcaption><span>Uma pausa para</span><strong>olhar sua rotina com menos cobrança.</strong></figcaption>
+        <figcaption><span>Você não precisa amar tudo hoje.</span><strong>Precisa apenas parar de se abandonar por causa disso.</strong></figcaption>
       </figure>
     </section>
   );

@@ -35,14 +35,14 @@ Cada asset principal tem uma funcao propria. Nao repetir imagens para preencher 
 
 | Area | Asset |
 | --- | --- |
-| Hero | `/product/celuclin-front-02.webp` e derivada responsiva `/product/celuclin-front-02-hero-mobile.webp` |
+| Hero | `/lifestyle/confidence-hero.webp` e derivada responsiva `/lifestyle/confidence-hero-640.webp` |
 | Apresentacao do produto | `/product/celuclin-angle.webp` e `/product/celuclin-front-01.webp` |
 | Liberdade de escolha | `/lifestyle/freedom-01.webp` |
 | Formula | `/product/celuclin-capsules.webp` |
 | Resultados | nove imagens em `/proof/`, separadas por categoria |
 | Rotulo | `/label/celuclin-label-front.webp`, somente em `#rotulo` |
 | Rotina | `/lifestyle/routine-01.webp` e `/product/celuclin-hand.webp` |
-| Kits | composicoes locais em `/offers/`, feitas com o packshot real |
+| Kits | novas composicoes ilustrativas de 1, 3 e 7 frascos em `/offers/`, identificadas como ilustrativas |
 | Fechamento | `/lifestyle/celuclin-hero.webp` |
 
 Nao usar a arte plana do rotulo como produto, fundo, textura, formula ou kit. As miniaturas recuperadas da Yampi nao ficam no projeto: somente seus metadados de auditoria permanecem em `src/data/commercialPreview.ts` e `artifacts/final-v2/after/remote-audit.json`.

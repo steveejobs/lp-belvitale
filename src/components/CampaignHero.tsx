@@ -10,7 +10,7 @@ export function CampaignHero() {
     maxX: 8,
     maxY: 6,
   });
-  const product = campaignAssets.productFrontPrimary;
+  const product = campaignAssets.lifestyleConfidence;
   const { hero } = homeContent;
   const title = `${hero.titleLead} ${hero.titleAccent}`;
 
@@ -29,13 +29,13 @@ export function CampaignHero() {
               className="button button--primary"
               href={commercialNavigationReady ? "#ofertas" : "#celuclin"}
             >
-              {commercialNavigationReady ? "Escolher meu CeluClin" : hero.primaryAction}
+              {hero.primaryAction}
             </a>
             <a
               className="button button--quiet"
               href={commercialNavigationReady ? "#resultados" : "#rotulo"}
             >
-              {commercialNavigationReady ? "Ver resultados" : "Ler o rótulo"}
+              {commercialNavigationReady ? hero.secondaryAction : "Ler o rótulo"}
             </a>
           </div>
           <div className="campaign-hero__facts">
@@ -66,7 +66,8 @@ export function CampaignHero() {
             />
           </picture>
           <span className="campaign-hero__category">CeluClin</span>
-          <p className="campaign-hero__visual-note">Uma rotina que volta a caber.</p>
+          <span className="campaign-hero__editorial-note">Imagem editorial</span>
+          <p className="campaign-hero__visual-note">{hero.visualNote}</p>
         </div>
       </div>
     </section>

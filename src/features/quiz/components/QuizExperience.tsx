@@ -1,4 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { buildPersonalizedInsight } from "../content/insights";
 import { quizQuestionMap } from "../content/questions";
 import { calculateRecommendedPlan } from "../domain/quiz.recommendation";
 import { getNextStage, getPreviousStage } from "../domain/quiz.machine";
@@ -27,36 +28,6 @@ const loadResultStage = () => import("./ResultStage");
 const loadOfferStage = () => import("./OfferStage");
 const ResultStage = lazy(() => loadResultStage().then((module) => ({ default: module.ResultStage })));
 const OfferStage = lazy(() => loadOfferStage().then((module) => ({ default: module.OfferStage })));
-
-const insights = {
-  "insight-one": {
-    sequence: 1 as const,
-    eyebrow: "Primeira leitura",
-    title: "Até aqui, percebemos uma coisa interessante.",
-    explanation: "Suas respostas mostram que o incômodo não aparece o tempo todo. Ele costuma surgir em momentos específicos. É assim que, quase sem perceber, muitas mulheres começam a deixar a insegurança influenciar pequenas escolhas do dia a dia.",
-    cta: "Continuar",
-    note: "Nenhum diagnóstico milagroso. Nenhuma IA. Apenas uma observação humana.",
-  },
-  "insight-two": {
-    sequence: 2 as const,
-    eyebrow: "Uma mudança de perspectiva",
-    title: "Talvez o problema nunca tenha sido falta de vontade.",
-    explanation: "Até aqui, suas respostas mostram um padrão comum. Você parece saber que gostaria de mudar. O difícil não é decidir. É conseguir manter a decisão quando a rotina volta ao normal.",
-    cta: "Faz sentido",
-    image: {
-      src: "/lifestyle/routine-01.webp",
-      alt: "Mulher servindo água em um copo durante uma rotina cotidiana",
-      caption: "A rotina real é feita de gestos que cabem no dia.",
-    },
-  },
-  "insight-three": {
-    sequence: 3 as const,
-    eyebrow: "Sua leitura está pronta",
-    title: "Sua dificuldade parece estar menos ligada à disciplina do que à forma como você tenta recomeçar.",
-    explanation: "Muitas mulheres acreditam que precisam de mais força de vontade. Mas, na prática, elas precisam de uma rotina simples o bastante para ser mantida até nos dias corridos. É exatamente por isso que algumas estratégias duram poucos dias, enquanto outras conseguem fazer parte da vida.",
-    cta: "Ver meu resultado",
-  },
-} as const;
 
 function QuizJourney() {
   const { state, dispatch, restart } = useQuiz();
@@ -169,7 +140,8 @@ function QuizJourney() {
       );
     }
     if (stageId === "insight-one" || stageId === "insight-two" || stageId === "insight-three") {
-      const insight = insights[stageId];
+      const sequence = stageId === "insight-one" ? 1 : stageId === "insight-two" ? 2 : 3;
+      const insight = buildPersonalizedInsight(sequence, state.answers);
       return <InsightStage {...insight} onContinue={() => {
         if (stageId === "insight-three") {
           const now = new Date().toISOString();
@@ -201,7 +173,7 @@ function QuizJourney() {
   })();
 
   return (
-    <div className="quiz-route q7" data-version="7.0.0">
+    <div className="quiz-route q7" data-version="7.1.0">
       <a className="q7-skip" href="#conteudo-quiz">Ir para o conteúdo do quiz</a>
       <QuizHeader
         stageId={state.stageId}

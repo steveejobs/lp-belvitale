@@ -28,7 +28,7 @@ export function Reveal({
 }: RevealProps) {
   const elementRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
-  const [visible, setVisible] = useState(reducedMotion);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     if (reducedMotion) return;
