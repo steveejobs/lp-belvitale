@@ -71,6 +71,12 @@ function serveQuizHtmlEntries(): Plugin {
     if (normalized === "/quiz/analytics") {
       return `/quiz/analytics/index.html${url.search}`;
     }
+    if (normalized === "/quiz-monj") {
+      return `/quiz-monj/index.html${url.search}`;
+    }
+    if (normalized === "/quiz-monj/resultado") {
+      return `/quiz-monj/resultado/index.html${url.search}`;
+    }
     return undefined;
   }
 
@@ -280,6 +286,13 @@ export default defineConfig(({ command, mode }) => {
           quizResult: path.resolve(
             rootDirectory,
             "quiz",
+            "resultado",
+            "index.html",
+          ),
+          quizMonj: path.resolve(rootDirectory, "quiz-monj", "index.html"),
+          quizMonjResult: path.resolve(
+            rootDirectory,
+            "quiz-monj",
             "resultado",
             "index.html",
           ),
