@@ -40,6 +40,11 @@ Nenhum frasco SVG, frasco desenhado em CSS ou mockup sintético é renderizado n
 | /proof/cellulite/cellulite-02.webp | celulite | 1448 × 1086 | contain |
 | /proof/cellulite/cellulite-03.webp | celulite | 1448 × 1086 | contain |
 | /proof/cellulite/cellulite-04.webp | celulite | 1448 × 1086 | contain |
+| /proof/cellulite/cellulite-05.jpg | celulite | 1024 × 411 | contain |
+| /proof/cellulite/cellulite-06.jpg | celulite | 1080 × 1080 | contain |
+| /proof/cellulite/cellulite-07.jpg | celulite | 998 × 559 | contain |
+| /proof/cellulite/cellulite-08.jpg | celulite | 864 × 666 | contain |
+| /proof/cellulite/cellulite-09.jpg | celulite | 1278 × 798 | contain |
 | /proof/laxity/laxity-01.webp | firmeza | 1254 × 1254 | contain, principal para firmeza |
 | /proof/laxity/laxity-02.webp | firmeza | 1373 × 1145 | contain |
 | /proof/localized-fat/localized-fat-01.webp | contorno | 1537 × 1023 | contain, principal para contorno |

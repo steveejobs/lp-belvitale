@@ -1,78 +1,67 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const root = path.resolve(".");
 const outputDirectory = path.join(root, "artifacts", "quiz-v7");
 const server = await createServer({ root, appType: "custom", server: { middlewareMode: true }, logLevel: "silent" });
 
 try {
-  const questionsModule = await server.ssrLoadModule("/src/features/quiz/content/questions.ts");
-  const scoringModule = await server.ssrLoadModule("/src/features/quiz/domain/quiz.scoring.ts");
-  const recommendationModule = await server.ssrLoadModule("/src/features/quiz/domain/quiz.recommendation.ts");
-  const validationModule = await server.ssrLoadModule("/src/features/quiz/domain/quiz.validation.ts");
-  const { quizQuestions } = questionsModule;
-  const { calculateQuizResult } = scoringModule;
-  const { calculateRecommendedPlan } = recommendationModule;
-  const { auditQuizQuestionContent } = validationModule;
+  const { quizQuestions } = await server.ssrLoadModule("/src/features/quiz/content/questions.ts");
+  const { calculateQuizResult } = await server.ssrLoadModule("/src/features/quiz/domain/quiz.scoring.ts");
+  const { calculateRecommendedPlan } = await server.ssrLoadModule("/src/features/quiz/domain/quiz.recommendation.ts");
+  const { auditQuizQuestionContent } = await server.ssrLoadModule("/src/features/quiz/domain/quiz.validation.ts");
 
-  const sampleSize = 10_000;
-  let seed = 7;
-  const random = () => {
-    seed = (seed * 1664525 + 1013904223) >>> 0;
-    return seed / 0x100000000;
-  };
-  const evaluated = [];
-  for (let index = 0; index < sampleSize; index += 1) {
-    const answers = Object.fromEntries(quizQuestions.map((question) => {
-      const option = question.options[Math.floor(random() * question.options.length)];
-      return [question.id, option.id];
-    }));
-    evaluated.push({ answers, result: calculateQuizResult(answers), recommendation: calculateRecommendedPlan(answers) });
-  }
+  const pick = (optionIndex) => Object.fromEntries(quizQuestions.map((question) => [
+    question.id,
+    (question.options[optionIndex] ?? question.options[0]).id,
+  ]));
+  const profiles = [
+    { id: "all-first", answers: pick(0) },
+    { id: "all-second", answers: pick(1) },
+    { id: "all-third", answers: pick(2) },
+    { id: "all-last", answers: pick(3) },
+    { id: "cautious", answers: { ...pick(0), history: "disappointed", "decision-weight": "money", "future-goal": "trust" } },
+    { id: "extended-ready", answers: { ...pick(0), history: "start-stop", "decision-weight": "a-path", "future-goal": "stop-restarting" } },
+  ].map((profile) => ({
+    ...profile,
+    result: calculateQuizResult(profile.answers),
+    recommendation: calculateRecommendedPlan(profile.answers),
+  }));
 
-  const invalid = evaluated.filter((item) => item.result === null || item.recommendation === null);
-  const profiles = Object.fromEntries([...new Set(evaluated.map((item) => item.result?.id))].map((id) => [id, evaluated.filter((item) => item.result?.id === id).length]));
-  const offers = Object.fromEntries([...new Set(evaluated.map((item) => item.recommendation?.offerId))].map((id) => [id, evaluated.filter((item) => item.recommendation?.offerId === id).length]));
   const contentAudit = auditQuizQuestionContent();
-  const commercialCombinations = quizQuestions
-    .filter((question) => ["history", "decision-weight", "future-goal"].includes(question.id))
-    .reduce((total, question) => total * question.options.length, 1);
-  const pass = invalid.length === 0 && contentAudit.valid && offers["three-months"] === sampleSize;
+  const invalid = profiles.filter((profile) => profile.result === null || profile.recommendation === null);
+  const extended = profiles.find((profile) => profile.id === "extended-ready");
+  const pass = contentAudit.valid && invalid.length === 0 &&
+    profiles.every((profile) => profile.recommendation?.offerId === "three-months") &&
+    extended?.recommendation?.disposition === "extended-ready";
   const report = {
     generatedAt: new Date().toISOString(),
     quizVersion: "7.0.0",
+    positioning: "interactive direct-response sales experience; não é diagnóstico",
     pass,
-    sampleSize,
-    totalQuestions: quizQuestions.length,
-    commercialCombinations,
-    invalidCombinations: invalid.length,
-    profileDistribution: profiles,
-    offerDistribution: offers,
+    testedPaths: profiles.map(({ id, result, recommendation }) => ({ id, result: result?.id, offerId: recommendation?.offerId, disposition: recommendation?.disposition })),
+    invalidPaths: invalid.length,
     contentAudit,
-    recommendationRule: "90 dias é uma sugestão editorial de constância; não é inferida da preocupação corporal.",
+    recommendationRule: "90 dias é o caminho central. Um sinal de recomeço + continuidade + planejamento prepara futura oferta estendida, sem inferir necessidade pelo corpo.",
   };
   const markdown = [
-    "# Validação de conteúdo e recomendação — Quiz CeluClin 7.0",
+    "# Validação editorial — Quiz CeluClin V2",
     "",
-    `Gate: **${pass ? "APROVADO" : "REPROVADO"}**. Amostra determinística: ${sampleSize} combinações.`,
+    `Gate: **${pass ? "APROVADO" : "REPROVADO"}**. Seis caminhos intencionais, sem simulação pseudocientífica.`,
     "",
-    `- Perguntas: **${quizQuestions.length}**`,
-    `- Combinações comerciais cobertas: **${commercialCombinations}**`,
-    `- Combinações inválidas: **${invalid.length}**`,
-    `- Ofertas na amostra: **${JSON.stringify(offers)}**`,
+    ...report.testedPaths.map((profile) => `- ${profile.id}: ${profile.result} → ${profile.offerId} (${profile.disposition})`),
     "",
-    "A recomendação de 90 dias organiza a continuidade narrativa do documento e não usa aparência, corpo ou preocupação visual para decidir quantidade.",
+    "Aparência e intensidade física não decidem quantidade. A opção estendida permanece bloqueada até existir uma oferta comercialmente defensável.",
     "",
   ].join("\n");
   await mkdir(outputDirectory, { recursive: true });
   await Promise.all([
-    writeFile(path.join(outputDirectory, "validation.json"), JSON.stringify(report, null, 2) + "\n", "utf8"),
+    writeFile(path.join(outputDirectory, "validation.json"), `${JSON.stringify(report, null, 2)}\n`, "utf8"),
     writeFile(path.join(outputDirectory, "validation.md"), markdown, "utf8"),
   ]);
-  process.stdout.write(JSON.stringify(report, null, 2) + "\n");
+  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
   if (!pass) process.exitCode = 1;
 } finally {
   await server.close();

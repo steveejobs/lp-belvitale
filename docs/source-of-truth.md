@@ -6,9 +6,15 @@ Atualizado em 15/07/2026. O rótulo foi inspecionado visualmente nas duas págin
 
 O kit de 3 unidades pode receber maior presenca na composicao para facilitar comparacao, mas nenhum selo de popularidade e publicado sem evidencia comercial verificavel. Nao inventar volume de vendas, percentual, ranking, periodo, preco, desconto, estoque ou urgencia.
 
+## Reauditoria dos checkouts — 07/09/2026
+
+Em navegador limpo, os três checkouts exibiram os preços atuais de R$ 89,90, R$ 169,90 e R$ 597,00. Nenhum preço comparativo ou parcelamento apareceu no estado auditado. O quiz pode reproduzir os preços atuais com data e ressalva de confirmação no checkout, mas não pode publicar as referências anteriores nem percentuais de economia.
+
+O kit de 210 dias custa mais por frasco do que o kit de 90 dias nos preços atuais. Ele permanece fora da comparação pública até existir preço ou stack comercial coerente e verificável.
+
 ## Adendo de autorização das provas — 14/07/2026
 
-O proprietário da Belvitale declarou neste briefing possuir a documentação e a autorização necessárias para publicar e atribuir ao CeluClin as nove imagens de resultado recebidas. Essa declaração confirma o gate de uso das imagens e suas categorias originais: quatro registros de celulite, dois de flacidez e três de gordura localizada.
+O proprietário da Belvitale declarou neste briefing possuir a documentação e a autorização necessárias para publicar e atribuir ao CeluClin as quatorze imagens de resultado recebidas. Essa declaração confirma o gate de uso das imagens e suas categorias originais: nove registros de celulite, dois de flacidez e três de gordura localizada.
 
 A autorização não confirma identidade, data, duração, cronologia ou qual lado de uma montagem veio primeiro. Esses dados não podem ser inferidos. Os arquivos-fonte permanecem preservados sem retoque, e a publicação deve usar a nota: **“Resultados reais autorizados. Experiências individuais podem variar.”**
 
@@ -36,8 +42,8 @@ O proprietário enviou e solicitou o uso das novas imagens de modelo e das compo
   - 3 frascos / 3 meses informados: `https://belvitale.pay.yampi.com.br/r/1E8NNCGJW9`;
   - 5 + 2 adicionais / 7 meses informados: `https://belvitale.pay.yampi.com.br/r/41CHX4MGPX`.
 - Os três checkouts foram revalidados em navegador limpo em 15/07/2026 e confirmaram respectivamente as estruturas de 1 pote, 3 potes e 5 + 2 adicionais.
-- O proprietario autorizou explicitamente a copy `5 + 2 gratis` para o kit de 7 meses. Precos continuam fora da fonte de publicacao porque nao receberam confirmacao humana.
-- Autorização declarada pelo proprietário para publicar e atribuir ao CeluClin as nove imagens de resultados, mantendo suas categorias recebidas e sem alterar os arquivos.
+- O proprietario autorizou explicitamente a copy `5 + 2 gratis` para o kit de 7 meses. A reauditoria de 07/09/2026 confirmou os preços atuais visíveis, mas não confirmou preço comparativo, economia ou parcelamento.
+- Autorização declarada pelo proprietário para publicar e atribuir ao CeluClin as quatorze imagens de resultados, mantendo suas categorias recebidas e sem alterar os arquivos.
 - O proprietario declarou possuir autorizacao para utilizar os assets do projeto: logos, packshots, capsulas, lifestyle, provas e rotulo. Essa declaracao permite o uso no preview, sem substituir uma auditoria independente de procedencia.
 
 ## Fatos ainda não confirmados
@@ -48,7 +54,7 @@ O proprietário enviou e solicitou o uso das novas imagens de modelo e das compo
 - Razão social, nome fantasia jurídico, e-mail, WhatsApp, endereço, cidade, estado, domínio institucional e prazo de resposta do SAC.
 - Conteúdo jurídico final e aprovação da Política de Privacidade, dos Termos de Uso e da Política de Trocas e Reembolso.
 - Status sanitário, número de registro/notificação e qualquer expressão “aprovado pela Anvisa”.
-- Preços, parcelamento, frete, prazo, estoque, garantia, troca e reembolso.
+- Preços comparativos, parcelamento, frete, prazo, estoque, garantia, troca e reembolso. Os preços atuais isolados foram revalidados em 07/09/2026.
 - E-mail, redes sociais, laudos e recomendações profissionais.
 - Autenticidade, autoria, aprovação final, autorização e identificação dos rascunhos de depoimentos. O rascunho 6 está sem texto e não há rascunho 7 no material recebido.
 

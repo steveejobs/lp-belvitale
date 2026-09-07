@@ -9,7 +9,7 @@ Fonte unica: `src/features/quiz/campaign/campaign.config.ts`.
 | campaignId | celuclin-quiz-v7-checkout-snapshot |
 | versao | 2026-07-17.1 |
 | status | draft |
-| snapshot dos checkouts | 17/07/2026 14:40:56 UTC |
+| snapshot dos checkouts | 07/09/2026 16:48:49 UTC |
 | cupom validado | nao |
 | parcelamento validado | nao apareceu no estado inicial |
 
@@ -17,13 +17,13 @@ A campanha permanece em rascunho. A interface mostra apenas os precos que estava
 
 ## Ofertas auditadas
 
-| Oferta | Quantidade | Dias aproximados | Preco cheio | Preco atual | Economia | Checkout oficial |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| 30 dias | 1 | 30 | R$ 197,00 | R$ 89,90 | R$ 107,10 (54,37%) | PWJOI4I112 |
-| 90 dias | 3 | 90 | R$ 591,00 | R$ 169,90 | R$ 421,10 (71,25%) | 1E8NNCGJW9 |
-| 210 dias | 7 | 210 | R$ 1.379,00 | R$ 597,00 | R$ 782,00 (56,71%) | 41CHX4MGPX |
+| Oferta | Quantidade | Dias aproximados | Preco atual | Custo por frasco | Checkout oficial | Publicação no quiz |
+| --- | ---: | ---: | ---: | ---: | --- | --- |
+| 30 dias | 1 | 30 | R$ 89,90 | R$ 89,90 | PWJOI4I112 | ativa |
+| 90 dias | 3 | 90 | R$ 169,90 | R$ 56,63 | 1E8NNCGJW9 | ativa |
+| 210 dias | 7 | 210 | R$ 597,00 | R$ 85,29 | 41CHX4MGPX | suspensa por incoerência de valor |
 
-Os calculos ficam em `pricing/pricing.calculate.ts`, usam centavos inteiros e sao testados fora da camada visual. URLs ficam em `checkout/checkout.urls.ts`. A apresentacao nunca recalcula nem inventa valor.
+Os calculos ficam em `pricing/pricing.calculate.ts`, usam centavos inteiros e sao testados fora da camada visual. URLs ficam em `checkout/checkout.urls.ts`. Preços comparativos e percentuais de economia não são publicados porque não apareceram na reauditoria.
 
 ## Recompensa ativa nesta versão
 

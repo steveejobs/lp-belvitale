@@ -9,14 +9,14 @@ As 12 respostas alimentam somente uma leitura de rotina em quatro perfis editori
 - `proof-led` — confiança move a escolha;
 - `continuity-minded` — estrutura reduz decisões.
 
-O resultado nunca é diagnóstico e não altera a quantidade, duração ou preço do produto.
+O resultado nunca é diagnóstico. O perfil calculado altera a argumentação; apenas respostas comerciais de cautela, histórico e continuidade podem alterar a recomendação de quantidade.
 
 ## Recomendação
 
-O documento de consultoria apresenta uma narrativa, não uma matriz comercial de prontidão. A
-recomendação de 90 dias é, portanto, editorial e transparente: três frascos organizam
-aproximadamente 90 dias e reduzem uma nova decisão no mês seguinte. 30 e 210 dias seguem
-disponíveis na comparação.
+A combinação de cautela financeira/expectativa com histórico de pesquisa ou frustração recomenda
+30 dias para reduzir compromisso inicial. Os demais caminhos recebem 90 dias como alternativa de
+continuidade. O kit de 210 dias não é recomendado nem comparado enquanto seu preço por frasco for
+superior ao kit de 90 dias.
 
 Regra de segurança: aparência, roupa, foto, celulite ou qualquer resposta de identificação nunca
 decidem a oferta.

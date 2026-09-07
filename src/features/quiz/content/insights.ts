@@ -84,7 +84,7 @@ function firstInsight(answers: QuizAnswers): PersonalizedInsight {
     sequence: 1,
     eyebrow: "Uma observação importante",
     title: "Até aqui, percebemos uma coisa interessante.",
-    explanation: "Suas respostas mostram que o incômodo não aparece o tempo todo. Ele costuma surgir em momentos específicos. É assim que, quase sem perceber, muitas mulheres começam a deixar a insegurança influenciar pequenas escolhas do dia a dia.",
+    explanation: "Suas respostas mostram que o incômodo com a celulite não aparece o tempo todo. Ele costuma surgir em momentos específicos. É assim que, quase sem perceber, a insegurança pode influenciar pequenas escolhas do dia a dia.",
     cta: "Continuar",
     note: "Nenhum diagnóstico milagroso. Nenhuma IA. Apenas uma observação humana.",
     reflection: `Você marcou “${selectedLabel(answers, "perception", "quando a celulite aparece")}” e “${selectedLabel(answers, "situation-weight", "quando isso pesa mais")}”. O padrão começa nesses momentos.`,

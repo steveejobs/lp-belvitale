@@ -43,7 +43,7 @@ async function completeToResult(page: Page) {
   await choose(page, /Quero criar uma rotina/);
   await waitForHeading(page, /Sua dificuldade parece estar menos ligada à disciplina/);
   await choose(page, /Ver meu resultado/);
-  await waitForHeading(page, /O seu maior desafio hoje não parece ser a celulite/);
+  await waitForHeading(page, /Clareza antes|Retomar vale|Confiança move|Estrutura reduz/);
 }
 
 test.describe("domínio do Quiz CeluClin 7.0", () => {
@@ -70,23 +70,19 @@ test.describe("domínio do Quiz CeluClin 7.0", () => {
     expect(calculateRecommendedPlan({})).toBeNull();
     expect(calculateRecommendedPlan({ history: "start-stop", "decision-weight": "simple" })).toBeNull();
     expect(calculateRecommendedPlan({ history: "start-stop", "decision-weight": "simple", "future-goal": "lasting-routine" })?.offerId).toBe("three-months");
+    expect(calculateRecommendedPlan({ history: "disappointed", "decision-weight": "money", "future-goal": "trust" })?.offerId).toBe("three-months");
+    expect(calculateRecommendedPlan({ history: "start-stop", "decision-weight": "a-path", "future-goal": "stop-restarting" })?.disposition).toBe("extended-ready");
   });
 
-  test("calcula o perfil em combinações válidas sem kit impossível", () => {
-    const combinations: QuizAnswers[] = [];
-    const walk = (index: number, answers: Record<string, string>) => {
-      if (combinations.length >= 10_000) return;
-      const question = quizQuestions[index];
-      if (question === undefined) {
-        combinations.push(answers);
-        return;
-      }
-      for (const option of question.options) {
-        walk(index + 1, { ...answers, [question.id]: option.id });
-        if (combinations.length >= 10_000) break;
-      }
-    };
-    walk(0, {});
+  test("valida seis caminhos editoriais sem pseudo-diagnóstico", () => {
+    const pick = (optionIndex: number): QuizAnswers => Object.fromEntries(
+      quizQuestions.map((question) => [question.id, question.options[optionIndex]?.id ?? question.options[0].id]),
+    );
+    const combinations: QuizAnswers[] = [
+      pick(0), pick(1), pick(2), pick(3),
+      { ...pick(0), history: "disappointed", "decision-weight": "money", "future-goal": "trust" },
+      { ...pick(0), history: "start-stop", "decision-weight": "a-path", "future-goal": "stop-restarting" },
+    ];
     const profiles = new Set<string>();
     for (const answers of combinations) {
       expect(calculateQuizResult(answers)).not.toBeNull();
@@ -94,14 +90,16 @@ test.describe("domínio do Quiz CeluClin 7.0", () => {
       const result = calculateQuizResult(answers);
       if (result !== null) profiles.add(result.id);
     }
-    expect(combinations).toHaveLength(10_000);
+    expect(combinations).toHaveLength(6);
     expect(profiles.size).toBeGreaterThanOrEqual(2);
+    expect(combinations.every((answers) => calculateRecommendedPlan(answers)?.offerId === "three-months")).toBe(true);
+    expect(calculateRecommendedPlan(combinations[5] ?? {})?.disposition).toBe("extended-ready");
   });
 
-  test("calcula os preços oficiais sem arredondamento incorreto", () => {
+  test("publica apenas preços atuais verificados, sem ancoragem não comprovada", () => {
     expect(calculatePrice(quizPromotion.offers["one-month"]).finalPrice).toBe(89.9);
-    expect(calculatePrice(quizPromotion.offers["three-months"]).savingsValue).toBe(421.1);
-    expect(calculatePrice(quizPromotion.offers["seven-months"]).savingsPercentage).toBe(56.71);
+    expect(calculatePrice(quizPromotion.offers["three-months"]).savingsValue).toBe(0);
+    expect(calculatePrice(quizPromotion.offers["seven-months"]).savingsPercentage).toBe(0);
   });
 
   test("mantém recompensas e cronômetro desativados sem campanha validada", () => {
@@ -159,6 +157,8 @@ test.describe("experiência mobile", () => {
     const visibleStageCount = /\b\d+\s*(?:de|\/)\s*\d+\b/i;
 
     await expect(page.locator("body")).not.toContainText(visibleStageCount);
+    await expect(page.locator(".q7-opening__visual > img")).toHaveAttribute("src", "/lifestyle/quiz-hero-confidence.jpg");
+    await expect(page.getByText("sem promessa milagrosa", { exact: true })).toBeVisible();
     await choose(page, /Começar agora|Descobrir meu caminho/);
     await expect(page.getByRole("heading", { name: /Como posso te chamar/ })).toBeVisible();
     await expect(page.locator("body")).not.toContainText(visibleStageCount);
@@ -170,15 +170,93 @@ test.describe("experiência mobile", () => {
   test("conclui a conversa, mostra resultado sustentado e alcança checkout", async ({ page }) => {
     await completeToResult(page);
     expect(page.url()).toContain("/quiz/resultado");
-    await expect(page.getByText(/Você já reconhece o momento/)).toBeVisible();
-    await expect(page.getByText(/Você busca algo que caiba na rotina real/)).toBeVisible();
-    await expect(page.getByRole("heading", { name: /Quando o cuidado encontra espaço na rotina/ })).toBeVisible();
-    await choose(page, /^Continuar/);
+    await expect(page.getByText(/Começo animada e paro depois/)).toBeVisible();
+    await expect(page.getByText(/Quero algo simples/)).toBeVisible();
+    await expect(page.getByText(/Quero criar uma rotina/)).toBeVisible();
+    const proofMosaic = page.locator(".q7-result-proof__mosaic");
+    await proofMosaic.scrollIntoViewIfNeeded();
+    await expect(proofMosaic.locator("img")).toHaveCount(3);
+    await expect(proofMosaic.locator("img").first()).toBeVisible();
+    expect(await proofMosaic.locator("img").evaluateAll((images) => images.every((element) => {
+      const image = element as HTMLImageElement;
+      const rectangle = image.getBoundingClientRect();
+      const naturalRatio = image.naturalWidth / image.naturalHeight;
+      return image.naturalWidth > 0 && Math.abs(rectangle.width / rectangle.height - naturalRatio) < 0.02;
+    }))).toBe(true);
+    await page.getByRole("button", { name: /Ver todos os 9 registros/ }).click();
+    await expect(proofMosaic.locator("img")).toHaveCount(9);
+    await choose(page, /Comparar 30 e 90 dias/);
     await waitForHeading(page, /Nossa sugestão para quem busca/);
-    await expect(page.getByRole("heading", { name: /90 dias/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "90 dias · 3 frascos", exact: true })).toBeVisible();
     await expect(page.getByText("180", { exact: true })).toBeVisible();
     await expect(page.getByText("R$ 169,90").first()).toBeVisible();
+    await expect(page.getByText("R$ 591,00")).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: /30 ou 90 dias/ })).toBeVisible();
     await expect(page.getByRole("link", { name: /Quero construir 90 dias/ }).first()).toHaveAttribute("href", /1E8NNCGJW9/);
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    const footerFit = await page.evaluate(() => {
+      const footerLink = document.querySelector(".q7-footer > a")?.getBoundingClientRect();
+      const footerLegal = document.querySelector(".q7-footer > p")?.getBoundingClientRect();
+      const checkout = document.querySelector(".q7-mobile-checkout")?.getBoundingClientRect();
+      const contentBottom = Math.max(footerLink?.bottom ?? Infinity, footerLegal?.bottom ?? Infinity);
+      return {
+        fits: checkout !== undefined && contentBottom <= checkout.top + 1,
+        contentBottom,
+        checkoutTop: checkout?.top,
+      };
+    });
+    expect(footerFit).toEqual(expect.objectContaining({ fits: true }));
+  });
+
+  test("mantém 90 dias como caminho central mesmo diante de cautela", async ({ page }) => {
+    await choose(page, /Começar agora|Descobrir meu caminho/);
+    await choose(page, /Prefiro continuar sem informar/);
+    await choose(page, /Quando me olho no espelho/);
+    await choose(page, /Já tentei tanta coisa/);
+    await choose(page, /Em fotos/);
+    await choose(page, /^Continuar/);
+    await choose(page, /Tento ignorar/);
+    await choose(page, /Algumas vezes/);
+    await choose(page, /Sentir que nada funciona/);
+    await choose(page, /Uma roupa deixou de servir/);
+    await choose(page, /Faz sentido/);
+    await choose(page, /Já investi em produtos/);
+    await choose(page, /Não vejo resultados rápidos/);
+    await choose(page, /Tenho medo de criar expectativa/);
+    await choose(page, /Tiraria fotos sem pensar tanto/);
+    await choose(page, /Quero voltar a confiar em mim/);
+    await choose(page, /Ver meu resultado/);
+    await waitForHeading(page, /Clareza antes|Retomar vale|Confiança move|Estrutura reduz/);
+    await page.evaluate(() => {
+      const eventWindow = window as Window & { __quizEvents?: { event?: string; properties?: Record<string, unknown> }[] };
+      eventWindow.__quizEvents = [];
+      window.addEventListener("belvitale:quiz-v7", (event) => {
+        eventWindow.__quizEvents?.push((event as CustomEvent<{ event?: string; properties?: Record<string, unknown> }>).detail);
+      });
+    });
+    await choose(page, /Comparar 30 e 90 dias/);
+    await expect(page.getByRole("heading", { name: "90 dias · 3 frascos", exact: true })).toBeVisible();
+    await expect(page.getByText("R$ 169,90").first()).toBeVisible();
+    await expect(page.getByRole("link", { name: /Quero construir 90 dias/ }).first()).toHaveAttribute("href", /1E8NNCGJW9/);
+    await expect(page.locator(".q7-comparison__card")).toHaveCount(2);
+    await expect(page.locator(".q7-offer")).toHaveAttribute("data-recommended-offer", "three-months");
+    await page.locator(".q7-comparison__card").first().click();
+    await expect(page.locator(".q7-offer")).toHaveAttribute("data-selected-offer", "one-month");
+    await expect(page.locator(".q7-offer")).toHaveAttribute("data-recommendation-override", "true");
+    const offerEvents = await page.evaluate(() => {
+      const eventWindow = window as Window & { __quizEvents?: { event?: string; properties?: Record<string, unknown> }[] };
+      return eventWindow.__quizEvents ?? [];
+    });
+    expect(offerEvents).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        event: "quiz_offer_changed",
+        properties: expect.objectContaining({
+          recommended_offer: "three-months",
+          selected_offer: "one-month",
+          recommendation_override: true,
+        }),
+      }),
+    ]));
   });
 
   test("voltar preserva e permite trocar resposta", async ({ page }) => {

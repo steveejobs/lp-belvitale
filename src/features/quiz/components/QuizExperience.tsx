@@ -1,7 +1,8 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { buildPersonalizedInsight } from "../content/insights";
+import { buildPersonalizedInsight, getConcernFromQuizAnswers } from "../content/insights";
 import { quizQuestionMap } from "../content/questions";
 import { calculateRecommendedPlan } from "../domain/quiz.recommendation";
+import { calculateQuizResult } from "../domain/quiz.scoring";
 import { getNextStage, getPreviousStage } from "../domain/quiz.machine";
 import {
   quizQuestionIds,
@@ -25,6 +26,7 @@ import { QuizIntro } from "./QuizIntro";
 import { QuizShell } from "./QuizShell";
 import "../quiz.css";
 import "../quiz-refined.css";
+import "../quiz-premium-v2.css";
 
 const loadResultStage = () => import("./ResultStage");
 const loadOfferStage = () => import("./OfferStage");
@@ -40,6 +42,8 @@ function QuizJourney() {
   const analysisTimer = useRef<number | null>(null);
   const transition = useQuizSceneTransition(state.stageId, direction);
   const recommendation = calculateRecommendedPlan(state.answers);
+  const profileResult = calculateQuizResult(state.answers);
+  const profileId = profileResult?.id;
   const experiment = getQuizExperimentAssignment();
 
   const goTo = useCallback((stageId: QuizStageId, nextDirection: QuizDirection = "forward") => {
@@ -81,6 +85,7 @@ function QuizJourney() {
       sessionId: state.sessionId,
       stageId: transition.displayedStageId,
       ...(recommendation === null ? {} : { recommendedOfferId: recommendation.offerId }),
+      ...(profileId === undefined ? {} : { profileId, concernId: getConcernFromQuizAnswers(state.answers) }),
     }, transition.displayedStageId);
     if (transition.displayedStageId.startsWith("insight-")) {
       trackQuizEvent("quiz_insight_viewed", {
@@ -88,7 +93,7 @@ function QuizJourney() {
         stageId: transition.displayedStageId,
       }, transition.displayedStageId);
     }
-  }, [recommendation, state.sessionId, transition.displayedStageId, transition.phase]);
+  }, [profileId, recommendation, state.answers, state.sessionId, transition.displayedStageId, transition.phase]);
 
   useEffect(() => {
     if ((state.stageId === "result" || state.stageId === "offer") && recommendation === null) {
@@ -162,8 +167,9 @@ function QuizJourney() {
             trackQuizEvent("quiz_completed", {
               sessionId: state.sessionId,
               ...(recommendation === null ? {} : { recommendedOfferId: recommendation.offerId }),
+              ...(profileId === undefined ? {} : { profileId, concernId: getConcernFromQuizAnswers(state.answers) }),
             }, "completed");
-          }, 2200);
+          }, 1100);
           return;
         }
         goTo(getNextStage(stageId));
@@ -175,6 +181,7 @@ function QuizJourney() {
           sessionId: state.sessionId,
           stageId: "result",
           recommendedOfferId: recommendation.offerId,
+          ...(profileId === undefined ? {} : { profileId, concernId: getConcernFromQuizAnswers(state.answers) }),
         }, "routine-real");
         goTo("offer");
       }} />;
@@ -187,7 +194,12 @@ function QuizJourney() {
   })();
 
   return (
-    <div className="quiz-route q7" data-version="7.1.0" data-experiment-variant={experiment.variant}>
+    <div
+      className="quiz-route q7"
+      data-version="7.2.0"
+      data-current-stage={state.stageId}
+      data-experiment-variant={experiment.variant}
+    >
       <a className="q7-skip" href="#conteudo-quiz">Ir para o conteúdo do quiz</a>
       <QuizHeader
         stageId={state.stageId}

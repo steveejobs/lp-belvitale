@@ -9,7 +9,9 @@ export interface OfferContent {
   readonly cta: string;
 }
 
-export const quizOfferOrder = ["one-month", "three-months", "seven-months"] as const satisfies readonly OfferId[];
+// O kit de 210 dias permanece configurado para auditoria, mas não é publicado
+// enquanto seu preço por frasco for superior ao do kit de 90 dias.
+export const quizOfferOrder = ["one-month", "three-months"] as const satisfies readonly OfferId[];
 
 export const quizOffers: Readonly<Record<OfferId, OfferContent>> = {
   "one-month": {

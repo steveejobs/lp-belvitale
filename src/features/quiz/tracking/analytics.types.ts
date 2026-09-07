@@ -21,6 +21,9 @@ export interface QuizAnalyticsProperties {
   readonly concernId?: ConcernId;
   readonly recommendedOfferId?: OfferId;
   readonly selectedOfferId?: OfferId;
+  readonly recommended_offer?: OfferId;
+  readonly selected_offer?: OfferId;
+  readonly recommendation_override?: boolean;
   readonly rewardId?: string;
   readonly secondsRemaining?: number;
   readonly trafficSource?: string;

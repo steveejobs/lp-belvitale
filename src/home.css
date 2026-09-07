@@ -1062,12 +1062,21 @@
 
 .site .proof-gallery__dots {
   display: flex;
+  min-width: 0;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.4rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+}
+
+.site .proof-gallery__dots::-webkit-scrollbar {
+  display: none;
 }
 
 .site .proof-gallery__dot {
+  flex: 0 0 2.75rem;
   width: 2.75rem;
   height: 2.75rem;
   display: grid;

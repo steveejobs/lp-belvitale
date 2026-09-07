@@ -51,6 +51,7 @@ export function ProofCategoryGallery({ category, assets }: ProofCategoryGalleryP
   const galleryRef = useRef<HTMLDivElement>(null);
   const resumeTimerRef = useRef<number | null>(null);
   const pointerRef = useRef({ x: 0, y: 0 });
+  const swipeCommittedRef = useRef(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [galleryVisible, setGalleryVisible] = useState(false);
   const [pageVisible, setPageVisible] = useState(!document.hidden);
@@ -161,6 +162,7 @@ export function ProofCategoryGallery({ category, assets }: ProofCategoryGalleryP
 
   function pointerDown(event: PointerEvent<HTMLDivElement>) {
     pointerRef.current = { x: event.clientX, y: event.clientY };
+    swipeCommittedRef.current = false;
     setDragOffset(0);
     setDragging(true);
     pauseForInteraction();
@@ -173,6 +175,10 @@ export function ProofCategoryGallery({ category, assets }: ProofCategoryGalleryP
     const vertical = event.clientY - pointerRef.current.y;
     if (Math.abs(horizontal) <= Math.abs(vertical)) return;
     setDragOffset(Math.max(-96, Math.min(96, horizontal)));
+    if (!swipeCommittedRef.current && Math.abs(horizontal) >= 44 && Math.abs(horizontal) > Math.abs(vertical) * 1.15) {
+      swipeCommittedRef.current = true;
+      selectAsset(activeIndex + (horizontal < 0 ? 1 : -1));
+    }
   }
 
   function pointerEnd(event: PointerEvent<HTMLDivElement>) {
@@ -183,7 +189,7 @@ export function ProofCategoryGallery({ category, assets }: ProofCategoryGalleryP
     }
     setDragOffset(0);
     setDragging(false);
-    if (Math.abs(horizontal) >= 44 && Math.abs(horizontal) > Math.abs(vertical) * 1.15) {
+    if (!swipeCommittedRef.current && Math.abs(horizontal) >= 44 && Math.abs(horizontal) > Math.abs(vertical) * 1.15) {
       selectAsset(activeIndex + (horizontal < 0 ? 1 : -1));
     }
     resumeAfterInteraction();

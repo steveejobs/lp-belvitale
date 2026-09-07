@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef } from "react";
 import type { InsightTestimonialProof } from "../content/insights";
 import { InsightTestimonial } from "./InsightTestimonial";
 import { KineticText } from "./KineticText";
@@ -22,9 +22,7 @@ export function InsightStage({ sequence, eyebrow, title, explanation, cta, note,
 
   return (
     <section className="q7-insight" data-sequence={sequence} data-has-visual="true" aria-labelledby={`q7-insight-${String(sequence)}`}>
-      <div className="q7-insight__count" aria-hidden="true">
-        <span><i /><i /><i /></span><b>Leitura em movimento</b>
-      </div>
+      <p className="q7-insight__count">Leitura {sequence} de 3</p>
       <div className="q7-insight__copy">
         <p className="q7-step-label">{eyebrow}</p>
         <h1 id={`q7-insight-${String(sequence)}`} ref={titleRef} tabIndex={-1} aria-label={title}>
@@ -35,8 +33,8 @@ export function InsightStage({ sequence, eyebrow, title, explanation, cta, note,
         <div className="q7-insight__pattern">
           <div><span>O que você acabou de mostrar</span><b>respostas conectadas</b></div>
           <ol className="q7-insight__signals" aria-label="Respostas que sustentam esta leitura">
-            {signals.map((signal, index) => (
-              <li key={`${signal}-${String(index)}`} style={{ "--q7-signal": index } as CSSProperties}>
+            {signals.slice(0, 2).map((signal) => (
+              <li key={signal}>
                 <small aria-hidden="true">✓</small><span>{signal}</span>
               </li>
             ))}

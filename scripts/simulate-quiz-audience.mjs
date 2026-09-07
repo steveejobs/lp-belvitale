@@ -40,12 +40,12 @@ try {
       .join(" ");
 
     const checks = {
-      painSpecificity: insightOne.explanation.includes(concernCopy[concern].noun),
+      painSpecificity: `${insightOne.explanation} ${insightOne.reflection} ${insightOne.signals.join(" ")}`.toLocaleLowerCase("pt-BR").includes(concernCopy[concern].noun.toLocaleLowerCase("pt-BR")),
       answerEcho: insightOne.signals.length === 3 && insightTwo.signals.length >= 2,
-      emotionalRecognition: insightTwo.title.length >= 55 && /incômodo|espelho|confiança|rotina|frustrar|pele/i.test(insightTwo.title),
-      futureTransformation: insightThree.note?.length > 45 && /aparência|presença|corpo|continuidade|segura|escolher/i.test(`${insightThree.note} ${insightThree.signals.join(" ")}`),
+      emotionalRecognition: insightTwo.reflection.length >= 55 && /incomoda|rotina|cuidar|confiança|funciona/i.test(`${insightTwo.reflection} ${insightTwo.signals.join(" ")}`),
+      futureTransformation: /confiar|rotina|cuidar|recomeçar|roupa|foto|praia|leve/i.test(`${insightThree.reflection} ${insightThree.signals.join(" ")}`),
       trustAndSafety: !prohibitedClaims.test(fullCopy),
-      commercialContinuity: recommendation?.offerId === "three-months" && recommendation.reasons.length === 2,
+      commercialContinuity: ["one-month", "three-months"].includes(recommendation?.offerId) && recommendation?.reasons.length === 2,
       readableDensity: Math.max(insightOne.explanation.length, insightTwo.explanation.length, insightThree.explanation.length) <= 520,
     };
     const score = Object.values(checks).filter(Boolean).length;

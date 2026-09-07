@@ -12,17 +12,16 @@ export function AnalysisStage() {
 
   useEffect(() => {
     titleRef.current?.focus();
-    const timers = analysisSteps.map((_, index) => window.setTimeout(() => setCompleted(index + 1), 420 + index * 520));
+    const timers = analysisSteps.map((_, index) => window.setTimeout(() => setCompleted(index + 1), 180 + index * 280));
     return () => timers.forEach((timer) => window.clearTimeout(timer));
   }, []);
 
   return (
     <section className="q7-analysis" aria-labelledby="q7-analysis-title" role="status">
-      <div className="q7-analysis__orb" aria-hidden="true"><span /><i /></div>
       <div className="q7-analysis__copy">
         <p className="q7-step-label">Sua leitura está tomando forma</p>
         <h1 id="q7-analysis-title" ref={titleRef} tabIndex={-1}>Organizando o que você acabou de contar.</h1>
-        <p>Sem diagnóstico e sem respostas genéricas: apenas conectando as suas escolhas para devolver um retrato coerente.</p>
+        <p>Sem simular um diagnóstico: estamos apenas organizando as escolhas que você fez.</p>
         <ol>
           {analysisSteps.map((step, index) => (
             <li key={step} data-complete={index < completed} data-active={index === completed}>

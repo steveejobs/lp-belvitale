@@ -11,7 +11,7 @@ export const quizPromotion: QuizPromotion = {
     "one-month": {
       id: "one-month",
       checkoutUrl: checkoutUrls["one-month"],
-      regularPrice: 197,
+      regularPrice: 89.9,
       campaignPrice: 89.9,
       quantity: 1,
       approximateDays: 30,
@@ -22,7 +22,7 @@ export const quizPromotion: QuizPromotion = {
     "three-months": {
       id: "three-months",
       checkoutUrl: checkoutUrls["three-months"],
-      regularPrice: 591,
+      regularPrice: 169.9,
       campaignPrice: 169.9,
       quantity: 3,
       approximateDays: 90,
@@ -33,7 +33,7 @@ export const quizPromotion: QuizPromotion = {
     "seven-months": {
       id: "seven-months",
       checkoutUrl: checkoutUrls["seven-months"],
-      regularPrice: 1379,
+      regularPrice: 597,
       campaignPrice: 597,
       quantity: 7,
       approximateDays: 210,
@@ -48,8 +48,10 @@ export const quizPromotion: QuizPromotion = {
 };
 
 export const checkoutSnapshot = {
-  auditedAt: "2026-07-17T14:40:56.778Z",
-  source: "Estado inicial oficial incorporado ao HTML dos três checkouts Yampi",
+  auditedAt: "2026-09-07T16:48:49.647Z",
+  source: "Preços atuais visíveis nos três checkouts Yampi, em navegador limpo",
+  currentPriceVerified: true,
+  comparativePriceVerified: false,
   installmentVerified: false,
   couponVerified: false,
 } as const;

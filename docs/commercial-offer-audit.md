@@ -16,9 +16,16 @@ Validacao realizada em navegador limpo, sem compra, cadastro ou preenchimento de
 - maior presenca visual para o kit de 3 meses, sem alegacao de popularidade;
 - expressao `5 potes + 2 gratis`, confirmada pelo proprietario para a oferta atual.
 
+## Reauditoria de 07/09/2026
+
+- preços atuais visíveis: R$ 89,90, R$ 169,90 e R$ 597,00;
+- os três carrinhos abriram preenchidos com produto e quantidade corretos;
+- preço comparativo e parcelamento não apareceram;
+- o kit de 210 dias ficou economicamente dominado pelo kit de 90 dias no custo por frasco e foi retirado da comparação pública.
+
 ## Ainda bloqueado
 
-- preco, parcelas, juros, frete, prazo, estoque, economia, garantia e urgencia;
+- preço comparativo, parcelas, juros, frete, prazo, estoque, economia, garantia e urgencia;
 - republicacao das miniaturas de 290 px recuperadas da Yampi;
 - publicacao comercial em producao enquanto dados institucionais, regulatorios e legais estiverem pendentes.
 

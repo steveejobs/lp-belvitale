@@ -3,6 +3,7 @@ import { quizOffers } from "../content/offers";
 import type { QuizRecommendation } from "../domain/quiz.types";
 import { PriceStack } from "./PriceStack";
 import { CheckoutCTA } from "./CheckoutCTA";
+import { usageFact, warningFacts } from "../../../data/productFacts";
 
 interface OfferRecommendationProps {
   readonly offer: PromotionOffer;
@@ -28,6 +29,17 @@ export function OfferRecommendation({ offer, recommendation, onCheckout }: Offer
           <div><dt>≈ {offer.approximateDays}</dt><dd>dias*</dd></div>
         </dl>
         <small className="q7-offer-facts__note">*Considerando 2 cápsulas ao dia, conforme o rótulo.</small>
+        <section className="q7-offer-trust" aria-labelledby="q7-offer-trust-title">
+          <p className="q7-step-label">Antes de decidir</p>
+          <h3 id="q7-offer-trust-title">O que você está comprando — e quais são os limites.</h3>
+          <ul>
+            <li>Suplemento alimentar em cápsulas; não é medicamento.</li>
+            <li>{String(usageFact.totalCapsules)} cápsulas por frasco e uso informado de {String(usageFact.capsulesPerDay)} cápsulas ao dia.</li>
+            <li>Para adultos a partir de 19 anos.</li>
+            <li>{warningFacts.find((warning) => warning.id === "pregnancy-and-children")?.text}</li>
+          </ul>
+          <a href="/label/celuclin-label-complete.pdf" target="_blank" rel="noreferrer">Abrir rótulo completo</a>
+        </section>
         <div className="q7-offer-main__reasoning">
           <strong>Por que isso conversa com o seu resultado</strong>
           <ul>{recommendation.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>

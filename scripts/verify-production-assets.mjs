@@ -28,6 +28,11 @@ const proofFiles = [
   "proof/cellulite/cellulite-02.webp",
   "proof/cellulite/cellulite-03.webp",
   "proof/cellulite/cellulite-04.webp",
+  "proof/cellulite/cellulite-05.jpg",
+  "proof/cellulite/cellulite-06.jpg",
+  "proof/cellulite/cellulite-07.jpg",
+  "proof/cellulite/cellulite-08.jpg",
+  "proof/cellulite/cellulite-09.jpg",
   "proof/laxity/laxity-01.webp",
   "proof/laxity/laxity-02.webp",
   "proof/localized-fat/localized-fat-01.webp",
@@ -47,6 +52,10 @@ const homeMediaFiles = [
   "lifestyle/celuclin-hero.webp",
   "lifestyle/freedom-01.webp",
   "lifestyle/routine-01.webp",
+  "lifestyle/quiz-hero-confidence.jpg",
+  "lifestyle/quiz-desire-01.webp",
+  "lifestyle/quiz-desire-02.webp",
+  "lifestyle/quiz-desire-03.webp",
   "brand/belvitale-wordmark-dark.webp",
   "brand/belvitale-wordmark-light.webp",
   "brand/belvitale-monogram-light.webp",
@@ -230,8 +239,8 @@ try {
   const proofDisclaimer = page.locator(".proof-stories__disclaimer strong");
   assert.equal(await proofDisclaimer.count(), 1);
   assert.equal(
-    await proofDisclaimer.innerText(),
-    "Resultados reais autorizados. Experiências individuais podem variar.",
+    (await proofDisclaimer.textContent())?.trim(),
+    "Resultados reais autorizados. Experiências individuais podem variar. Identidade, data, duração e cronologia não foram fornecidas.",
   );
 
   await page.locator(".site-footer").scrollIntoViewIfNeeded();

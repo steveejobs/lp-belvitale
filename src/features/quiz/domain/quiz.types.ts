@@ -87,6 +87,7 @@ export interface QuizProfileResult {
 
 export interface QuizRecommendation {
   readonly offerId: OfferId;
+  readonly disposition: "standard" | "extended-ready";
   readonly reasons: readonly string[];
   readonly commercialInputs: Readonly<{
     historyOptionId: string;

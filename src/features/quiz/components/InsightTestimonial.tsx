@@ -12,7 +12,7 @@ export function InsightTestimonial({ proof }: { readonly proof: InsightTestimoni
 
   return (
     <aside className="q7-insight-proof" aria-label="Depoimento de cliente">
-      <div className="q7-insight-proof__eyebrow"><span aria-hidden="true" /><b>Relato relacionado</b><small>selecionado para esta leitura</small></div>
+      <div className="q7-insight-proof__eyebrow"><b>Relato autorizado</b><small>experiência individual</small></div>
       <button type="button" onClick={() => setOpen(true)} aria-label="Abrir depoimento completo">
         <img
           src={proof.src}
@@ -23,7 +23,7 @@ export function InsightTestimonial({ proof }: { readonly proof: InsightTestimoni
           loading="lazy"
           decoding="async"
         />
-        <span><b>Toque para ler</b><i aria-hidden="true">↗</i></span>
+        <span><b>Ver relato completo</b><i aria-hidden="true">→</i></span>
       </button>
 
       <dialog
