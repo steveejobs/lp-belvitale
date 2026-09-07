@@ -16,6 +16,7 @@ import { QuizProvider } from "../state/QuizProvider";
 import { useQuiz } from "../state/quiz.context";
 import { trackQuizEvent } from "../tracking/analytics.events";
 import { InsightStage } from "./InsightStage";
+import { AnalysisStage } from "./AnalysisStage";
 import { NameStage } from "./NameStage";
 import { QuestionStage } from "./QuestionStage";
 import { QuizHeader } from "./QuizHeader";
@@ -33,12 +34,16 @@ function QuizJourney() {
   const { state, dispatch, restart } = useQuiz();
   const [direction, setDirection] = useState<QuizDirection>("forward");
   const [confirming, setConfirming] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const advanceTimer = useRef<number | null>(null);
+  const analysisTimer = useRef<number | null>(null);
   const transition = useQuizSceneTransition(state.stageId, direction);
   const recommendation = calculateRecommendedPlan(state.answers);
 
   const goTo = useCallback((stageId: QuizStageId, nextDirection: QuizDirection = "forward") => {
     if (advanceTimer.current !== null) window.clearTimeout(advanceTimer.current);
+    if (analysisTimer.current !== null) window.clearTimeout(analysisTimer.current);
+    setIsAnalyzing(false);
     setConfirming(false);
     setDirection(nextDirection);
     dispatch({ type: "GO_TO", stageId });
@@ -51,6 +56,7 @@ function QuizJourney() {
 
   useEffect(() => () => {
     if (advanceTimer.current !== null) window.clearTimeout(advanceTimer.current);
+    if (analysisTimer.current !== null) window.clearTimeout(analysisTimer.current);
   }, []);
 
   useEffect(() => {
@@ -113,8 +119,10 @@ function QuizJourney() {
     trackQuizEvent("quiz_started", { sessionId: state.sessionId }, "started");
   };
 
+  const showAnalysis = isAnalyzing || (state.stageId === "result" && transition.displayedStageId === "insight-three");
   const content = (() => {
     const stageId = transition.displayedStageId;
+    if (showAnalysis) return <AnalysisStage />;
     if (stageId === "opening") return <QuizIntro onStart={start} />;
     if (stageId === "name") {
       return <NameStage initialName={state.firstName} onContinue={(name, provided) => {
@@ -144,12 +152,16 @@ function QuizJourney() {
       const insight = buildPersonalizedInsight(sequence, state.answers);
       return <InsightStage {...insight} onContinue={() => {
         if (stageId === "insight-three") {
-          const now = new Date().toISOString();
-          dispatch({ type: "COMPLETE", now });
-          trackQuizEvent("quiz_completed", {
-            sessionId: state.sessionId,
-            ...(recommendation === null ? {} : { recommendedOfferId: recommendation.offerId }),
-          }, "completed");
+          setIsAnalyzing(true);
+          analysisTimer.current = window.setTimeout(() => {
+            const now = new Date().toISOString();
+            setIsAnalyzing(false);
+            dispatch({ type: "COMPLETE", now });
+            trackQuizEvent("quiz_completed", {
+              sessionId: state.sessionId,
+              ...(recommendation === null ? {} : { recommendedOfferId: recommendation.offerId }),
+            }, "completed");
+          }, 2200);
           return;
         }
         goTo(getNextStage(stageId));
@@ -195,7 +207,7 @@ function QuizJourney() {
         reducedMotion={transition.reducedMotion}
       >
         <Suspense fallback={<div className="q7-loading" role="status">Preparando esta parte…</div>}>
-          <div key={transition.displayedStageId}>{content}</div>
+          <div key={`${transition.displayedStageId}-${showAnalysis ? "analysis" : "content"}`}>{content}</div>
         </Suspense>
       </QuizShell>
       <div className="q7-announcer sr-only" aria-live="polite">

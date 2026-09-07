@@ -11,6 +11,7 @@ import { calculatePrice } from "../../src/features/quiz/pricing/pricing.calculat
 import { issueReward } from "../../src/features/quiz/reward/reward.engine";
 import { calculatePromotionTime } from "../../src/features/quiz/timer/timer.machine";
 import { quizQuestions } from "../../src/features/quiz/content/questions";
+import { quizTestimonials } from "../../src/features/quiz/content/testimonials";
 
 async function waitForHeading(page: Page, name: RegExp) {
   await expect(page.getByRole("heading", { name })).toBeVisible();
@@ -51,6 +52,11 @@ test.describe("domínio do Quiz CeluClin 7.0", () => {
     expect(quizQuestions).toHaveLength(12);
     expect(quizQuestionIds).toHaveLength(12);
     expect(quizStageDefinitions.every((stage) => stage.kind.length > 0)).toBe(true);
+  });
+
+  test("publica todas as conversas uma única vez", () => {
+    expect(quizTestimonials).toHaveLength(42);
+    expect(new Set(quizTestimonials.map((testimonial) => testimonial.src)).size).toBe(42);
   });
 
   test("sanitiza e limita o primeiro nome", () => {
@@ -147,6 +153,8 @@ test.describe("experiência mobile", () => {
     await expect(page.getByRole("heading", { name: /Registros de aparência da celulite/ })).toBeVisible();
     await expect(page.locator(".q7-result-proof__rail img")).toHaveCount(3);
     await expect(page.getByText("Resultados reais autorizados. Experiências individuais podem variar.")).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Antes de acreditar em uma promessa/ })).toBeVisible();
+    await expect(page.getByRole("button", { name: /Ver grupo/ })).toHaveCount(7);
     await expect(page.getByRole("heading", { name: /Você já entendeu o padrão/ })).toBeVisible();
     await choose(page, /Quero ver o próximo passo/);
     await waitForHeading(page, /Agora escolha por quanto tempo/);

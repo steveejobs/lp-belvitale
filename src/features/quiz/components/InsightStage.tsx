@@ -21,6 +21,11 @@ interface InsightStageProps {
 export function InsightStage({ sequence, eyebrow, title, explanation, cta, note, signals, image, onContinue }: InsightStageProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => { titleRef.current?.focus(); }, [sequence]);
+  const signalLabels = sequence === 1
+    ? ["O que aparece", "O pensamento automático", "Onde isso pesa"]
+    : sequence === 2
+      ? ["Sua reação", "O gatilho do ciclo"]
+      : ["O que deixar", "O que construir", "O que recuperar"];
 
   return (
     <section className="q7-insight" data-sequence={sequence} data-has-visual={image !== undefined} aria-labelledby={`q7-insight-${String(sequence)}`}>
@@ -31,10 +36,15 @@ export function InsightStage({ sequence, eyebrow, title, explanation, cta, note,
           {title}
         </h1>
         <p>{explanation}</p>
-        <ul className="q7-insight__signals" aria-label="Respostas que sustentam esta leitura">
-          {signals.map((signal) => <li key={signal}>{signal}</li>)}
-        </ul>
-        {note === undefined ? null : <p className="q7-insight__note">{note}</p>}
+        <div className="q7-insight__pattern">
+          <div><span>Seu padrão, em uma linha</span><b>{signals.length}/{signals.length} sinais conectados</b></div>
+          <ol className="q7-insight__signals" aria-label="Respostas que sustentam esta leitura">
+            {signals.map((signal, index) => (
+              <li key={signal}><small>{signalLabels[index]}</small><span>{signal}</span></li>
+            ))}
+          </ol>
+        </div>
+        {note === undefined ? null : <aside className="q7-insight__note"><span aria-hidden="true">↳</span><p><b>A virada possível</b>{note}</p></aside>}
       </div>
       {image === undefined ? null : (
         <figure className="q7-insight__visual">

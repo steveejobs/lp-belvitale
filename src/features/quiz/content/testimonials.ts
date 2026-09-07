@@ -1,0 +1,51 @@
+export interface QuizTestimonial {
+  readonly id: string;
+  readonly src: string;
+  readonly width: number;
+  readonly height: number;
+}
+
+export const quizTestimonials: readonly QuizTestimonial[] = [
+  { id: "conversa-01", src: "/testimonials/conversa-01.webp", width: 720, height: 658 },
+  { id: "conversa-02", src: "/testimonials/conversa-02.webp", width: 720, height: 1279 },
+  { id: "conversa-03", src: "/testimonials/conversa-03.webp", width: 720, height: 1279 },
+  { id: "conversa-04", src: "/testimonials/conversa-04.webp", width: 720, height: 1279 },
+  { id: "conversa-05", src: "/testimonials/conversa-05.webp", width: 720, height: 1279 },
+  { id: "conversa-06", src: "/testimonials/conversa-06.webp", width: 720, height: 1279 },
+  { id: "conversa-07", src: "/testimonials/conversa-07.webp", width: 720, height: 1279 },
+  { id: "conversa-08", src: "/testimonials/conversa-08.webp", width: 720, height: 1279 },
+  { id: "conversa-09", src: "/testimonials/conversa-09.webp", width: 720, height: 1279 },
+  { id: "conversa-10", src: "/testimonials/conversa-10.webp", width: 720, height: 1279 },
+  { id: "conversa-11", src: "/testimonials/conversa-11.webp", width: 720, height: 1279 },
+  { id: "conversa-12", src: "/testimonials/conversa-12.webp", width: 720, height: 1279 },
+  { id: "conversa-13", src: "/testimonials/conversa-13.webp", width: 720, height: 1279 },
+  { id: "conversa-14", src: "/testimonials/conversa-14.webp", width: 720, height: 1405 },
+  { id: "conversa-15", src: "/testimonials/conversa-15.webp", width: 720, height: 1440 },
+  { id: "conversa-16", src: "/testimonials/conversa-16.webp", width: 720, height: 1440 },
+  { id: "conversa-17", src: "/testimonials/conversa-17.webp", width: 720, height: 1440 },
+  { id: "conversa-18", src: "/testimonials/conversa-18.webp", width: 720, height: 1440 },
+  { id: "conversa-19", src: "/testimonials/conversa-19.webp", width: 720, height: 1440 },
+  { id: "conversa-20", src: "/testimonials/conversa-20.webp", width: 720, height: 1440 },
+  { id: "conversa-21", src: "/testimonials/conversa-21.webp", width: 720, height: 1440 },
+  { id: "conversa-22", src: "/testimonials/conversa-22.webp", width: 720, height: 1563 },
+  { id: "conversa-23", src: "/testimonials/conversa-23.webp", width: 720, height: 1563 },
+  { id: "conversa-24", src: "/testimonials/conversa-24.webp", width: 720, height: 1604 },
+  { id: "conversa-25", src: "/testimonials/conversa-25.webp", width: 720, height: 1080 },
+  { id: "conversa-26", src: "/testimonials/conversa-26.webp", width: 720, height: 1561 },
+  { id: "conversa-27", src: "/testimonials/conversa-27.webp", width: 720, height: 1563 },
+  { id: "conversa-28", src: "/testimonials/conversa-28.webp", width: 720, height: 755 },
+  { id: "conversa-29", src: "/testimonials/conversa-29.webp", width: 720, height: 739 },
+  { id: "conversa-30", src: "/testimonials/conversa-30.webp", width: 720, height: 1279 },
+  { id: "conversa-31", src: "/testimonials/conversa-31.webp", width: 720, height: 768 },
+  { id: "conversa-32", src: "/testimonials/conversa-32.webp", width: 720, height: 739 },
+  { id: "conversa-33", src: "/testimonials/conversa-33.webp", width: 720, height: 1563 },
+  { id: "conversa-34", src: "/testimonials/conversa-34.webp", width: 720, height: 1440 },
+  { id: "conversa-35", src: "/testimonials/conversa-35.webp", width: 720, height: 1563 },
+  { id: "conversa-36", src: "/testimonials/conversa-36.webp", width: 720, height: 1563 },
+  { id: "conversa-37", src: "/testimonials/conversa-37.webp", width: 720, height: 1563 },
+  { id: "conversa-38", src: "/testimonials/conversa-38.webp", width: 720, height: 1279 },
+  { id: "conversa-39", src: "/testimonials/conversa-39.webp", width: 720, height: 1563 },
+  { id: "conversa-40", src: "/testimonials/conversa-40.webp", width: 720, height: 1561 },
+  { id: "conversa-41", src: "/testimonials/conversa-41.webp", width: 720, height: 1563 },
+  { id: "conversa-42", src: "/testimonials/conversa-42.webp", width: 720, height: 1563 },
+];

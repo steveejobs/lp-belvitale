@@ -3,6 +3,7 @@ import { concernCopy, getConcernFromQuizAnswers } from "../content/insights";
 import { getQuizOption } from "../content/questions";
 import type { QuizAnswers, QuizRecommendation } from "../domain/quiz.types";
 import { ResultProof } from "./ResultProof";
+import { TestimonialsGallery } from "./TestimonialsGallery";
 
 interface ResultStageProps {
   readonly name: string;
@@ -60,6 +61,8 @@ export function ResultStage({ name, answers, recommendation, onContinue }: Resul
         <h2>Parar de usar a frustração como combustível.</h2>
         <p>{interruption ?? "Sua rotina já mostrou que intensidade não sustenta continuidade."} Você não precisa esperar outra foto, outra roupa ou outro dia ruim para voltar a se escolher. Precisa de um gesto claro, simples e repetível — inclusive quando a semana não coopera.</p>
       </section>
+
+      <TestimonialsGallery />
 
       <ResultProof concern={concern} />
 
