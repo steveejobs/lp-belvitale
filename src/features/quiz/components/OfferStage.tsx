@@ -49,9 +49,8 @@ export function OfferStage({ sessionId, recommendation, selectedOfferId, onSelec
   return (
     <article className="q7-offer">
       <header className="q7-offer__intro">
-        <p className="q7-step-label">Você chegou à decisão</p>
-        <h1>Agora escolha por quanto tempo você quer parar de transformar cuidado em <em>“depois eu começo”.</em></h1>
-        <p>Seu resultado aponta para continuidade, não intensidade. Por isso, 90 dias aparecem primeiro — mas você pode comparar 1, 3 ou 7 frascos com total transparência.</p>
+        <p className="q7-step-label">Nossa sugestão</p>
+        <h1>Nossa sugestão para quem busca <em>constância sem complicar a rotina.</em></h1>
       </header>
       <OfferRecommendation offer={offer} recommendation={displayedRecommendation} onCheckout={checkout} />
       <OfferComparison

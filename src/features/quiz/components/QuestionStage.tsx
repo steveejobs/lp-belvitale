@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { QuizQuestion } from "../domain/quiz.types";
 import { ChoiceCard } from "./ChoiceCard";
+import { KineticText } from "./KineticText";
 
 interface QuestionStageProps {
   readonly question: QuizQuestion;
@@ -15,16 +16,18 @@ export function QuestionStage({ question, selectedOptionId, isConfirming, onSele
   useEffect(() => { titleRef.current?.focus(); }, [question.id]);
 
   return (
-    <section className="q7-question" data-presentation={question.presentation} aria-labelledby={`q7-question-${question.id}`}>
+    <section className="q7-question" data-presentation={question.presentation} data-confirming={isConfirming} aria-labelledby={`q7-question-${question.id}`}>
       <header className="q7-question__header">
         <div className="q7-question__meta">
           <p>{question.block}</p>
-          <span>{question.eyebrow}</span>
+          <span aria-hidden="true"><i /><i /><i /></span>
         </div>
-        <h1 id={`q7-question-${question.id}`} ref={titleRef} tabIndex={-1}>{question.prompt}</h1>
+        <h1 id={`q7-question-${question.id}`} ref={titleRef} tabIndex={-1} aria-label={question.prompt}>
+          <KineticText text={question.prompt} />
+        </h1>
         {question.hint === undefined ? null : <p className="q7-question__hint">{question.hint}</p>}
       </header>
-      <div className="q7-choices" role="group" aria-label="Opções de resposta">
+      <div className="q7-choices" role="group" aria-label="Opções de resposta" aria-busy={isConfirming}>
         {question.options.map((option, index) => {
           const selected = option.id === selectedOptionId;
           return (
@@ -43,7 +46,11 @@ export function QuestionStage({ question, selectedOptionId, isConfirming, onSele
       {!question.autoAdvance && selectedOptionId !== undefined ? (
         <button className="q7-primary q7-question__continue" type="button" onClick={onContinue}>Continuar</button>
       ) : null}
-      <p className="q7-question__footnote">Não existe resposta certa. Escolha a que mais se aproxima de você.</p>
+      {isConfirming && selectedOptionId !== undefined ? (
+        <div className="q7-answer-confirmation" role="status">
+          <span aria-hidden="true">✓</span><p><b>Entendi.</b> Vamos conectar essa resposta.</p><i aria-hidden="true" />
+        </div>
+      ) : null}
     </section>
   );
 }

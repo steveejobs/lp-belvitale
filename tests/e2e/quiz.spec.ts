@@ -23,27 +23,27 @@ async function choose(page: Page, name: RegExp) {
 
 async function completeToResult(page: Page) {
   await page.goto("/quiz");
-  await choose(page, /Quero entender o que está por trás/);
+  await choose(page, /Começar agora|Descobrir meu caminho/);
   await choose(page, /Prefiro continuar sem informar/);
-  await choose(page, /celulite e as ondulações/);
+  await choose(page, /Quando experimento uma roupa/);
   await choose(page, /Depois eu resolvo/);
   await choose(page, /Na hora de me vestir/);
-  await waitForHeading(page, /Não é que isso incomode o tempo todo/);
-  await choose(page, /Quero ir mais fundo/);
+  await waitForHeading(page, /Até aqui, percebemos uma coisa interessante/);
+  await choose(page, /^Continuar/);
   await choose(page, /Troco de roupa/);
   await choose(page, /Algumas vezes/);
-  await choose(page, /Me culpar por nunca conseguir/);
-  await choose(page, /quebrei mais uma promessa/);
-  await waitForHeading(page, /A rotina falha quando exige/);
-  await choose(page, /É exatamente isso/);
-  await choose(page, /Começo cheia de vontade/);
-  await choose(page, /semana aperta/);
-  await choose(page, /Minha rotina/);
-  await choose(page, /liberdade de usar aquela roupa/);
-  await choose(page, /provar para mim/);
-  await waitForHeading(page, /Você não precisa de outra promessa/);
-  await choose(page, /Ver a minha leitura/);
-  await waitForHeading(page, /Não é só a celulite/);
+  await choose(page, /Não conseguir manter uma rotina/);
+  await choose(page, /Prometi a mim mesma/);
+  await waitForHeading(page, /Talvez o problema nunca tenha sido falta de vontade/);
+  await choose(page, /Faz sentido/);
+  await choose(page, /Começo animada e paro depois/);
+  await choose(page, /Falta de tempo/);
+  await choose(page, /Quero algo simples/);
+  await choose(page, /Usaria aquela roupa guardada/);
+  await choose(page, /Quero criar uma rotina/);
+  await waitForHeading(page, /Sua dificuldade parece estar menos ligada à disciplina/);
+  await choose(page, /Ver meu resultado/);
+  await waitForHeading(page, /O seu maior desafio hoje não parece ser a celulite/);
 }
 
 test.describe("domínio do Quiz CeluClin 7.0", () => {
@@ -115,10 +115,19 @@ test.describe("domínio do Quiz CeluClin 7.0", () => {
     const url = new URL(buildCheckoutUrl(
       quizPromotion.offers["three-months"].checkoutUrl,
       "?utm_source=meta&utm_campaign=quiz-v7&utm_content=video-a",
-      { campaignId: quizPromotion.id, offerId: "three-months" },
+      {
+        campaignId: quizPromotion.id,
+        offerId: "three-months",
+        experimentId: "opening-cta-v1",
+        experimentVariant: "b",
+        experimentMode: "randomized",
+      },
     ));
     expect(url.searchParams.get("utm_source")).toBe("meta");
     expect(url.searchParams.get("campaignId")).toBe(quizPromotion.id);
+    expect(url.searchParams.get("metadata[ab_experiment]")).toBe("opening-cta-v1");
+    expect(url.searchParams.get("metadata[ab_variant]")).toBe("b");
+    expect(url.searchParams.get("metadata[ab_mode]")).toBe("randomized");
   });
 
   test("reprova sessão expirada e aceita schema v7 íntegro", () => {
@@ -146,18 +155,26 @@ test.describe("experiência mobile", () => {
     await page.reload();
   });
 
+  test("mantém o progresso visual sem exibir números de etapas", async ({ page }) => {
+    const visibleStageCount = /\b\d+\s*(?:de|\/)\s*\d+\b/i;
+
+    await expect(page.locator("body")).not.toContainText(visibleStageCount);
+    await choose(page, /Começar agora|Descobrir meu caminho/);
+    await expect(page.getByRole("heading", { name: /Como posso te chamar/ })).toBeVisible();
+    await expect(page.locator("body")).not.toContainText(visibleStageCount);
+    await choose(page, /Prefiro continuar sem informar/);
+    await expect(page.getByRole("heading", { name: /Quando você percebe mais a celulite/ })).toBeVisible();
+    await expect(page.locator("body")).not.toContainText(visibleStageCount);
+  });
+
   test("conclui a conversa, mostra resultado sustentado e alcança checkout", async ({ page }) => {
     await completeToResult(page);
     expect(page.url()).toContain("/quiz/resultado");
-    await expect(page.getByText(/Troco de roupa até/)).toBeVisible();
-    await expect(page.getByRole("heading", { name: /Registros de aparência da celulite/ })).toBeVisible();
-    await expect(page.locator(".q7-result-proof__rail img")).toHaveCount(3);
-    await expect(page.getByText("Resultados reais autorizados. Experiências individuais podem variar.")).toBeVisible();
-    await expect(page.getByRole("heading", { name: /Antes de acreditar em uma promessa/ })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Ver grupo/ })).toHaveCount(7);
-    await expect(page.getByRole("heading", { name: /Você já entendeu o padrão/ })).toBeVisible();
-    await choose(page, /Quero ver o próximo passo/);
-    await waitForHeading(page, /Agora escolha por quanto tempo/);
+    await expect(page.getByText(/Você já reconhece o momento/)).toBeVisible();
+    await expect(page.getByText(/Você busca algo que caiba na rotina real/)).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Quando o cuidado encontra espaço na rotina/ })).toBeVisible();
+    await choose(page, /^Continuar/);
+    await waitForHeading(page, /Nossa sugestão para quem busca/);
     await expect(page.getByRole("heading", { name: /90 dias/ })).toBeVisible();
     await expect(page.getByText("180", { exact: true })).toBeVisible();
     await expect(page.getByText("R$ 169,90").first()).toBeVisible();
@@ -165,25 +182,25 @@ test.describe("experiência mobile", () => {
   });
 
   test("voltar preserva e permite trocar resposta", async ({ page }) => {
-    await choose(page, /Quero entender o que está por trás/);
+    await choose(page, /Começar agora|Descobrir meu caminho/);
     await choose(page, /Prefiro continuar sem informar/);
-    await choose(page, /celulite e as ondulações/);
-    await waitForHeading(page, /qual frase passa pela sua cabeça/);
+    await choose(page, /Quando experimento uma roupa/);
+    await waitForHeading(page, /Qual pensamento costuma aparecer primeiro/);
     await page.getByRole("button", { name: /Voltar à etapa anterior/ }).click();
-    await waitForHeading(page, /O que mais chama sua atenção/);
-    await expect(page.getByRole("button", { name: /celulite e as ondulações/ })).toHaveAttribute("aria-pressed", "true");
-    await choose(page, /flacidez e a perda/);
-    await waitForHeading(page, /qual frase passa pela sua cabeça/);
+    await waitForHeading(page, /Quando você percebe mais a celulite/);
+    await expect(page.getByRole("button", { name: /Quando experimento uma roupa/ })).toHaveAttribute("aria-pressed", "true");
+    await choose(page, /Quando vejo uma foto minha/);
+    await waitForHeading(page, /Qual pensamento costuma aparecer primeiro/);
   });
 
   test("refresh preserva etapa, resposta e nome opcional", async ({ page }) => {
-    await choose(page, /Quero entender o que está por trás/);
+    await choose(page, /Começar agora|Descobrir meu caminho/);
     await page.getByLabel("Seu primeiro nome").fill("Marina");
     await choose(page, /^Continuar/);
-    await choose(page, /celulite e as ondulações/);
-    await waitForHeading(page, /qual frase passa pela sua cabeça/);
+    await choose(page, /Quando experimento uma roupa/);
+    await waitForHeading(page, /Qual pensamento costuma aparecer primeiro/);
     await page.reload();
-    await waitForHeading(page, /qual frase passa pela sua cabeça/);
+    await waitForHeading(page, /Qual pensamento costuma aparecer primeiro/);
     const stored = await page.evaluate(() => localStorage.getItem("belvitale.quiz.v7"));
     expect(stored).toContain("Marina");
   });
@@ -192,41 +209,79 @@ test.describe("experiência mobile", () => {
     const secondPage = await context.newPage();
     await secondPage.setViewportSize({ width: 390, height: 844 });
     await secondPage.goto("/quiz");
-    await choose(page, /Quero entender o que está por trás/);
+    await choose(page, /Começar agora|Descobrir meu caminho/);
     await expect(secondPage.getByRole("heading", { name: /Como posso te chamar/ })).toBeVisible();
     await choose(page, /Prefiro continuar sem informar/);
-    await expect(secondPage.getByRole("heading", { name: /O que mais chama sua atenção/ })).toBeVisible();
+    await expect(secondPage.getByRole("heading", { name: /Quando você percebe mais a celulite/ })).toBeVisible();
     await secondPage.close();
   });
 
   test("rejeita UTM com possível dado pessoal e não tem overflow horizontal", async ({ page }) => {
     await page.goto("/quiz?utm_source=contato%40email.com&utm_campaign=12345678");
-    await expect(page.getByRole("heading", { name: /Quanto da sua vida/ })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Quero entender o que está por trás/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Descubra por que cuidar de você/ })).toBeVisible();
+    await expect(page.getByRole("button", { name: /Começar agora|Descobrir meu caminho/ })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   });
 
   test("mantém controles tocáveis e reduced motion legível", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.reload();
-    await expect(page.getByRole("heading", { name: /Quanto da sua vida/ })).toBeVisible();
-    await choose(page, /Quero entender o que está por trás/);
+    await expect(page.getByRole("heading", { name: /Descubra por que cuidar de você/ })).toBeVisible();
+    await choose(page, /Começar agora|Descobrir meu caminho/);
     const geometry = await page.locator("button:visible, a:visible").evaluateAll((elements) => elements.map((element) => element.getBoundingClientRect().height));
     expect(Math.min(...geometry)).toBeGreaterThanOrEqual(44);
     await expect(page.locator(".q7-stage")).toHaveAttribute("data-reduced-motion", "true");
   });
 
   test("funciona em telefone de 375 px e em orientação horizontal", async ({ page }) => {
+    await page.addInitScript(() => localStorage.clear());
+
     for (const viewport of [{ width: 375, height: 667 }, { width: 844, height: 390 }]) {
       await page.setViewportSize(viewport);
       await page.goto("/quiz");
-      await page.evaluate(() => localStorage.clear());
-      await page.reload();
-      await expect(page.getByRole("heading", { name: /Quanto da sua vida/ })).toBeVisible();
+      await expect(page.getByRole("heading", { name: /Descubra por que cuidar de você/ })).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(viewport.width);
-      await choose(page, /Quero entender o que está por trás/);
+      await choose(page, /Começar agora|Descobrir meu caminho/);
       await expect(page.getByRole("heading", { name: /Como posso te chamar/ })).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(viewport.width);
     }
+  });
+});
+
+test.describe("experimento A/B do quiz", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/quiz");
+    await page.evaluate(() => localStorage.clear());
+  });
+
+  test("permite conferir A e B por links forçados sem misturar a experiência", async ({ page }) => {
+    await page.goto("/quiz?ab=a");
+    await expect(page.locator("[data-experiment-variant='a']")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Começar agora" })).toHaveAttribute("data-ab-variant", "a");
+
+    await page.goto("/quiz?ab=b");
+    await expect(page.locator("[data-experiment-variant='b']")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Descobrir meu caminho" })).toHaveAttribute("data-ab-variant", "b");
+  });
+
+  test("mantém a variante aleatória estável durante o retorno", async ({ page }) => {
+    await page.goto("/quiz");
+    const initial = await page.locator(".quiz-route").getAttribute("data-experiment-variant");
+    expect(initial === "a" || initial === "b").toBe(true);
+    await page.reload();
+    await expect(page.locator(".quiz-route")).toHaveAttribute("data-experiment-variant", initial ?? "");
+  });
+
+  test("separa visitas de QA e apresenta o funil no painel", async ({ page }) => {
+    await page.goto("/quiz?ab=b");
+    await expect(page.getByRole("heading", { name: /Descubra por que cuidar de você/ })).toBeVisible();
+    await page.goto("/quiz/analytics");
+    await expect(page.getByRole("heading", { name: /O que as pessoas fazem/ })).toBeVisible();
+    await expect(page.locator(".ab-dashboard__metrics article").first()).toContainText("B 0");
+
+    await page.getByRole("button", { name: "Carregar demonstração" }).click();
+    await expect(page.locator(".ab-dashboard__metrics article").first()).toContainText("240");
+    await expect(page.getByRole("heading", { name: /Variante B lidera nos cliques/ })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1280);
   });
 });

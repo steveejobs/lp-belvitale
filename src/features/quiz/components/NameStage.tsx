@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type SyntheticEvent } from "react";
 import { sanitizeFirstName } from "../domain/quiz.validation";
+import { KineticText } from "./KineticText";
 
 interface NameStageProps {
   readonly initialName: string;
@@ -17,10 +18,12 @@ export function NameStage({ initialName, onContinue }: NameStageProps) {
     onContinue(safe, safe.length > 0);
   };
 
+  const title = "Como posso te chamar?";
+
   return (
     <section className="q7-name" aria-labelledby="q7-name-title">
       <p className="q7-step-label">Antes de começarmos</p>
-      <h1 id="q7-name-title" ref={titleRef} tabIndex={-1}>Como posso te chamar?</h1>
+      <h1 id="q7-name-title" ref={titleRef} tabIndex={-1} aria-label={title}><KineticText text={title} accentFrom={3} /></h1>
       <p>É opcional. Se você informar seu nome, a experiência fica mais personalizada.</p>
       <form onSubmit={submit}>
         <label htmlFor="q7-first-name">Seu primeiro nome</label>
@@ -34,7 +37,7 @@ export function NameStage({ initialName, onContinue }: NameStageProps) {
           placeholder="Ex.: Marina"
           autoFocus
         />
-        <button className="q7-primary" type="submit">Continuar <span aria-hidden="true">→</span></button>
+        <button className="q7-primary" type="submit"><span>Continuar</span><i aria-hidden="true">→</i></button>
         <button className="q7-text-button" type="button" onClick={() => onContinue("", false)}>
           Prefiro continuar sem informar
         </button>

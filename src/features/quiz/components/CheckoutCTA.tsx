@@ -3,6 +3,7 @@ import { quizPromotion } from "../campaign/campaign.config";
 import { buildCheckoutUrl } from "../checkout/checkout.utm";
 import { isOfficialCheckoutUrl } from "../checkout/checkout.validation";
 import { quizOffers } from "../content/offers";
+import { getQuizExperimentAssignment } from "../experiment/quiz.experiment";
 
 interface CheckoutCTAProps {
   readonly offer: PromotionOffer;
@@ -13,10 +14,14 @@ interface CheckoutCTAProps {
 
 export function CheckoutCTA({ offer, rewardId, onClick, className = "" }: CheckoutCTAProps) {
   const valid = isOfficialCheckoutUrl(offer.id, offer.checkoutUrl);
+  const experiment = getQuizExperimentAssignment();
   const href = valid
     ? buildCheckoutUrl(offer.checkoutUrl, window.location.search, {
         campaignId: quizPromotion.id,
         offerId: offer.id,
+        experimentId: experiment.experimentId,
+        experimentVariant: experiment.variant,
+        experimentMode: experiment.source === "forced" ? "qa" : "randomized",
         ...(rewardId === undefined ? {} : { rewardId }),
       })
     : undefined;

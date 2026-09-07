@@ -1759,15 +1759,23 @@
 }
 
 .site .site-footer__brand > a {
-  width: 9.5rem;
+  width: fit-content;
   min-height: 2.75rem;
   display: inline-flex;
   align-items: center;
+  gap: 0.7rem;
+  color: #fff;
+  font-family: var(--display);
+  font-size: 1.35rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
 }
 
 .site .site-footer__brand img {
-  width: 9.5rem;
-  height: auto;
+  width: 3.25rem;
+  height: 3.25rem;
+  object-fit: contain;
+  filter: invert(1);
 }
 
 .site .site-footer__brand p {

@@ -1,5 +1,5 @@
 param(
-  [string]$Source = "galeria belvitale\logos belvitale\logo sem fundo preta.png",
+  [string]$Source = "public\brand\belvitale-monogram-black-transparent.png",
   [string]$OutputDirectory = "public"
 )
 
@@ -12,7 +12,27 @@ $outputPath = (Resolve-Path -LiteralPath $OutputDirectory).Path
 $sourceBitmap = [System.Drawing.Bitmap]::FromFile($sourcePath)
 
 try {
-  $contentBounds = [System.Drawing.Rectangle]::FromLTRB(137, 86, 391, 342)
+  $minX = $sourceBitmap.Width
+  $minY = $sourceBitmap.Height
+  $maxX = -1
+  $maxY = -1
+
+  for ($sourceY = 0; $sourceY -lt $sourceBitmap.Height; $sourceY++) {
+    for ($sourceX = 0; $sourceX -lt $sourceBitmap.Width; $sourceX++) {
+      if ($sourceBitmap.GetPixel($sourceX, $sourceY).A -gt 12) {
+        if ($sourceX -lt $minX) { $minX = $sourceX }
+        if ($sourceX -gt $maxX) { $maxX = $sourceX }
+        if ($sourceY -lt $minY) { $minY = $sourceY }
+        if ($sourceY -gt $maxY) { $maxY = $sourceY }
+      }
+    }
+  }
+
+  if ($maxX -lt 0) {
+    throw "O monograma nao possui pixels visiveis."
+  }
+
+  $contentBounds = [System.Drawing.Rectangle]::FromLTRB($minX, $minY, $maxX + 1, $maxY + 1)
   $markBitmap = [System.Drawing.Bitmap]::new(
     $contentBounds.Width,
     $contentBounds.Height,

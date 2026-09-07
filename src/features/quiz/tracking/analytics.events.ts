@@ -1,4 +1,5 @@
 import { quizPromotion } from "../campaign/campaign.config";
+import { getQuizExperimentAssignment } from "../experiment/quiz.experiment";
 import type { QuizAnalyticsEvent, QuizAnalyticsProperties, QuizTrackedEvent } from "./analytics.types";
 import { dispatchToAnalyticsAdapters } from "./analytics.adapter";
 
@@ -39,7 +40,7 @@ export function trackQuizEvent(
     properties: {
       ...properties,
       campaignId: quizPromotion.id,
-      experimentVariant: "consultoria-conversa-v7",
+      experimentVariant: getQuizExperimentAssignment().variant,
       deviceClass: typeof window !== "undefined" && window.matchMedia("(max-width: 47.99rem)").matches ? "mobile" : "desktop",
       utm: attribution(),
     },

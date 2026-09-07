@@ -68,6 +68,9 @@ function serveQuizHtmlEntries(): Plugin {
     if (normalized === "/quiz/resultado") {
       return `/quiz/resultado/index.html${url.search}`;
     }
+    if (normalized === "/quiz/analytics") {
+      return `/quiz/analytics/index.html${url.search}`;
+    }
     return undefined;
   }
 
@@ -273,6 +276,7 @@ export default defineConfig(({ command, mode }) => {
         input: {
           main: path.resolve(rootDirectory, "index.html"),
           quiz: path.resolve(rootDirectory, "quiz", "index.html"),
+          quizAnalytics: path.resolve(rootDirectory, "quiz", "analytics", "index.html"),
           quizResult: path.resolve(
             rootDirectory,
             "quiz",

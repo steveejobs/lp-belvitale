@@ -5,12 +5,12 @@ import { calculateRecommendedPlan } from "../domain/quiz.recommendation";
 import { getNextStage, getPreviousStage } from "../domain/quiz.machine";
 import {
   quizQuestionIds,
-  quizStageIds,
   type QuizDirection,
   type QuizQuestionId,
   type QuizStageId,
 } from "../domain/quiz.types";
 import { quizMotion } from "../motion/motion.tokens";
+import { getQuizExperimentAssignment } from "../experiment/quiz.experiment";
 import { useQuizSceneTransition } from "../motion/useQuizSceneTransition";
 import { QuizProvider } from "../state/QuizProvider";
 import { useQuiz } from "../state/quiz.context";
@@ -20,6 +20,7 @@ import { AnalysisStage } from "./AnalysisStage";
 import { NameStage } from "./NameStage";
 import { QuestionStage } from "./QuestionStage";
 import { QuizHeader } from "./QuizHeader";
+import { QuizFooter } from "./QuizFooter";
 import { QuizIntro } from "./QuizIntro";
 import { QuizShell } from "./QuizShell";
 import "../quiz.css";
@@ -39,6 +40,7 @@ function QuizJourney() {
   const analysisTimer = useRef<number | null>(null);
   const transition = useQuizSceneTransition(state.stageId, direction);
   const recommendation = calculateRecommendedPlan(state.answers);
+  const experiment = getQuizExperimentAssignment();
 
   const goTo = useCallback((stageId: QuizStageId, nextDirection: QuizDirection = "forward") => {
     if (advanceTimer.current !== null) window.clearTimeout(advanceTimer.current);
@@ -185,7 +187,7 @@ function QuizJourney() {
   })();
 
   return (
-    <div className="quiz-route q7" data-version="7.1.0">
+    <div className="quiz-route q7" data-version="7.1.0" data-experiment-variant={experiment.variant}>
       <a className="q7-skip" href="#conteudo-quiz">Ir para o conteúdo do quiz</a>
       <QuizHeader
         stageId={state.stageId}
@@ -210,9 +212,7 @@ function QuizJourney() {
           <div key={`${transition.displayedStageId}-${showAnalysis ? "analysis" : "content"}`}>{content}</div>
         </Suspense>
       </QuizShell>
-      <div className="q7-announcer sr-only" aria-live="polite">
-        Etapa {quizStageIds.indexOf(transition.displayedStageId) + 1} de {quizStageIds.length}.
-      </div>
+      <QuizFooter />
     </div>
   );
 }

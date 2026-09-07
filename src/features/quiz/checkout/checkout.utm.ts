@@ -11,7 +11,14 @@ function safeValue(value: string | null): string | null {
 export function buildCheckoutUrl(
   baseUrl: string,
   currentSearch: string,
-  metadata: Readonly<{ campaignId: string; rewardId?: string; offerId: OfferId }>,
+  metadata: Readonly<{
+    campaignId: string;
+    rewardId?: string;
+    offerId: OfferId;
+    experimentId?: string;
+    experimentVariant?: "a" | "b";
+    experimentMode?: "randomized" | "qa";
+  }>,
 ): string {
   const url = new URL(baseUrl);
   const source = new URLSearchParams(currentSearch);
@@ -22,5 +29,8 @@ export function buildCheckoutUrl(
   url.searchParams.set("campaignId", metadata.campaignId);
   url.searchParams.set("offerId", metadata.offerId);
   if (metadata.rewardId !== undefined) url.searchParams.set("rewardId", metadata.rewardId);
+  if (metadata.experimentId !== undefined) url.searchParams.set("metadata[ab_experiment]", metadata.experimentId);
+  if (metadata.experimentVariant !== undefined) url.searchParams.set("metadata[ab_variant]", metadata.experimentVariant);
+  if (metadata.experimentMode !== undefined) url.searchParams.set("metadata[ab_mode]", metadata.experimentMode);
   return url.toString();
 }

@@ -1,5 +1,6 @@
 import { QuizExperience } from "../features/quiz/components/QuizExperience";
-import { quizPublicationStatus } from "../data/quizPublicationConfig";
+import { ExperimentDashboard } from "../features/quiz/components/ExperimentDashboard";
+import { quizPreviewEnabled, quizPublicationStatus } from "../data/quizPublicationConfig";
 
 function QuizUnavailable() {
   return (
@@ -16,5 +17,8 @@ function QuizUnavailable() {
 }
 
 export function QuizRoute() {
+  if (window.location.pathname.replace(/\/$/, "") === "/quiz/analytics") {
+    return quizPreviewEnabled ? <ExperimentDashboard /> : <QuizUnavailable />;
+  }
   return quizPublicationStatus === "blocked" ? <QuizUnavailable /> : <QuizExperience />;
 }

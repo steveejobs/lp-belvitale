@@ -34,6 +34,8 @@ export const auditedAssetManifest: readonly AuditedAsset[] = [
   { path: "/brand/belvitale-wordmark-dark.webp", classification: "logo", width: 496, height: 369, usage: "active" },
   { path: "/brand/belvitale-wordmark-editorial.webp", classification: "logo", width: 440, height: 115, usage: "active", note: "Recorte limpo do wordmark enviado pelo proprietário para o cabeçalho compacto do quiz." },
   { path: "/brand/belvitale-wordmark-light.webp", classification: "logo", width: 2508, height: 627, usage: "active" },
+  { path: "/brand/belvitale-monogram-black-transparent.png", classification: "logo", width: 1005, height: 1005, usage: "active", note: "Monograma enviado pelo proprietário, com fundo removido e bordas limpas para favicon e rodapés." },
+  { path: "/brand/belvitale-wordmark-quiz.png", classification: "logo", width: 1960, height: 300, usage: "active", note: "Wordmark enviado pelo proprietário, alinhado e recortado sem fundo para o cabeçalho do quiz." },
   { path: "/product/celuclin-front-02.webp", classification: "front-bottle", width: 1122, height: 1402, usage: "active" },
   { path: "/product/celuclin-front-02-hero-mobile.webp", classification: "front-bottle", width: 768, height: 606, usage: "responsive-variant", duplicateOf: "/product/celuclin-front-02.webp", note: "Recorte editorial sem alteracao do produto, gerado por tools/optimize_images.py." },
   { path: "/product/celuclin-front-01.webp", classification: "front-bottle", width: 1122, height: 1402, usage: "active" },

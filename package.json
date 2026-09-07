@@ -11,6 +11,7 @@
     "build:production": "tsc --noEmit && vite build --mode production",
     "preview": "vite preview",
     "test:e2e": "playwright test",
+    "test:ab": "playwright test tests/e2e/quiz.spec.ts --grep \"experimento A/B\"",
     "test:production": "npm run build:production && node scripts/verify-production-assets.mjs",
     "capture": "node scripts/capture-final-evidence.mjs",
     "validate:quiz": "node scripts/generate-quiz-validation.mjs",

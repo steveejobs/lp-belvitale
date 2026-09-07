@@ -1,4 +1,5 @@
 import type { QuizTrackedEvent } from "./analytics.types";
+import { recordLocalExperimentEvent } from "./experiment.store";
 
 export type AnalyticsAdapter = (event: QuizTrackedEvent) => void;
 
@@ -11,6 +12,7 @@ export function registerAnalyticsAdapter(adapter: AnalyticsAdapter): () => void 
 
 export function dispatchToAnalyticsAdapters(event: QuizTrackedEvent): void {
   if (typeof window === "undefined") return;
+  recordLocalExperimentEvent(event);
   window.dispatchEvent(new CustomEvent("belvitale:quiz-v7", { detail: event }));
   if (window.__BELVITALE_ANALYTICS_CONSENT__ === true) {
     adapters.forEach((adapter) => adapter(event));

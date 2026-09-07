@@ -4,7 +4,7 @@ export function ProgressIndicator({ answers }: { readonly answers: QuizAnswers }
   const answered = quizQuestionIds.filter((id) => typeof answers[id] === "string").length;
   const progress = answered / quizQuestionIds.length * 100;
   return (
-    <div className="q7-progress">
+    <div className="q7-progress" data-complete={answered === quizQuestionIds.length}>
       <div
         className="q7-progress__rail"
         role="progressbar"
@@ -14,9 +14,9 @@ export function ProgressIndicator({ answers }: { readonly answers: QuizAnswers }
         aria-valuenow={answered}
         aria-valuetext={`${String(answered)} de ${String(quizQuestionIds.length)} perguntas`}
       >
-        <span style={{ transform: `scaleX(${String(progress / 100)})` }} />
+        <span style={{ transform: `scaleX(${String(progress / 100)})` }}><i /></span>
       </div>
-      <span aria-hidden="true">{answered}/{quizQuestionIds.length}</span>
+      <span className="sr-only">Questionário em andamento.</span>
     </div>
   );
 }
