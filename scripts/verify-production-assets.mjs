@@ -111,8 +111,8 @@ for (const forbiddenReference of [
 }
 
 for (const requiredCopy of [
-  "Quantas vezes a sua pele",
-  "escolheu a roupa antes de você",
+  "Uma rotina de cuidado",
+  "começa pela clareza",
   "Seu corpo não falhou",
   "Um cuidado honesto começa",
   "Não pedimos fé em promessa",
@@ -132,15 +132,15 @@ for (const requiredCopy of [
 
 const mainHtml = await fs.readFile(path.join(dist, "index.html"), "utf8");
 assert.equal(mainHtml.includes("noindex, nofollow"), true);
-assert.equal(mainHtml.includes("Quantas vezes a sua pele"), true);
-assert.equal(mainHtml.includes("Quero escolher por mim"), true);
-assert.equal(mainHtml.includes("60 cápsulas · 2 ao dia · 30 dias"), true);
+assert.equal(mainHtml.includes("Uma rotina de cuidado"), true);
+assert.equal(mainHtml.includes("Conhecer o CeluClin"), true);
+assert.equal(mainHtml.includes("60 cápsulas · 2 ao dia · aproximadamente 30 dias"), true);
 assert.equal(mainHtml.includes("pay.yampi.com.br"), false);
 assert.equal(mainHtml.includes("example.test"), false);
 assert.equal(mainHtml.includes('rel="canonical"'), false);
 assert.equal(mainHtml.includes('property="og:url"'), false);
 assert.equal(mainHtml.includes('"@type":"Product"'), false);
-assert.equal(mainHtml.includes('href="/quiz"'), false);
+assert.equal(mainHtml.includes('href="/quiz"'), true);
 
 for (const legalPath of [
   "/politica-de-privacidade",
@@ -202,11 +202,11 @@ try {
   await page.goto("http://127.0.0.1:4180/", { waitUntil: "networkidle" });
   assert.equal(await page.locator(".site").getAttribute("data-regulatory-status"), "pending");
   assert.equal(await page.locator("#ofertas").count(), 0);
-  assert.equal(await page.locator('a[href="/quiz"]').count(), 0);
+  assert.ok((await page.locator('a[href="/quiz"]').count()) >= 1);
   assert.equal(await page.locator('a[href*="pay.yampi.com.br"]').count(), 0);
   assert.equal(await page.locator('link[rel="canonical"]').count(), 0);
   assert.equal(await page.locator('meta[name="robots"]').getAttribute("content"), "noindex, nofollow");
-  assert.match(await page.locator("h1").innerText(), /Quantas vezes a sua pele/);
+  assert.match(await page.locator("h1").innerText(), /Uma rotina de cuidado/);
   assert.equal(
     await page.locator('.campaign-hero__visual[data-media-status="approved"]').count(),
     1,
@@ -284,5 +284,5 @@ try {
 }
 
 process.stdout.write(
-  "Release gate validado: produto, lifestyle, marca, rótulo e provas autorizadas publicados; checkout, canonical e quiz público permanecem bloqueados.\n",
+  "Release gate validado: produto, lifestyle, marca, rótulo e provas autorizadas publicados; checkout e canonical permanecem bloqueados, e o quiz continua acessível sem comércio público.\n",
 );

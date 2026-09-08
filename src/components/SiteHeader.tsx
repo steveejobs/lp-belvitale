@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { recordHomeEvent } from "../analytics/homeEvents";
 import { navigationItems } from "../config/site";
 import { commercialNavigationReady } from "../data/commercialPreview";
 
@@ -92,12 +93,21 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <a
-          className="site-header__desktop-cta"
-          href={commercialNavigationReady ? "#ofertas" : "#rotulo"}
-        >
-          {commercialNavigationReady ? "Ver opções" : "Ver o rótulo"}
-        </a>
+        <div className="site-header__desktop-actions">
+          <a
+            className="site-header__quiz-link"
+            href="/quiz"
+            onClick={() => recordHomeEvent("quiz_cta_click", { location: "header" })}
+          >
+            Descobrir
+          </a>
+          <a
+            className="site-header__desktop-cta"
+            href={commercialNavigationReady ? "#ofertas" : "#rotulo"}
+          >
+            {commercialNavigationReady ? "Ver opções" : "Ver o rótulo"}
+          </a>
+        </div>
 
         <div className="site-header__mobile-actions">
           <a href={commercialNavigationReady ? "#ofertas" : "#resultados"}>
@@ -156,6 +166,16 @@ export function SiteHeader() {
             onClick={() => setMenuOpen(false)}
           >
             {commercialNavigationReady ? "Ver opções" : "Ver o rótulo"}
+          </a>
+          <a
+            className="mobile-menu__quiz-link"
+            href="/quiz"
+            onClick={() => {
+              recordHomeEvent("quiz_cta_click", { location: "mobile-menu" });
+              setMenuOpen(false);
+            }}
+          >
+            Descobrir pelo quiz
           </a>
         </div>
       </dialog>

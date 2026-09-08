@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { recordHomeEvent } from "../analytics/homeEvents";
 import { homeContent } from "../content/homeContent";
 import { campaignAssets, type CampaignAsset } from "../data/campaignAssets";
+import { commercialNavigationReady } from "../data/commercialPreview";
 import { usePointerMotion } from "../hooks/usePointerMotion";
 import { Reveal } from "./ui/Reveal";
 
@@ -40,6 +42,10 @@ export function ProductStory() {
   const product = homeContent.product;
   const activeView =
     productViews.find((view) => view.id === activeId) ?? productViews[0];
+
+  useEffect(() => {
+    recordHomeEvent("product_view", { productView: activeView.id }, "product");
+  }, [activeView.id]);
 
   return (
     <section className="product-story" id="celuclin" aria-labelledby="product-title">
@@ -103,6 +109,23 @@ export function ProductStory() {
             <strong>Suplemento alimentar em cápsulas.</strong>
             <span>Não é medicamento.</span>
           </p>
+
+          <div className="product-story__actions">
+            <a
+              className="button button--primary"
+              href={commercialNavigationReady ? "#ofertas" : "#rotulo"}
+              onClick={() => recordHomeEvent("product_cta_click", { destination: commercialNavigationReady ? "offers" : "label" })}
+            >
+              {commercialNavigationReady ? "Ver opções do CeluClin" : "Ler o rótulo"}
+            </a>
+            <a
+              className="button button--quiet"
+              href="/quiz"
+              onClick={() => recordHomeEvent("quiz_cta_click", { location: "product" })}
+            >
+              Descobrir pelo quiz
+            </a>
+          </div>
         </Reveal>
       </div>
     </section>

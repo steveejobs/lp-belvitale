@@ -624,3 +624,241 @@
     transform: none !important;
   }
 }
+
+/* Premium home pass: a clearer brand → product → discovery path. */
+.site .site-header__desktop-actions {
+  display: none;
+  align-items: center;
+  gap: 1rem;
+}
+
+.site .site-header__quiz-link,
+.site .mobile-menu__quiz-link {
+  color: var(--bv-plum);
+  font-size: 0.82rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.site .site-header__quiz-link:hover,
+.site .mobile-menu__quiz-link:hover {
+  color: var(--bv-magenta);
+}
+
+.site .mobile-menu__quiz-link {
+  margin-top: 1rem;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--bv-line);
+}
+
+.site .campaign-hero__visual--product {
+  background: var(--bv-surface-soft);
+}
+
+.site .campaign-hero__visual--product img {
+  object-fit: contain;
+  object-position: center;
+  transform: translate3d(var(--pointer-x), var(--pointer-y), 0) scale(1.02);
+}
+
+.site .campaign-hero__visual--product .campaign-hero__visual-wash {
+  background: linear-gradient(180deg, transparent 58%, rgb(37 17 31 / 12%));
+}
+
+.site .campaign-hero__visual--product .campaign-hero__visual-note {
+  margin: 0;
+  max-width: none;
+  color: var(--bv-plum);
+  background: var(--bv-white);
+}
+
+.site .campaign-hero__visual--product .campaign-hero__category {
+  color: var(--bv-white);
+  background: var(--bv-plum);
+}
+
+.site .product-story__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.site .product-story__actions .button {
+  min-height: 3rem;
+}
+
+.site .brand-positioning {
+  padding-block: 5rem;
+  background: var(--bv-white);
+}
+
+.site .brand-positioning__intro {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.site .brand-positioning__intro h2 {
+  max-width: 15ch;
+  font-family: var(--bv-font-display);
+  font-size: clamp(2.5rem, 8vw, 4.8rem);
+  font-weight: 470;
+  letter-spacing: -0.06em;
+  line-height: 0.98;
+}
+
+.site .brand-positioning__intro > p:last-child {
+  max-width: 38rem;
+  color: var(--bv-muted);
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+.site .brand-positioning__principles {
+  margin-top: 2.6rem;
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--bv-line);
+}
+
+.site .brand-positioning__principles article {
+  min-height: 13rem;
+  padding: 1.35rem 0 1.5rem;
+  display: grid;
+  align-content: space-between;
+  gap: 1.25rem;
+  border-bottom: 1px solid var(--bv-line);
+}
+
+.site .brand-positioning__principles article > span {
+  color: var(--bv-magenta);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.site .brand-positioning__principles h3 {
+  max-width: 15ch;
+  font-family: var(--bv-font-display);
+  font-size: 1.65rem;
+  font-weight: 470;
+  line-height: 1.05;
+}
+
+.site .brand-positioning__principles p {
+  max-width: 24rem;
+  color: var(--bv-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.site .quiz-bridge {
+  padding-block: 5rem;
+  color: var(--bv-white);
+  background: var(--bv-plum);
+}
+
+.site .quiz-bridge__layout {
+  display: grid;
+  gap: 2rem;
+}
+
+.site .quiz-bridge h2 {
+  max-width: 12ch;
+  font-family: var(--bv-font-display);
+  font-size: clamp(2.7rem, 9vw, 5.2rem);
+  font-weight: 470;
+  letter-spacing: -0.06em;
+  line-height: 0.98;
+}
+
+.site .quiz-bridge__copy > p {
+  max-width: 31rem;
+  color: #ead5df;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.site .quiz-bridge__actions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.site .button--dark-outline {
+  border: 1px solid rgb(255 255 255 / 38%);
+  color: var(--bv-white);
+  background: transparent;
+}
+
+.site .button--dark-outline:hover {
+  border-color: var(--bv-white);
+  background: rgb(255 255 255 / 10%);
+}
+
+.site .mobile-offer-cta[data-visible="true"] {
+  box-shadow: 0 0.75rem 2rem rgb(37 17 31 / 18%);
+}
+
+@media (min-width: 56rem) {
+  .site .site-header__desktop-actions {
+    display: flex;
+  }
+
+  .site .campaign-hero__visual--product {
+    border-radius: 3rem 3rem 12rem 12rem;
+  }
+
+  .site .campaign-hero__visual--product img {
+    transform: translate3d(var(--pointer-x), var(--pointer-y), 0) scale(1.04);
+  }
+
+  .site .campaign-hero__visual--product .campaign-hero__visual-note {
+    bottom: 1.5rem;
+    left: 1.5rem;
+    padding: 0.65rem 0.85rem;
+    font-family: var(--bv-font-body);
+    font-size: 0.78rem;
+    font-weight: 750;
+  }
+
+  .site .brand-positioning__intro {
+    align-items: end;
+    grid-template-columns: 0.65fr 1.1fr 0.8fr;
+    gap: 2.5rem;
+  }
+
+  .site .brand-positioning__principles {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .site .brand-positioning__principles article {
+    min-height: 16rem;
+    padding: 1.5rem 2rem 1.5rem 0;
+    border-right: 1px solid var(--bv-line);
+    border-bottom: 0;
+  }
+
+  .site .brand-positioning__principles article + article {
+    padding-left: 2rem;
+  }
+
+  .site .brand-positioning__principles article:last-child {
+    border-right: 0;
+  }
+
+  .site .quiz-bridge__layout {
+    align-items: end;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(3rem, 8vw, 9rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site .campaign-hero__visual--product img {
+    transform: none !important;
+  }
+}

@@ -279,17 +279,17 @@ test("CTAs preservam somente UTMs permitidas", async ({ page }) => {
   }
 });
 
-test("CTA fixo mobile surge após o hero e some ao chegar nas ofertas", async ({
+test("CTA fixo mobile surge após a apresentação do produto e some ao chegar nas ofertas", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   const sticky = page.locator(".mobile-offer-cta");
   await expect(sticky).toHaveAttribute("data-visible", "false");
-  const heroEnd = await page.locator(".campaign-hero").evaluate(
+  const productEnd = await page.locator("#celuclin").evaluate(
     (element) => element.getBoundingClientRect().bottom + window.scrollY,
   );
-  await page.evaluate((top) => scrollTo({ top, behavior: "instant" }), heroEnd + 120);
+  await page.evaluate((top) => scrollTo({ top, behavior: "instant" }), productEnd + 120);
   await expect(sticky).toHaveAttribute("data-visible", "true");
   const box = await sticky.boundingBox();
   expect(box?.height).toBeGreaterThanOrEqual(48);

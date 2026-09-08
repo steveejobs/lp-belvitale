@@ -23,15 +23,15 @@ test("hero entrega tese, categoria, produto e ação na primeira dobra", async (
     const hero = page.locator(".campaign-hero");
     await expect(
       hero.getByRole("heading", {
-        name: "Quantas vezes a sua pele escolheu a roupa antes de você?",
+        name: "Belvitale. Cuidado que começa pela clareza.",
       }),
     ).toBeVisible();
     await expect(
-      hero.getByRole("link", { name: "Quero escolher por mim" }),
+      hero.getByRole("link", { name: "Conhecer o CeluClin" }),
     ).toBeInViewport();
-    await expect(hero.getByText("60 cápsulas · 2 ao dia · 30 dias")).toBeInViewport();
-    await expect(hero.locator('img[src="/lifestyle/confidence-hero.webp"]')).toBeInViewport();
-    await expect(hero).toContainText("duas cápsulas ao dia");
+    await expect(hero.getByText("60 cápsulas · 2 ao dia · aproximadamente 30 dias")).toBeInViewport();
+    await expect(hero.locator('img[src="/product/celuclin-angle.webp"]')).toBeInViewport();
+    await expect(hero).toContainText("uso informado de 2 ao dia");
     await expect(hero).toContainText("Não é medicamento");
   }
 });
@@ -77,7 +77,6 @@ test("assets reais cumprem funções distintas e o rótulo só aparece na transp
   );
   expect(sources).toEqual(
     expect.arrayContaining([
-      "/lifestyle/confidence-hero.webp",
       "/product/celuclin-angle.webp",
       "/product/celuclin-hand.webp",
       "/product/celuclin-capsules.webp",
@@ -97,8 +96,6 @@ test("assets reais cumprem funções distintas e o rótulo só aparece na transp
   await expect(page.locator('#composicao img[src*="/label/"]')).toHaveCount(0);
 
   for (const uniqueSource of [
-    "/lifestyle/confidence-hero.webp",
-    "/product/celuclin-angle.webp",
     "/product/celuclin-hand.webp",
     "/product/celuclin-capsules.webp",
     "/lifestyle/freedom-01.webp",
@@ -107,9 +104,11 @@ test("assets reais cumprem funções distintas e o rótulo só aparece na transp
   ]) {
     await expect(page.locator(`img[src="${uniqueSource}"]`)).toHaveCount(1);
   }
+  await expect(page.locator('.campaign-hero img[src="/product/celuclin-angle.webp"]')).toHaveCount(1);
+  await expect(page.locator('#celuclin img[src="/product/celuclin-angle.webp"]')).toHaveCount(1);
   await page.getByRole("tab", { name: "De frente" }).click();
   await expect(page.locator('img[src="/product/celuclin-front-01.webp"]')).toHaveCount(1);
-  await expect(page.locator('img[src="/product/celuclin-angle.webp"]')).toHaveCount(0);
+  await expect(page.locator('#celuclin img[src="/product/celuclin-angle.webp"]')).toHaveCount(0);
 });
 
 test("imagens editoriais e ofertas não exibem numeração decorativa", async ({ page }) => {
@@ -216,11 +215,11 @@ test("reduced motion preserva a campanha e reduz transições a um frame", async
   const page = await context.newPage();
   await page.goto("/");
   const duration = await page
-    .locator(".campaign-hero__visual > picture > img")
+    .locator(".campaign-hero__visual > img")
     .evaluate((element) => getComputedStyle(element).transitionDuration);
   expect(Number.parseFloat(duration)).toBeLessThanOrEqual(0.001);
   await expect(
-    page.getByRole("link", { name: "Quero escolher por mim" }),
+    page.getByRole("link", { name: "Conhecer o CeluClin" }),
   ).toBeVisible();
   await context.close();
 });
@@ -247,12 +246,12 @@ test("seções entram, saem e retornam com motion sutil durante o scroll", async
 test("HTML inicial prioriza apenas marca e hero aprovada", async () => {
   const html = await fs.readFile("index.html", "utf8");
   expect(html).toContain("/brand/belvitale-wordmark-dark.webp");
-  expect(html).toContain("/lifestyle/confidence-hero-640.webp");
+  expect(html).toContain("/product/celuclin-angle.webp");
   expect(html).not.toMatch(/\/proof\/|\/label\//);
   expect(html).not.toContain("celuclin-label-front-hero");
   expect(html).not.toContain("example.test");
-  expect(html).toContain("Quantas vezes a sua pele");
-  expect(html).toContain("Quero escolher por mim");
+  expect(html).toContain("Uma rotina de cuidado");
+  expect(html).toContain("Conhecer o CeluClin");
   expect(html).toContain("noindex, nofollow");
 });
 

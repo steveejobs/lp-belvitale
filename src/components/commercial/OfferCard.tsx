@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { recordHomeEvent } from "../../analytics/homeEvents";
 import { recordCommerceEvent } from "../../commerce/commerceEvents";
 import { campaignAssets, canRenderCampaignAsset } from "../../data/campaignAssets";
 import { getOfferTotalBottles, type CommercialOffer } from "../../data/commercialOffers";
@@ -72,6 +73,7 @@ export function OfferCard({ offer, index, checkoutReady }: OfferCardProps) {
               offerId: offer.id,
               source: "homepage",
             });
+            recordHomeEvent("checkout_start", { offerId: offer.id });
           }}
         >
           {presentation.action}

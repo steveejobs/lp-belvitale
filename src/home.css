@@ -71,6 +71,8 @@
 
 @supports (content-visibility: auto) {
   .site :where(
+    #marca,
+    #descobrir,
     #celuclin,
     #composicao,
     #rotina,

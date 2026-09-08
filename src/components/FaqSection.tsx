@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { recordHomeEvent } from "../analytics/homeEvents";
 import { publishedFaqFacts } from "../data/faqFacts";
 import { Reveal } from "./ui/Reveal";
 
@@ -31,6 +32,8 @@ export function FaqSection() {
   }, []);
 
   function toggleItem(id: string) {
+    const wasOpen = openItems.has(id);
+    if (!wasOpen) recordHomeEvent("faq_open", { location: id });
     setOpenItems((current) => {
       const next = new Set(current);
       if (next.has(id)) {

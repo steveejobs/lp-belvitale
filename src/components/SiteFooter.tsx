@@ -43,6 +43,9 @@ export function SiteFooter() {
             <span>Belvitale</span>
           </a>
           <p>
+            Belvitale: cuidado para a vida real, com informação à vista e espaço para escolher.
+          </p>
+          <p>
             CeluClin é um suplemento alimentar e não é medicamento.
             Experiências individuais podem variar.
           </p>

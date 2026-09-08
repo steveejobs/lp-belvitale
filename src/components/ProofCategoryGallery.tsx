@@ -6,6 +6,7 @@ import {
   type CSSProperties,
   type PointerEvent,
 } from "react";
+import { recordHomeEvent } from "../analytics/homeEvents";
 import type { ProofAsset, ProofCategory } from "../data/proofGallery";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 import { ArrowIcon } from "./ui/ArrowIcon";
@@ -87,9 +88,10 @@ export function ProofCategoryGallery({ category, assets }: ProofCategoryGalleryP
     (nextIndex: number) => {
       pauseForInteraction();
       selectAsset(nextIndex);
+      recordHomeEvent("proof_interaction", { proofCategory: category.id });
       resumeAfterInteraction();
     },
-    [pauseForInteraction, resumeAfterInteraction, selectAsset],
+    [category.id, pauseForInteraction, resumeAfterInteraction, selectAsset],
   );
 
   useEffect(() => {

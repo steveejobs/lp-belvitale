@@ -1,4 +1,6 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
+import { recordHomeEvent } from "./analytics/homeEvents";
+import { BrandPositioning } from "./components/BrandPositioning";
 import { CampaignClosing } from "./components/CampaignClosing";
 import { CampaignHero } from "./components/CampaignHero";
 import { ChoiceSequence } from "./components/ChoiceSequence";
@@ -7,6 +9,7 @@ import { FaqSection } from "./components/FaqSection";
 import { FormulaSection } from "./components/FormulaSection";
 import { LegalDocumentRoute } from "./components/LegalDocumentRoute";
 import { ProductStory } from "./components/ProductStory";
+import { QuizBridge } from "./components/QuizBridge";
 import { RoutineSection } from "./components/RoutineSection";
 import { SeoMetadata } from "./components/SeoMetadata";
 import { SiteFooter } from "./components/SiteFooter";
@@ -38,6 +41,12 @@ function RouteLoading() {
 export function App() {
   useAccessibleHashFocus();
 
+  useEffect(() => {
+    if (!isQuizPath(window.location.pathname)) {
+      recordHomeEvent("home_view", { path: window.location.pathname }, "page-view");
+    }
+  }, []);
+
   if (isQuizPath(window.location.pathname)) {
     return <Suspense fallback={<RouteLoading />}><QuizRoute /></Suspense>;
   }
@@ -52,9 +61,11 @@ export function App() {
       <SiteHeader />
       <main id="conteudo-principal">
         <CampaignHero />
+        <ProductStory />
+        <BrandPositioning />
         <ChoiceSequence />
         <EducationSection />
-        <ProductStory />
+        <QuizBridge />
         <Suspense fallback={<div className="section-placeholder section-placeholder--proof" aria-hidden="true" />}>
           <ProofStories />
         </Suspense>

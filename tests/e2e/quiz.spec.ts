@@ -195,10 +195,9 @@ test.describe("experiência mobile", () => {
     await expect(page.getByRole("link", { name: /Quero construir 90 dias/ }).first()).toHaveAttribute("href", /1E8NNCGJW9/);
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     const footerFit = await page.evaluate(() => {
-      const footerLink = document.querySelector(".q7-footer > a")?.getBoundingClientRect();
-      const footerLegal = document.querySelector(".q7-footer > p")?.getBoundingClientRect();
+      const footerContent = document.querySelector(".q7-footer__inner")?.getBoundingClientRect();
       const checkout = document.querySelector(".q7-mobile-checkout")?.getBoundingClientRect();
-      const contentBottom = Math.max(footerLink?.bottom ?? Infinity, footerLegal?.bottom ?? Infinity);
+      const contentBottom = footerContent?.bottom ?? Infinity;
       return {
         fits: checkout !== undefined && contentBottom <= checkout.top + 1,
         contentBottom,
