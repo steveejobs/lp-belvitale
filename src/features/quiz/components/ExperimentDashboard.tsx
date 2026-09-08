@@ -14,6 +14,15 @@ import {
   type VariantReport,
 } from "../tracking/experiment.store";
 import "../experiment-dashboard.css";
+function experimentConclusion(isDemo: boolean): Readonly<{ title: string; detail: string; winner: QuizExperimentVariant | null }> {
+  return {
+    title: isDemo ? "Demonstração — não indica uma vencedora" : "Leitura descritiva, sem vencedora declarada",
+    detail: isDemo
+      ? "Os números carregados são fictícios e servem apenas para conferir o painel. Não representam consumidoras nem um teste real."
+      : "Eventos deste navegador não representam toda a amostra. A decisão exige um teste planejado, atribuição validada e compras confirmadas; clique não é compra.",
+    winner: null,
+  };
+}
 
 function percentage(value: number): string {
   return new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 }).format(value);
@@ -22,36 +31,6 @@ function percentage(value: number): string {
 function rate(report: VariantReport, event: (typeof experimentFunnel)[number]["event"]): number {
   const opened = report.counts.quiz_opened;
   return opened === 0 ? 0 : report.counts[event] / opened;
-}
-
-function experimentConclusion(a: VariantReport, b: VariantReport): Readonly<{ title: string; detail: string; winner: QuizExperimentVariant | null }> {
-  const nA = a.counts.quiz_opened;
-  const nB = b.counts.quiz_opened;
-  const conversionsA = a.counts.quiz_checkout_clicked;
-  const conversionsB = b.counts.quiz_checkout_clicked;
-  if (nA < 100 || nB < 100) {
-    return {
-      title: "Coletando uma amostra confiável",
-      detail: `Ainda faltam ${String(Math.max(0, 100 - nA))} sessões em A e ${String(Math.max(0, 100 - nB))} em B para a primeira leitura.`,
-      winner: null,
-    };
-  }
-  const pooled = (conversionsA + conversionsB) / (nA + nB);
-  const error = Math.sqrt(pooled * (1 - pooled) * (1 / nA + 1 / nB));
-  const zScore = error === 0 ? 0 : (b.checkoutRate - a.checkoutRate) / error;
-  if (Math.abs(zScore) < 1.96) {
-    return {
-      title: "Ainda não há uma vencedora",
-      detail: "A diferença atual pode ser apenas variação natural. Continue o teste sem editar as versões.",
-      winner: null,
-    };
-  }
-  const winner = zScore > 0 ? "b" : "a";
-  return {
-    title: `Variante ${winner.toUpperCase()} lidera nos cliques com confiança estatística`,
-    detail: "O cálculo usa 95% de confiança. A decisão comercial final ainda deve considerar compras aprovadas no checkout.",
-    winner,
-  };
 }
 
 export function ExperimentDashboard() {
@@ -68,7 +47,7 @@ export function ExperimentDashboard() {
   }, []);
 
   const [a, b] = useMemo(() => buildExperimentReport(observations), [observations]);
-  const conclusion = experimentConclusion(a, b);
+  const conclusion = experimentConclusion(observations.some(observation => observation.sessionId.startsWith("demo-")));
   const totalSessions = a.counts.quiz_opened + b.counts.quiz_opened;
   const lift = a.checkoutRate === 0 ? 0 : (b.checkoutRate - a.checkoutRate) / a.checkoutRate;
 
@@ -88,14 +67,14 @@ export function ExperimentDashboard() {
         <a className="ab-dashboard__brand" href="/" aria-label="Belvitale — página inicial">
           <img src="/brand/belvitale-wordmark-quiz.png" width="1960" height="300" alt="Belvitale" />
         </a>
-        <span className="ab-dashboard__privacy"><i aria-hidden="true" /> Dados anônimos</span>
+        <span className="ab-dashboard__privacy"><i aria-hidden="true" /> Eventos locais</span>
       </header>
 
       <section className="ab-dashboard__hero" aria-labelledby="ab-title">
         <div>
           <p className="ab-dashboard__eyebrow">Experimento ativo · {quizExperimentId}</p>
           <h1 id="ab-title">O que as pessoas fazem, <em>não apenas o que dizem.</em></h1>
-          <p>Compare a jornada completa das variantes A e B. Uma pessoa permanece na mesma versão durante toda a experiência.</p>
+          <p>Quiz Normal: compare os dois CTAs nesta revisão de conteúdo. A atribuição fica estável por 24 horas. Para conferir outra variante em QA, use um contexto de navegador separado.</p>
         </div>
         <div className="ab-dashboard__qa" aria-label="Links para conferir as variantes">
           <a href="/quiz?ab=a" target="_blank" rel="noreferrer"><span>A</span><strong>{quizExperimentVariants.a.openingCta}</strong><i>Conferir ↗</i></a>
@@ -105,7 +84,7 @@ export function ExperimentDashboard() {
 
       <section className="ab-dashboard__notice" aria-label="Escopo dos dados">
         <strong>Modo de validação local</strong>
-        <p>Este painel reúne apenas eventos deste navegador. Para somar visitantes reais, conecte o adaptador já preparado a um endpoint ou ao GA4.</p>
+        <p>Este painel reúne apenas eventos do Quiz Normal neste navegador, na revisão 2026-09-review-1. O teste Mounjaro possui identificação independente no log local de eventos. Para somar visitantes e compras reais, é necessária uma integração de analytics e confirmação de pagamento.</p>
       </section>
 
       <section className="ab-dashboard__metrics" aria-label="Resumo do experimento">

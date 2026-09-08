@@ -49,7 +49,7 @@ function preloadHomeHeroMedia(): Plugin {
 
       return html.replace(
         "</head>",
-        '    <link rel="preload" href="/product/celuclin-front-02-hero-mobile.webp" as="image" type="image/webp" media="(max-width: 47.99rem)" fetchpriority="high" />\n    <link rel="preload" href="/product/celuclin-front-02.webp" as="image" type="image/webp" media="(min-width: 48rem)" fetchpriority="high" />\n  </head>',
+        '    <link rel="preload" href="/product/celuclin-home-960.webp" imagesrcset="/product/celuclin-home-640.webp 640w, /product/celuclin-home-960.webp 960w" imagesizes="(min-width: 56rem) 46vw, calc(100vw - 2rem)" as="image" type="image/webp" fetchpriority="high" />\n  </head>',
       );
     },
   };
@@ -124,30 +124,23 @@ function replaceRobots(html: string, content: string): string {
   );
 }
 
-function homePreviewSeo(enabled: boolean, canonicalBase: URL | null): Plugin {
+function homePreviewSeo(enabled: boolean): Plugin {
   return {
     name: "home-preview-seo",
     transformIndexHtml(html, context) {
       if (
         !enabled ||
-        canonicalBase === null ||
         path.resolve(context.filename) !== homeEntry
       ) {
         return html;
       }
 
-      const homeUrl = new URL("/", canonicalBase).toString();
+      const canonicalBase = new URL("https://www.belvitale.com.br/");
       const imageUrl = new URL(
-        "/product/celuclin-front-02.webp",
+        "/product/celuclin-home-960.webp",
         canonicalBase,
       ).toString();
       const tags = [
-        `<link rel="canonical" href="${homeUrl}" />`,
-        `<meta property="og:url" content="${homeUrl}" />`,
-        `<meta property="og:image" content="${imageUrl}" />`,
-        '<meta property="og:image:width" content="1122" />',
-        '<meta property="og:image:height" content="1402" />',
-        '<meta name="twitter:card" content="summary_large_image" />',
         `<script type="application/ld+json">${JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Product",
@@ -172,6 +165,7 @@ function quizPublicationSeo(
   approved: boolean,
   canonicalBase: URL | null,
   writeBuildArtifacts: boolean,
+  homeIndexable: boolean,
 ): Plugin {
   const quizEntry = path.resolve(rootDirectory, "quiz", "index.html");
   const resultEntry = path.resolve(
@@ -209,14 +203,16 @@ function quizPublicationSeo(
       if (!writeBuildArtifacts) return;
       const sitemapPath = path.join(rootDirectory, "dist", "sitemap.xml");
       if (!approved || canonicalBase === null) {
-        await rm(sitemapPath, { force: true });
+        if (homeIndexable) {
+          await writeFile(sitemapPath, '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://www.belvitale.com.br/</loc></url></urlset>\n', "utf8");
+        } else await rm(sitemapPath, { force: true });
         return;
       }
 
       const quizUrl = new URL("/quiz", canonicalBase).toString();
       await writeFile(
         sitemapPath,
-        `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>${quizUrl}</loc></url>\n</urlset>\n`,
+        `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${homeIndexable ? "  <url><loc>https://www.belvitale.com.br/</loc></url>\n" : ""}  <url><loc>${quizUrl}</loc></url>\n</urlset>\n`,
         "utf8",
       );
     },
@@ -268,11 +264,12 @@ export default defineConfig(({ command, mode }) => {
       react(),
       serveQuizHtmlEntries(),
       preloadHomeHeroMedia(),
-      homePreviewSeo(seoPreviewEnabled, canonicalBase),
+      homePreviewSeo(seoPreviewEnabled),
       quizPublicationSeo(
         publicationApproved,
         canonicalBase,
         command === "build",
+        seoPreviewEnabled,
       ),
       excludeUnverifiedMedia(internalMediaPreview),
     ],

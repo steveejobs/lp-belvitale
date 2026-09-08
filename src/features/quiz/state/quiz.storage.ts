@@ -1,5 +1,6 @@
 import { parseQuizSession } from "../domain/quiz.schema";
 import { QUIZ_VERSION, type QuizSessionState } from "../domain/quiz.types";
+import { browserStorage } from "../experiment/stableAssignment";
 
 export const quizStorageKey = "belvitale.quiz.v7";
 export const quizSessionDurationMs = 24 * 60 * 60 * 1000;
@@ -22,24 +23,24 @@ export function createQuizSession(now = new Date()): QuizSessionState {
   };
 }
 
-export function loadQuizSession(storage: Storage = localStorage, now = new Date()): QuizSessionState {
+export function loadQuizSession(storage = browserStorage(), now = new Date()): QuizSessionState {
   try {
-    const raw = storage.getItem(quizStorageKey);
+    const raw = storage?.getItem(quizStorageKey) ?? null;
     const parsed = parseQuizSession(raw === null ? null : JSON.parse(raw), now.getTime());
     if (parsed !== null) return parsed;
-    storage.removeItem(quizStorageKey);
+    storage?.removeItem(quizStorageKey);
   } catch {
-    try { storage.removeItem(quizStorageKey); } catch { /* storage indisponível */ }
+    try { storage?.removeItem(quizStorageKey); } catch { /* storage indisponível */ }
   }
   return createQuizSession(now);
 }
 
-export function saveQuizSession(state: QuizSessionState, storage: Storage = localStorage): void {
+export function saveQuizSession(state: QuizSessionState, storage = browserStorage()): void {
   try {
-    storage.setItem(quizStorageKey, JSON.stringify({ ...state, savedAt: new Date().toISOString() }));
+    storage?.setItem(quizStorageKey, JSON.stringify({ ...state, savedAt: new Date().toISOString() }));
   } catch { /* a experiência continua em memória */ }
 }
 
-export function clearQuizSession(storage: Storage = localStorage): void {
-  try { storage.removeItem(quizStorageKey); } catch { /* storage indisponível */ }
+export function clearQuizSession(storage = browserStorage()): void {
+  try { storage?.removeItem(quizStorageKey); } catch { /* storage indisponível */ }
 }

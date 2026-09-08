@@ -10,7 +10,7 @@ const footerNavigation = [
   { label: "Escolha", href: "#liberdade" },
   { label: "CeluClin", href: "#celuclin" },
   { label: "Fórmula", href: "#composicao" },
-  { label: "Resultados", href: "#resultados" },
+  { label: "O que esperar", href: "#resultados" },
   { label: "Rótulo", href: "#rotulo" },
   ...(commercialNavigationReady
     ? [{ label: "Opções", href: "#ofertas" } as const]

@@ -1,9 +1,9 @@
-import { useEffect, useRef } from "react";
-import { recordCommerceEvent } from "../commerce/commerceEvents";
+import { getHomeOfferPrice } from "../data/homeOfferFacts";
 import { MobileOfferCta } from "./MobileOfferCta";
 import {
   canPublishCommercialSection,
   commercialOffers,
+  getOfferTotalBottles,
   commercialPublicationDependencies,
   type CommercialOffer,
   type CommercialPublicationDependencies,
@@ -40,15 +40,9 @@ export function CommercialSection() {
   const publicReady = offerDataReady && regulatoryPublicationReady && commercialSurfaceReady;
   const previewReady = fixture === null && commercialPreviewReady;
   const checkoutReady = publicReady || previewReady || fixtureReady;
-  const viewsRecorded = useRef(false);
-
-  useEffect(() => {
-    if (!checkoutReady || viewsRecorded.current) return;
-    viewsRecorded.current = true;
-    offers.forEach((offer) =>
-      recordCommerceEvent("offer_view", { offerId: offer.id, source: "homepage" }),
-    );
-  }, [checkoutReady, offers]);
+  const bestOffer = [...offers].sort((a, b) => getHomeOfferPrice(a) / getOfferTotalBottles(a) - getHomeOfferPrice(b) / getOfferTotalBottles(b))[0];
+  const sortedOffers = [...offers].sort((a, b) => Number(b.id === bestOffer?.id) - Number(a.id === bestOffer?.id));
+  const singleOffer = offers.find((offer) => getOfferTotalBottles(offer) === 1);
 
   if (!publicReady && !previewReady && fixture === null) return null;
 
@@ -68,15 +62,18 @@ export function CommercialSection() {
         </Reveal>
 
         <Reveal className="offer-cards section-shell" effect="clip" delay={80}>
-          {offers.map((offer, index) => (
+          {sortedOffers.map((offer, index) => (
             <OfferCard
               key={offer.id}
               offer={offer}
               index={index}
               checkoutReady={checkoutReady}
+              bestValue={offer.id === bestOffer?.id}
+              singlePrice={singleOffer === undefined ? undefined : getHomeOfferPrice(singleOffer)}
             />
           ))}
         </Reveal>
+        <p className="section-shell commercial-section__conditions">Preços à vista conferidos em 08/09/2026, sujeitos a atualização no checkout. Compare o valor final antes de concluir. A quantidade do kit não representa um prazo de resultado.</p>
       </section>
       <MobileOfferCta />
     </>

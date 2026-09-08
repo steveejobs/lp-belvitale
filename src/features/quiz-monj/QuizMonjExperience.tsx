@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type SyntheticEvent } from "react";
 import { KineticText } from "../quiz/components/KineticText";
+import { ProductDecision } from "../quiz/components/ProductDecision";
+import { getMonjExperimentAssignment, monjOpeningCtas } from "./monjExperiment";
+import { rememberFunnelAttribution, withFunnelAttribution } from "../../analytics/funnelAttribution";
+import { trackQuizEvent } from "../quiz/tracking/analytics.events";
 import {
   calculateMonjScores,
   monjDimensionLabels,
@@ -13,6 +17,7 @@ import {
 import "../quiz/quiz.css";
 import "../quiz/quiz-refined.css";
 import "./quiz-monj.css";
+import "../quiz/quiz-review.css";
 
 type MonjStage =
   | { readonly kind: "opening" }
@@ -28,6 +33,7 @@ interface StoredMonjState {
   readonly name: string;
   readonly answers: MonjAnswers;
   readonly savedAt: number;
+  readonly sessionId: string;
 }
 
 const storageKey = "belvitale.quiz-monj.v1";
@@ -47,7 +53,7 @@ const stages: readonly MonjStage[] = [
 ];
 
 function loadState(): StoredMonjState {
-  const fresh: StoredMonjState = { version: 1, stageIndex: 0, name: "", answers: {}, savedAt: Date.now() };
+  const fresh: StoredMonjState = { version: 1, stageIndex: 0, name: "", answers: {}, savedAt: Date.now(), sessionId: crypto.randomUUID() };
   try {
     const raw = localStorage.getItem(storageKey);
     if (raw === null) return fresh;
@@ -56,16 +62,22 @@ function loadState(): StoredMonjState {
       value?.version !== 1 ||
       typeof value.stageIndex !== "number" ||
       value.stageIndex < 0 ||
+      !Number.isInteger(value.stageIndex) ||
       value.stageIndex >= stages.length ||
       typeof value.name !== "string" ||
       typeof value.answers !== "object" ||
+      (value.answers as unknown) === null || Array.isArray(value.answers) ||
       typeof value.savedAt !== "number" ||
       Date.now() - value.savedAt > storageLifetime
     ) {
       localStorage.removeItem(storageKey);
       return fresh;
     }
-    return value as StoredMonjState;
+    const answers = Object.fromEntries(monjQuestions.flatMap(question => {
+      const selected = value.answers?.[question.id];
+      return typeof selected === "string" && question.options.some(option => option.id === selected) ? [[question.id, selected]] : [];
+    }));
+    return { ...value, answers, sessionId: typeof value.sessionId === "string" && /^[a-zA-Z0-9-]{8,100}$/.test(value.sessionId) ? value.sessionId : fresh.sessionId } as StoredMonjState;
   } catch {
     return fresh;
   }
@@ -93,8 +105,8 @@ function MonjHeader({
         <button className="q7-icon-button" type="button" onClick={onBack} disabled={stageIndex === 0} aria-label="Voltar à etapa anterior">
           <span aria-hidden="true">←</span>
         </button>
-        <a className="q7-brand" href="/quiz-monj" aria-label="Belvitale">
-          <img src="/brand/belvitale-wordmark-quiz.png" width="1960" height="300" alt="Belvitale" />
+        <a className="q7-brand" href={"/quiz-monj" + window.location.search} aria-label="Belvitale">
+          <span className="q7-wordmark">Belvitale</span>
         </a>
         <button className="q7-restart" type="button" onClick={onRestart}>Reiniciar</button>
       </div>
@@ -109,19 +121,20 @@ function MonjHeader({
 function Opening({ onStart }: { readonly onStart: () => void }) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => titleRef.current?.focus(), []);
-  const title = "Você emagreceu. Mas sua pele e sua força acompanharam essa mudança?";
+  const title = "Você emagreceu. Agora quer entender o corpo depois dessa mudança.";
+  const experiment = getMonjExperimentAssignment();
 
   return (
     <section className="q7-opening qmon-opening" aria-labelledby="qmon-opening-title">
       <div className="q7-opening__copy">
-        <p className="q7-kicker">Quiz pós-emagrecimento · tirzepatida</p>
+        <p className="q7-kicker">Seu cuidado depois do emagrecimento</p>
         <h1 id="qmon-opening-title" ref={titleRef} tabIndex={-1} aria-label={title}>
           <KineticText text={title} accentFrom={3} />
         </h1>
         <p className="q7-opening__lead">
-          Em cerca de 4 minutos, conecte ritmo de perda, força, alimentação, treino e histórico da pele para entender o que merece atenção agora.
+          A pele parece mais solta? A celulite ficou mais visível? Em cerca de 4 minutos, organize essas mudanças e entenda o que merece atenção — com Mounjaro ou outra estratégia de emagrecimento.
         </p>
-        <button className="q7-primary" type="button" onClick={onStart}><span>Começar minha análise</span><i aria-hidden="true">→</i></button>
+        <button className="q7-primary" type="button" onClick={onStart} data-ab-variant={experiment.variant}><span>{monjOpeningCtas[experiment.variant]}</span><i aria-hidden="true">→</i></button>
         <div className="qmon-opening__trust">
           <span>✓ 14 perguntas objetivas</span><span>✓ resultado personalizado</span><span>✓ sem diagnóstico</span>
         </div>
@@ -203,17 +216,17 @@ function QuestionStep({ question, selected, confirming, onSelect }: {
 
 function insightContent(sequence: 1 | 2 | 3, answers: MonjAnswers) {
   if (sequence === 1) return {
-    eyebrow: "Primeira leitura",
-    title: "Perder peso e mudar a composição do corpo não são a mesma coisa.",
+    eyebrow: "O corpo depois da balança",
+    title: answers["first-change"] === "loose-skin" ? "O volume mudou. A pele pode parecer diferente agora." : "A balança mostra uma parte da sua mudança.",
     reflection: `${selectedMonjLabel(answers, "loss-pace")} ${selectedMonjLabel(answers, "first-change")}`,
-    explanation: "Em estudos com tirzepatida, a maior parte do peso perdido foi gordura, mas também houve redução de massa magra. Isso não significa que toda massa magra perdida seja músculo: a medida inclui água e outros tecidos não gordurosos.",
+    explanation: "Sua conquista não diminui porque algo ainda incomoda. Peso, força e aparência da pele são aspectos diferentes. Separar esses sinais ajuda a escolher o próximo cuidado com expectativas mais claras.",
     signals: [selectedMonjLabel(answers, "weight-change"), selectedMonjLabel(answers, "loss-pace"), selectedMonjLabel(answers, "first-change")],
     note: "A balança não mede força, função nem composição corporal sozinha.",
     cta: "Olhar para força e alimentação",
   };
   if (sequence === 2) return {
-    eyebrow: "Segunda leitura",
-    title: "A pergunta mais útil agora talvez não seja “quanto perdi?”, mas “o que preservei?”.",
+    eyebrow: "Um sinal que o espelho não mostra",
+    title: answers["strength-change"] === "stable" ? "Sua força parece estável. Vale preservar esse ponto de apoio." : "Além dos quilos: como você se sente nas tarefas do dia?",
     reflection: `${selectedMonjLabel(answers, "strength-change")} ${selectedMonjLabel(answers, "resistance-training")}`,
     explanation: "Treino resistido, ingestão alimentar possível e acompanhamento profissional ajudam a construir uma estratégia de preservação muscular. O quiz identifica pontos de conversa; não prescreve quantidade de proteína nem exercício.",
     signals: [selectedMonjLabel(answers, "strength-change"), selectedMonjLabel(answers, "resistance-training"), selectedMonjLabel(answers, "protein-pattern")],
@@ -221,8 +234,8 @@ function insightContent(sequence: 1 | 2 | 3, answers: MonjAnswers) {
     cta: "Conectar com a história da pele",
   };
   return {
-    eyebrow: "Terceira leitura",
-    title: "Celulite mais visível não significa, necessariamente, que surgiu mais celulite.",
+    eyebrow: "Uma explicação para o relevo",
+    title: "Mais visível não significa necessariamente mais celulite.",
     reflection: `${selectedMonjLabel(answers, "body-area")} ${selectedMonjLabel(answers, "skin-history")}`,
     explanation: "Quando o volume sob a pele diminui e existe frouxidão, o relevo pode ganhar contraste. Celulite é diferente de gordura, e emagrecer pode reduzi-la em algumas pessoas ou deixá-la mais aparente em outras.",
     signals: [selectedMonjLabel(answers, "body-area"), selectedMonjLabel(answers, "skin-history"), selectedMonjLabel(answers, "weight-stability")],
@@ -236,20 +249,23 @@ function InsightStep({ sequence, answers, onContinue }: { readonly sequence: 1 |
   const titleRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => titleRef.current?.focus(), [sequence]);
   return (
-    <section className="q7-insight qmon-insight" data-sequence={sequence} data-has-visual="false" aria-labelledby={`qmon-insight-${String(sequence)}`}>
-      <div className="q7-insight__count" aria-hidden="true"><span><i /><i /><i /></span><b>Leitura em movimento</b></div>
+    <section className="q7-insight qmon-insight qmon-insight-editorial" data-sequence={sequence} data-has-visual="false" aria-labelledby={`qmon-insight-${String(sequence)}`}>
       <div className="q7-insight__copy">
         <p className="q7-step-label">{content.eyebrow}</p>
         <h1 id={`qmon-insight-${String(sequence)}`} ref={titleRef} tabIndex={-1} aria-label={content.title}><KineticText text={content.title} /></h1>
         <blockquote className="q7-insight__reflection"><span>Você acabou de nos contar</span><p>{content.reflection}</p></blockquote>
         <p className="q7-insight__explanation">{content.explanation}</p>
-        <div className="q7-insight__pattern">
-          <div><span>Sinais conectados</span><b>sem diagnóstico</b></div>
+        {sequence === 1 ? <div className="qmon-insight-lens"><span>A mesma conquista, mais de um olhar</span><p><strong>Peso.</strong> Aparência. Força.</p><small>A mudança na balança não conta a história inteira.</small></div> : null}
+        {sequence === 2 ? <dl className="q7-insight-criteria"><div><dt>No dia a dia</dt><dd>O que mudou ao subir escadas ou carregar compras?</dd></div><div><dt>Na consulta</dt><dd>Leve essa percepção para quem acompanha você.</dd></div></dl> : null}
+        {sequence === 3 ? <div className="q7-insight-distinction"><strong>Gordura <span>≠</span> celulite</strong><p>Mudança de volume e mudança de textura não são a mesma coisa.</p></div> : null}
+        <details className="q7-insight__pattern">
+          <summary>O que entrou nesta leitura</summary>
           <ol className="q7-insight__signals">
             {content.signals.map((signal, index) => <li key={`${signal}-${String(index)}`}><small aria-hidden="true">✓</small><span>{signal}</span></li>)}
           </ol>
-        </div>
+        </details>
         <aside className="q7-insight__note"><span aria-hidden="true">✦</span><p>{content.note}</p></aside>
+        {sequence === 3 ? <a className="qmon-insight__source" href="https://www.aad.org/public/cosmetic/fat-removal/cellulite-treatments-what-really-works" target="_blank" rel="noreferrer">A explicação da Academia Americana de Dermatologia ↗</a> : null}
       </div>
       <button className="q7-primary q7-insight__cta" type="button" onClick={onContinue}><span>{content.cta}</span><i aria-hidden="true">→</i></button>
     </section>
@@ -284,7 +300,7 @@ const profileContent: Readonly<Record<MonjDimension, { readonly kicker: string; 
   },
   skinAdaptation: {
     kicker: "Prioridade: adaptação da pele",
-    title: "A mudança de volume parece ter acontecido mais rápido do que a sua percepção da pele conseguiu acompanhar.",
+    title: "Você percebeu a pele mais solta depois da mudança de volume.",
     explanation: "Magnitude da perda, ritmo e histórico de mudanças corporais podem alterar como a pele repousa sobre o novo contorno. O aspecto pode continuar mudando após a estabilização do peso.",
   },
   celluliteContrast: {
@@ -295,11 +311,11 @@ const profileContent: Readonly<Record<MonjDimension, { readonly kicker: string; 
   clinicalSupport: {
     kicker: "Prioridade: acompanhamento",
     title: "Antes de pensar só na estética, vale organizar os sinais com quem acompanha seu tratamento.",
-    explanation: "Algumas respostas indicam barreiras alimentares, cansaço, fraqueza ou pouco acompanhamento. O passo mais seguro é revisar isso com o profissional responsável pela sua tirzepatida.",
+    explanation: "Algumas respostas indicam barreiras alimentares, cansaço, fraqueza ou pouco acompanhamento. Vale revisar esses sinais com o profissional que acompanha seu emagrecimento.",
   },
 };
 
-function ResultStep({ name, answers }: { readonly name: string; readonly answers: MonjAnswers }) {
+function ResultStep({ name, answers, sessionId }: { readonly name: string; readonly answers: MonjAnswers; readonly sessionId: string }) {
   const scores = calculateMonjScores(answers);
   const urgent = answers["intake-barrier"] === "vomiting" || answers["strength-change"] === "limiting" || answers.recovery === "exhausted";
   const highest = monjDimensions.reduce((best, item) => scores[item] > scores[best] ? item : best, "leanProtection");
@@ -328,16 +344,17 @@ function ResultStep({ name, answers }: { readonly name: string; readonly answers
         <h1 id="qmon-result-title" ref={titleRef} tabIndex={-1} aria-label={profile.title}><KineticText text={profile.title} accentFrom={7} /></h1>
         <p>{profile.explanation}</p>
         <span className="qmon-result__priority">{profile.kicker}</span>
+        <p className="qmon-result__context">Você destacou: {selectedMonjLabel(answers, "body-area")} {answers["body-area"] === "abdomen-arms" ? "Nessas regiões, entender se o incômodo é pele excedente ou mudança de contorno ajuda a alinhar o cuidado." : answers["body-area"] === "thighs-glutes" ? "Vale distinguir textura, firmeza percebida e volume ao avaliar suas opções." : "Uma avaliação individual ajuda a separar as mudanças que você percebe."}</p>
       </header>
 
       {urgent ? <aside className="qmon-alert" role="note"><b>Um sinal merece prioridade.</b><p>Fraqueza limitante, exaustão importante ou dificuldade para manter líquidos não deve ser tratada apenas como questão estética. Entre em contato com o profissional que acompanha sua medicação.</p></aside> : null}
 
       <section className="qmon-scoreboard" aria-labelledby="qmon-score-title">
-        <div><p className="q7-step-label">Mapa de atenção</p><h2 id="qmon-score-title">Onde suas respostas se concentraram</h2><p>Percentuais indicam prioridade relativa dentro deste quiz — não risco médico nem diagnóstico.</p></div>
+        <div><p className="q7-step-label">Mapa de atenção</p><h2 id="qmon-score-title">Onde suas respostas se concentraram</h2><p>Pontos organizam as respostas pelas regras deste quiz. Não medem gravidade nem risco médico.</p></div>
         <div className="qmon-scoreboard__items">
           {monjDimensions.map((dimension) => (
             <div className="qmon-score" key={dimension} data-primary={dimension === priority}>
-              <span><b>{monjDimensionLabels[dimension]}</b><strong>{String(scores[dimension])}%</strong></span>
+              <span><b>{monjDimensionLabels[dimension]}</b><strong>{String(scores[dimension])}<small> / 100</small></strong></span>
               <i aria-hidden="true"><span style={{ "--qmon-score": scores[dimension] / 100 } as CSSProperties} /></i>
             </div>
           ))}
@@ -351,9 +368,9 @@ function ResultStep({ name, answers }: { readonly name: string; readonly answers
 
       <section className="qmon-plan" aria-labelledby="qmon-plan-title">
         <p className="q7-step-label">Roteiro de conversa</p>
-        <h2 id="qmon-plan-title">Três próximos passos sem mexer na sua medicação por conta própria.</h2>
+        <h2 id="qmon-plan-title">Cuidados para conversar com quem acompanha você.</h2>
         <ol>
-          <li><span>01</span><div><b>Leve sinais, não só quilos.</b><p>Converse sobre força, energia, sintomas gastrointestinais e velocidade da perda com o prescritor.</p></div></li>
+          <li><span>01</span><div><b>Leve sinais, não só quilos.</b><p>Converse sobre força, energia e velocidade da perda com o profissional que acompanha você. Se usa medicação, não altere o tratamento por conta própria.</p></div></li>
           <li><span>02</span><div><b>Individualize alimentação e proteína.</b><p>Um nutricionista pode adaptar refeições à saciedade, tolerância, condições clínicas e objetivos — sem fórmula universal.</p></div></li>
           <li><span>03</span><div><b>Inclua estímulo de força compatível.</b><p>Se estiver liberada para treinar, peça uma progressão adequada ao seu nível e acompanhe capacidade funcional.</p></div></li>
         </ol>
@@ -362,20 +379,21 @@ function ResultStep({ name, answers }: { readonly name: string; readonly answers
       <section className="qmon-evidence" aria-labelledby="qmon-evidence-title">
         <div><p className="q7-step-label">Base técnica</p><h2 id="qmon-evidence-title">O que sabemos — e o que não devemos exagerar.</h2></div>
         <div className="qmon-evidence__facts">
-          <article><b>74% / 26%</b><p>No subestudo DXA do SURMOUNT‑1, aproximadamente 74% do peso perdido foi gordura e 26% massa magra, em média.</p></article>
+          <article><b>74% / 26%</b><p>No subestudo DXA do SURMOUNT‑1, a perda com tirzepatida foi, em média, 74% gordura e 26% massa magra. A proporção no placebo foi semelhante: 75% e 25%. A análise incluiu 160 participantes, ao longo de 72 semanas.</p></article>
           <article><b>Massa magra ≠ músculo</b><p>A medida de massa magra inclui tecidos não gordurosos e água; não confirma, sozinha, perda de músculo esquelético.</p></article>
           <article><b>Celulite ≠ gordura</b><p>Emagrecer pode suavizar a aparência em algumas pessoas; se houver pele frouxa, os relevos também podem ficar mais aparentes.</p></article>
         </div>
-        <p className="qmon-evidence__sources">Fontes: <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11965027/" target="_blank" rel="noreferrer">subestudo de composição corporal SURMOUNT‑1</a> e <a href="https://www.aad.org/public/cosmetic/fat-removal/cellulite-treatments-what-really-works" target="_blank" rel="noreferrer">American Academy of Dermatology</a>.</p>
+        <p className="qmon-evidence__sources">Fontes: <a href="https://pubmed.ncbi.nlm.nih.gov/39996356/" target="_blank" rel="noreferrer">subestudo de composição corporal SURMOUNT‑1</a> e <a href="https://www.aad.org/public/cosmetic/fat-removal/cellulite-treatments-what-really-works" target="_blank" rel="noreferrer">American Academy of Dermatology</a>. Essas referências não são estudos do CeluClin.</p>
       </section>
 
+      <ProductDecision audience="mounjaro" />
       <section className="q7-result__transition qmon-transition">
-        <img src="/product/celuclin-angle.webp" width="640" height="853" alt="Frasco CeluClin" loading="lazy" decoding="async" />
+        <figure className="q7-product-portrait"><img src="/product/celuclin-angle-768.webp" width="768" height="960" alt="Apresentação ilustrativa do frasco CeluClin sobre fundo ameixa" loading="lazy" decoding="async" /><figcaption>Apresentação ilustrativa da embalagem. Consulte o rótulo completo acima.</figcaption></figure>
         <div>
           <p className="q7-step-label">Cuidado complementar</p>
-          <h2>Quer conhecer o CeluClin com composição, uso e avisos à vista?</h2>
+          <h2>O próximo cuidado pode começar com uma escolha bem informada.</h2>
           <p>CeluClin é suplemento alimentar, não trata efeitos da tirzepatida e não substitui alimentação, treino ou acompanhamento médico.</p>
-          <a className="q7-primary" href="/#composicao"><span>Ver composição e avisos</span><i aria-hidden="true">→</i></a>
+          <a className="q7-primary" href={withFunnelAttribution("/#composicao")} onClick={() => trackQuizEvent("cta_click", { sessionId, stageId: "result" })}><span>Conhecer CeluClin e as opções de compra</span><i aria-hidden="true">→</i></a>
         </div>
       </section>
     </article>
@@ -384,27 +402,64 @@ function ResultStep({ name, answers }: { readonly name: string; readonly answers
 
 function MonjFooter() {
   return (
-    <footer className="q7-footer">
-      <a href="/" aria-label="Belvitale — página inicial"><img src="/brand/belvitale-monogram-black-transparent.png" width="1005" height="1005" alt="" /><span><b>Belvitale</b><small>Cuidado que cabe na vida real.</small></span></a>
+    <footer className="q7-footer qmon-footer">
+      <a href={withFunnelAttribution("/")} aria-label="Belvitale — página inicial"><span className="q7-wordmark">Belvitale</span></a>
       <p>Conteúdo educativo. Mounjaro é medicamento sujeito a prescrição; este quiz não possui vínculo com o fabricante e não substitui orientação profissional.</p>
     </footer>
   );
 }
 
 export function QuizMonjExperience() {
-  const [initial] = useState(() => loadState());
+  const [initial, setInitial] = useState(() => loadState());
   const [stageIndex, setStageIndex] = useState(initial.stageIndex);
   const [name, setName] = useState(initial.name);
   const [answers, setAnswers] = useState<MonjAnswers>(initial.answers);
   const [confirming, setConfirming] = useState(false);
   const timerRef = useRef<number | null>(null);
+  const restoringHistory = useRef(false);
   const stage = useMemo<MonjStage>(() => stages[stageIndex] ?? { kind: "opening" }, [stageIndex]);
+  const experiment = getMonjExperimentAssignment();
+  rememberFunnelAttribution({ funnel: "MOUNJARO", variant: experiment.variant, experimentId: experiment.experimentId, mode: experiment.source === "forced" ? "qa" : "randomized", sessionId: initial.sessionId });
 
   useEffect(() => {
-    try { localStorage.setItem(storageKey, JSON.stringify({ version: 1, stageIndex, name, answers, savedAt: Date.now() } satisfies StoredMonjState)); } catch { /* segue em memória */ }
+    try { localStorage.setItem(storageKey, JSON.stringify({ version: 1, stageIndex, name, answers, savedAt: initial.savedAt, sessionId: initial.sessionId } satisfies StoredMonjState)); } catch { /* segue em memória */ }
     const path = stage.kind === "result" ? "/quiz-monj/resultado" : "/quiz-monj";
-    if (window.location.pathname.replace(/\/$/, "") !== path) window.history.replaceState({}, "", path + window.location.search);
-  }, [answers, name, stage, stageIndex]);
+    const entry = { monjStage: stageIndex, monjSession: initial.sessionId };
+    const previous = window.history.state as { monjStage?: number; monjSession?: string } | null;
+    if (restoringHistory.current) { restoringHistory.current = false; return; }
+    if (previous?.monjSession !== initial.sessionId) window.history.replaceState(entry, "", path + window.location.search);
+    else if (previous.monjStage !== stageIndex) window.history.pushState(entry, "", path + window.location.search);
+  }, [answers, name, stage, stageIndex, initial.sessionId, initial.savedAt]);
+
+  useEffect(() => {
+    const pop = (event: PopStateEvent) => {
+      const entry = event.state as { monjStage?: number; monjSession?: string } | null;
+      const index = entry?.monjStage;
+      if (entry?.monjSession !== initial.sessionId || typeof index !== "number" || !Number.isInteger(index) || index < 0 || index >= stages.length) return;
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+      restoringHistory.current = true;
+      setConfirming(false);
+      setStageIndex(index);
+      window.scrollTo({ top: 0, behavior: "instant" });
+    };
+    window.addEventListener("popstate", pop);
+    return () => window.removeEventListener("popstate", pop);
+  }, [initial.sessionId]);
+
+  useEffect(() => {
+    const sessionId = initial.sessionId;
+    const stageId = stage.kind === "question" ? monjQuestions[stage.questionIndex]?.id ?? "question" : stage.kind === "insight" ? `insight-${String(stage.sequence)}` : stage.kind;
+    trackQuizEvent("quiz_opened", { sessionId }, "opened");
+    trackQuizEvent("quiz_stage_viewed", { sessionId, stageId }, stageId);
+    if (stage.kind === "insight") trackQuizEvent("quiz_insight_viewed", { sessionId, stageId }, stageId);
+    if (stage.kind === "result") {
+      trackQuizEvent("quiz_completed", { sessionId }, "completed");
+      trackQuizEvent("result_view", { sessionId, stageId }, "result");
+    }
+    const leave = () => { if (!["opening", "result"].includes(stage.kind)) trackQuizEvent("quiz_abandon", { sessionId, stageId }); };
+    window.addEventListener("pagehide", leave);
+    return () => window.removeEventListener("pagehide", leave);
+  }, [stage, initial.sessionId]);
 
   useEffect(() => () => { if (timerRef.current !== null) window.clearTimeout(timerRef.current); }, []);
 
@@ -424,19 +479,22 @@ export function QuizMonjExperience() {
   const restart = () => {
     if (!window.confirm("Reiniciar o quiz e apagar as respostas deste dispositivo?")) return;
     try { localStorage.removeItem(storageKey); } catch { /* segue em memória */ }
+    trackQuizEvent("quiz_restarted", { sessionId: initial.sessionId, stageId: stage.kind });
+    setInitial({ version: 1, stageIndex: 0, name: "", answers: {}, savedAt: Date.now(), sessionId: crypto.randomUUID() });
     setName("");
     setAnswers({});
     go(0);
   };
 
   const content = (() => {
-    if (stage.kind === "opening") return <Opening onStart={() => go(1)} />;
-    if (stage.kind === "name") return <NameStep initialName={name} onContinue={(nextName) => { setName(nextName); go(2); }} />;
+    if (stage.kind === "opening") return <Opening onStart={() => { trackQuizEvent("quiz_started", { sessionId: initial.sessionId }, "started"); go(1); }} />;
+    if (stage.kind === "name") return <NameStep initialName={name} onContinue={(nextName) => { trackQuizEvent(nextName.length > 0 ? "quiz_name_submitted" : "quiz_name_skipped", { sessionId: initial.sessionId, nameProvided: nextName.length > 0 }); setName(nextName); go(2); }} />;
     if (stage.kind === "question") {
       const question = monjQuestions[stage.questionIndex];
       if (question === undefined) return <div className="q7-loading" role="status">Preparando esta pergunta…</div>;
       return <QuestionStep question={question} selected={answers[question.id]} confirming={confirming} onSelect={(optionId) => {
         if (confirming) return;
+        trackQuizEvent(answers[question.id] === undefined || answers[question.id] === optionId ? "quiz_answer_selected" : "quiz_answer_changed", { sessionId: initial.sessionId, stageId: question.id, questionId: question.id });
         setAnswers((current) => ({ ...current, [question.id]: optionId }));
         setConfirming(true);
         timerRef.current = window.setTimeout(() => go(stageIndex + 1), 430);
@@ -444,13 +502,13 @@ export function QuizMonjExperience() {
     }
     if (stage.kind === "insight") return <InsightStep sequence={stage.sequence} answers={answers} onContinue={() => go(stageIndex + 1)} />;
     if (stage.kind === "analysis") return <AnalysisStep />;
-    return <ResultStep name={name} answers={answers} />;
+    return <ResultStep name={name} answers={answers} sessionId={initial.sessionId} />;
   })();
 
   return (
-    <div className="quiz-route q7 qmon" data-version="1.0.0">
+    <div className="quiz-route q7 qmon" data-version="1.1.0" data-experiment-variant={experiment.variant}>
       <a className="q7-skip" href="#conteudo-quiz-monj">Ir para o conteúdo do quiz</a>
-      <MonjHeader stageIndex={stageIndex} answered={Object.keys(answers).length} onBack={() => go(stageIndex - 1)} onRestart={restart} />
+      <MonjHeader stageIndex={stageIndex} answered={Object.keys(answers).length} onBack={() => { trackQuizEvent("quiz_back_clicked", { sessionId: initial.sessionId, stageId: stage.kind }); go(stageIndex - 1); }} onRestart={restart} />
       <main id="conteudo-quiz-monj" className="q7-stage" data-phase="active" data-stage={stage.kind}>
         <div className="q7-stage__track"><div key={`${stage.kind}-${String(stageIndex)}`}>{content}</div></div>
       </main>

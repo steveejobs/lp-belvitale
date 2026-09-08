@@ -1,3 +1,4 @@
+import { funnelEventProperties } from "./funnelAttribution";
 export type HomeEvent =
   | "home_view"
   | "hero_cta_click"
@@ -64,6 +65,7 @@ export function recordHomeEvent(
     event,
     payload: {
       ...payload,
+      ...funnelEventProperties(),
       source: "homepage",
       deviceClass: window.matchMedia("(max-width: 47.99rem)").matches ? "mobile" : "desktop",
       utm: getAttribution(),

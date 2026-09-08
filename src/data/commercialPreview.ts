@@ -1,3 +1,4 @@
+import { withFunnelAttribution } from "../analytics/funnelAttribution";
 import {
   commercialOffers,
   commercialPublicationReady,
@@ -94,5 +95,5 @@ export function getCheckoutUrlWithUtms(
     }
   });
 
-  return target.toString();
+  return withFunnelAttribution(target.toString(), true);
 }

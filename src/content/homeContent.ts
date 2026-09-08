@@ -1,12 +1,12 @@
 export const homeContent = {
   hero: {
-    eyebrow: "Para mulheres cansadas de se esconder",
-    titleLead: "Quantas vezes a sua pele",
-    titleAccent: "escolheu a roupa antes de você?",
+    eyebrow: "Belvitale · cuidado em cada fase",
+    titleLead: "Mais à vontade",
+    titleAccent: "na sua pele.",
     lead:
-      "CeluClin entra na rotina como um gesto de cuidado possível: duas cápsulas ao dia, fórmula e rótulo à vista — sem milagre, sem segredo.",
-    primaryAction: "Quero escolher por mim",
-    secondaryAction: "Ver resultados reais",
+      "A celulite de sempre ou as mudanças depois de emagrecer: o seu cuidado começa pelo que faz sentido para você.",
+    primaryAction: "Conhecer o CeluClin",
+    secondaryAction: "Ver kits e preços",
     meta: "60 cápsulas · 2 ao dia · 30 dias",
     notice: "Suplemento alimentar. Não é medicamento. · 9 registros autorizados.",
     visualNote: "A escolha pode voltar a ser sua.",
@@ -42,10 +42,10 @@ export const homeContent = {
     sourceLabel: "Contexto educativo. Não é diagnóstico.",
   },
   product: {
-    eyebrow: "Antes de acreditar, olhe de perto",
-    title: "Um cuidado honesto começa pelo que não fica escondido.",
+    eyebrow: "Conheça CeluClin, da Belvitale",
+    title: "Um lugar para o cuidado na sua rotina.",
     body:
-      "Veja o frasco por inteiro, consulte a composição e entenda o uso informado. A sua decisão merece clareza antes de merecer confiança.",
+      "CeluClin reúne vitamina C, zinco e outros ingredientes em um suplemento alimentar em cápsulas. Uma forma prática de complementar a alimentação, quando a suplementação faz sentido para você.",
     stages: [
       {
         id: "presence",
@@ -66,12 +66,12 @@ export const homeContent = {
     facts: [
       { value: "60", label: "cápsulas no frasco" },
       { value: "2", label: "cápsulas ao dia" },
-      { value: "30", label: "dias calculados" },
+      { value: "30", label: "dias por frasco*" },
     ],
   },
   formula: {
-    eyebrow: "Nada atrás de uma promessa bonita",
-    title: "Se entra na sua rotina, você merece saber o que existe dentro.",
+    eyebrow: "Conheça a composição",
+    title: "O cuidado também passa pela nutrição.",
     body:
       "A porção informada corresponde a duas cápsulas. Selecione um ingrediente para conferir a quantidade indicada no rótulo.",
     source: "Quantidade por porção · rótulo oficial",
@@ -86,17 +86,17 @@ export const homeContent = {
       "Nove imagens autorizadas, separadas por categoria e exibidas sem corte, filtro, prazo ou história inventada.",
   },
   routine: {
-    eyebrow: "Cuidado que cabe na vida real",
+    eyebrow: "Como incluir no dia a dia",
     titleLead: "Dois por dia.",
-    titleAccent: "Sem ritual impossível.",
+    titleAccent: "Uma rotina possível.",
     body:
       "Sessenta cápsulas divididas pelo uso informado de duas ao dia correspondem a 30 dias.",
   },
   commercial: {
-    eyebrow: "Seu ritmo, sua decisão",
-    title: "Comece no tempo que respeita a sua escolha.",
+    eyebrow: "Escolha seu CeluClin",
+    title: "Seu próximo cuidado começa aqui.",
     body:
-      "Um, três ou sete meses: compare com calma e escolha sem cronômetro de corpo ideal. A condição comercial atual aparece no checkout da Belvitale.",
+      "Compare os kits e aproveite o menor preço por frasco na opção de 3 meses. Mesma fórmula, com a quantidade que combina com o seu planejamento.",
     labels: {
       "one-month": "Começar",
       "three-months": "Continuar",
@@ -104,11 +104,11 @@ export const homeContent = {
     },
   },
   closing: {
-    eyebrow: "A última palavra continua sendo sua",
-    titleLead: "Talvez o que você queira não seja perfeição.",
-    titleAccent: "Seja parar de pensar na sua pele o tempo todo.",
+    eyebrow: "Belvitale · cuidado para a vida real",
+    titleLead: "O seu corpo tem uma história.",
+    titleAccent: "O próximo cuidado é seu.",
     body:
-      "CeluClin não promete um corpo ideal. Ele pode fazer parte de uma rotina honesta de cuidado, com tudo o que você precisa saber antes de escolher.",
-    action: "Escolher no meu tempo",
+      "Conheça a composição, escolha a quantidade e dê espaço a uma rotina que faça sentido para você.",
+    action: "Escolher meu CeluClin",
   },
 } as const;

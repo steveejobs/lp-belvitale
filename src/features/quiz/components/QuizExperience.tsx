@@ -6,6 +6,7 @@ import { calculateQuizResult } from "../domain/quiz.scoring";
 import { getNextStage, getPreviousStage } from "../domain/quiz.machine";
 import {
   quizQuestionIds,
+  quizStageIds,
   type QuizDirection,
   type QuizQuestionId,
   type QuizStageId,
@@ -27,6 +28,8 @@ import { QuizShell } from "./QuizShell";
 import "../quiz.css";
 import "../quiz-refined.css";
 import "../quiz-premium-v2.css";
+import "../quiz-review.css";
+import { rememberFunnelAttribution } from "../../../analytics/funnelAttribution";
 
 const loadResultStage = () => import("./ResultStage");
 const loadOfferStage = () => import("./OfferStage");
@@ -40,11 +43,13 @@ function QuizJourney() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const advanceTimer = useRef<number | null>(null);
   const analysisTimer = useRef<number | null>(null);
+  const restoringHistory = useRef(false);
   const transition = useQuizSceneTransition(state.stageId, direction);
   const recommendation = calculateRecommendedPlan(state.answers);
   const profileResult = calculateQuizResult(state.answers);
   const profileId = profileResult?.id;
   const experiment = getQuizExperimentAssignment();
+  rememberFunnelAttribution({ funnel: "NORMAL", variant: experiment.variant, experimentId: experiment.experimentId, mode: experiment.source === "forced" ? "qa" : "randomized", sessionId: state.sessionId });
 
   const goTo = useCallback((stageId: QuizStageId, nextDirection: QuizDirection = "forward") => {
     if (advanceTimer.current !== null) window.clearTimeout(advanceTimer.current);
@@ -53,12 +58,29 @@ function QuizJourney() {
     setConfirming(false);
     setDirection(nextDirection);
     dispatch({ type: "GO_TO", stageId });
-    if (stageId === "result" || stageId === "offer") {
-      window.history.pushState({}, "", "/quiz/resultado" + window.location.search);
-    } else if (window.location.pathname !== "/quiz") {
-      window.history.pushState({}, "", "/quiz" + window.location.search);
-    }
   }, [dispatch]);
+
+  useEffect(() => {
+    const path = (state.stageId === "result" || state.stageId === "offer" ? "/quiz/resultado" : "/quiz") + window.location.search;
+    const entry = { quizStage: state.stageId, quizSession: state.sessionId };
+    const previous = window.history.state as { quizSession?: string; quizStage?: string } | null;
+    if (restoringHistory.current) { restoringHistory.current = false; return; }
+    if (previous?.quizSession !== state.sessionId) window.history.replaceState(entry, "", path);
+    else if (previous.quizStage !== state.stageId) window.history.pushState(entry, "", path);
+  }, [state.sessionId, state.stageId]);
+
+  useEffect(() => {
+    const pop = (event: PopStateEvent) => {
+      const entry = event.state as { quizSession?: string; quizStage?: string } | null;
+      const target = entry?.quizStage;
+      if (entry?.quizSession !== state.sessionId || !quizStageIds.some(id => id === target)) return;
+      restoringHistory.current = true;
+      trackQuizEvent("quiz_back_clicked", { sessionId: state.sessionId, stageId: state.stageId });
+      goTo(target as QuizStageId, "backward");
+    };
+    window.addEventListener("popstate", pop);
+    return () => window.removeEventListener("popstate", pop);
+  }, [goTo, state.sessionId, state.stageId]);
 
   useEffect(() => () => {
     if (advanceTimer.current !== null) window.clearTimeout(advanceTimer.current);
@@ -72,12 +94,23 @@ function QuizJourney() {
 
   useEffect(() => {
     trackQuizEvent("quiz_opened", { sessionId: state.sessionId }, "opened");
-    const checkoutStarted = sessionStorage.getItem("belvitale.quiz.checkout-return");
+    let checkoutStarted: string | null = null;
+    try { checkoutStarted = sessionStorage.getItem("belvitale.quiz.checkout-return"); } catch { /* storage unavailable */ }
     if (checkoutStarted !== null) {
-      sessionStorage.removeItem("belvitale.quiz.checkout-return");
+      try { sessionStorage.removeItem("belvitale.quiz.checkout-return"); } catch { /* storage unavailable */ }
       trackQuizEvent("quiz_checkout_returned", { sessionId: state.sessionId }, checkoutStarted);
     }
   }, [state.sessionId]);
+
+  useEffect(() => {
+    if (state.stageId === "result") trackQuizEvent("result_view", { sessionId: state.sessionId, stageId: "result" }, "result");
+    if (state.stageId === "offer") trackQuizEvent("sales_page_view", { sessionId: state.sessionId, stageId: "offer" }, "offer");
+    const leave = () => {
+      if (state.stageId !== "opening" && state.stageId !== "result" && state.stageId !== "offer") trackQuizEvent("quiz_abandon", { sessionId: state.sessionId, stageId: state.stageId });
+    };
+    window.addEventListener("pagehide", leave);
+    return () => window.removeEventListener("pagehide", leave);
+  }, [state.sessionId, state.stageId]);
 
   useEffect(() => {
     if (transition.phase !== "active") return;
@@ -99,9 +132,6 @@ function QuizJourney() {
     if ((state.stageId === "result" || state.stageId === "offer") && recommendation === null) {
       const timer = window.setTimeout(() => goTo("opening", "backward"), 0);
       return () => window.clearTimeout(timer);
-    }
-    if ((state.stageId === "result" || state.stageId === "offer") && window.location.pathname !== "/quiz/resultado") {
-      window.history.replaceState({}, "", "/quiz/resultado" + window.location.search);
     }
   }, [goTo, recommendation, state.stageId]);
 

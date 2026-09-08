@@ -1,4 +1,5 @@
 import type { OfferId } from "../domain/quiz.types";
+import { withFunnelAttribution } from "../../../analytics/funnelAttribution";
 
 const allowedUtmKeys = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
 
@@ -32,5 +33,5 @@ export function buildCheckoutUrl(
   if (metadata.experimentId !== undefined) url.searchParams.set("metadata[ab_experiment]", metadata.experimentId);
   if (metadata.experimentVariant !== undefined) url.searchParams.set("metadata[ab_variant]", metadata.experimentVariant);
   if (metadata.experimentMode !== undefined) url.searchParams.set("metadata[ab_mode]", metadata.experimentMode);
-  return url.toString();
+  return withFunnelAttribution(url.toString(), true);
 }

@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect } from "react";
 import { recordHomeEvent } from "./analytics/homeEvents";
-import { BrandPositioning } from "./components/BrandPositioning";
+import { readFunnelAttribution } from "./analytics/funnelAttribution";
 import { CampaignClosing } from "./components/CampaignClosing";
 import { CampaignHero } from "./components/CampaignHero";
 import { ChoiceSequence } from "./components/ChoiceSequence";
@@ -11,7 +11,6 @@ import { LegalDocumentRoute } from "./components/LegalDocumentRoute";
 import { ProductStory } from "./components/ProductStory";
 import { QuizBridge } from "./components/QuizBridge";
 import { RoutineSection } from "./components/RoutineSection";
-import { SeoMetadata } from "./components/SeoMetadata";
 import { SiteFooter } from "./components/SiteFooter";
 import { SiteHeader } from "./components/SiteHeader";
 import { getLegalDocumentByPath } from "./data/legalDocuments";
@@ -44,6 +43,12 @@ export function App() {
   useEffect(() => {
     if (!isQuizPath(window.location.pathname)) {
       recordHomeEvent("home_view", { path: window.location.pathname }, "page-view");
+      const origin = readFunnelAttribution();
+      if (origin !== null && window.location.pathname === "/") {
+        void import("./features/quiz/tracking/analytics.events").then(({ trackQuizEvent }) =>
+          trackQuizEvent("sales_page_view", { sessionId: origin.sessionId, stageId: "homepage" }, "homepage"),
+        );
+      }
     }
   }, []);
 
@@ -56,24 +61,22 @@ export function App() {
 
   return (
     <div className="site" data-regulatory-status={regulatoryFacts.sanitaryStatus}>
-      <SeoMetadata />
       <a className="skip-link" href="#conteudo-principal">Ir para o conteúdo</a>
       <SiteHeader />
       <main id="conteudo-principal">
         <CampaignHero />
-        <ProductStory />
-        <BrandPositioning />
         <ChoiceSequence />
         <EducationSection />
-        <QuizBridge />
+        <ProductStory />
+        <FormulaSection />
         <Suspense fallback={<div className="section-placeholder section-placeholder--proof" aria-hidden="true" />}>
           <ProofStories />
         </Suspense>
-        <FormulaSection />
-        <RoutineSection />
         <Suspense fallback={<div className="section-placeholder" aria-hidden="true" />}>
           <CommercialSection />
         </Suspense>
+        <RoutineSection />
+        <QuizBridge />
         <Suspense fallback={<div className="section-placeholder" aria-hidden="true" />}>
           <LabelTransparency />
         </Suspense>

@@ -16,6 +16,7 @@ export default defineConfig({
   globalSetup: "./tests/global-setup.ts",
   use: {
     ...devices["Desktop Chrome"],
+    ...(process.env.PLAYWRIGHT_CHANNEL === undefined ? {} : { channel: process.env.PLAYWRIGHT_CHANNEL }),
     baseURL: `http://127.0.0.1:${previewPort}`,
     trace: "retain-on-failure",
   },

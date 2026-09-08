@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { recordHomeEvent } from "../analytics/homeEvents";
 import { navigationItems } from "../config/site";
 import { commercialNavigationReady } from "../data/commercialPreview";
 
@@ -21,9 +20,9 @@ function DarkWordmark() {
   return (
     <span className="brand-wordmark brand-wordmark--dark" aria-hidden="true">
       <img
-        src="/brand/belvitale-wordmark-dark.webp"
-        width="496"
-        height="369"
+        src="/brand/belvitale-wordmark-home.webp"
+        width="400"
+        height="100"
         alt=""
         decoding="async"
       />
@@ -96,8 +95,7 @@ export function SiteHeader() {
         <div className="site-header__desktop-actions">
           <a
             className="site-header__quiz-link"
-            href="/quiz"
-            onClick={() => recordHomeEvent("quiz_cta_click", { location: "header" })}
+            href="#descobrir"
           >
             Descobrir
           </a>
@@ -105,13 +103,13 @@ export function SiteHeader() {
             className="site-header__desktop-cta"
             href={commercialNavigationReady ? "#ofertas" : "#rotulo"}
           >
-            {commercialNavigationReady ? "Ver opções" : "Ver o rótulo"}
+            {commercialNavigationReady ? "Ver kits" : "Ver o rótulo"}
           </a>
         </div>
 
         <div className="site-header__mobile-actions">
           <a href={commercialNavigationReady ? "#ofertas" : "#resultados"}>
-            {commercialNavigationReady ? "Ver opções" : "Resultados"}
+            {commercialNavigationReady ? "Ver kits" : "Conhecer"}
           </a>
           <button
             ref={menuButtonRef}
@@ -165,13 +163,12 @@ export function SiteHeader() {
             href={commercialNavigationReady ? "#ofertas" : "#rotulo"}
             onClick={() => setMenuOpen(false)}
           >
-            {commercialNavigationReady ? "Ver opções" : "Ver o rótulo"}
+            {commercialNavigationReady ? "Ver kits e preços" : "Ver o rótulo"}
           </a>
           <a
             className="mobile-menu__quiz-link"
-            href="/quiz"
+            href="#descobrir"
             onClick={() => {
-              recordHomeEvent("quiz_cta_click", { location: "mobile-menu" });
               setMenuOpen(false);
             }}
           >

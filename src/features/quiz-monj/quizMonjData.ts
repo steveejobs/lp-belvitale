@@ -35,14 +35,15 @@ export const monjQuestions = [
     id: "treatment-stage",
     block: "Seu momento",
     eyebrow: "Contexto do tratamento",
-    prompt: "Em que momento da sua jornada com a tirzepatida você está?",
-    hint: "Considere Mounjaro ou outra marca de tirzepatida prescrita para você.",
+    prompt: "Como foi o seu caminho de emagrecimento até aqui?",
+    hint: "Se usou tirzepatida, considere Mounjaro ou outra marca prescrita para você. Se emagreceu por outro caminho, escolha a última opção.",
     presentation: "scenario",
     options: [
       option("first-weeks", "Estou nas primeiras 4 semanas.", { clinicalSupport: 1, leanProtection: 1 }, "Meu corpo e meu apetite ainda estão se ajustando."),
       option("one-three", "Uso há 1 a 3 meses.", { leanProtection: 2, skinAdaptation: 1 }, "A perda de peso já começou a ficar visível."),
       option("over-three", "Uso há mais de 3 meses.", { skinAdaptation: 2, celluliteContrast: 1 }, "Já consigo comparar mudanças no corpo e na pele."),
       option("stopped", "Já usei e interrompi.", { clinicalSupport: 2, skinAdaptation: 1 }, "Quero entender o que percebi durante ou depois do uso."),
+      option("other-strategy", "Emagreci por outra estratégia, sem tirzepatida.", {}, "Quero olhar para a pele e para a força depois dessa mudança."),
     ],
   },
   {
@@ -156,7 +157,7 @@ export const monjQuestions = [
   {
     id: "skin-history",
     block: "História da pele",
-    eyebrow: "Antes da tirzepatida",
+    eyebrow: "Antes deste emagrecimento",
     prompt: "Sua pele já passou por grandes mudanças de volume antes?",
     presentation: "sentence",
     options: [

@@ -1,7 +1,8 @@
 import { quizExperimentId, type QuizExperimentVariant } from "../experiment/quiz.experiment";
 import type { QuizAnalyticsEvent, QuizTrackedEvent } from "./analytics.types";
+import { funnelContentRevision } from "../../../analytics/funnelAttribution";
 
-export const experimentMetricsStorageKey = "belvitale.quiz.ab.metrics.v1";
+export const experimentMetricsStorageKey = `belvitale.quiz.ab.metrics.v1.${funnelContentRevision}`;
 const maximumObservations = 5_000;
 
 export interface ExperimentObservation {
@@ -44,10 +45,11 @@ export function readExperimentObservations(storage: Storage = localStorage): rea
 }
 
 export function recordLocalExperimentEvent(event: QuizTrackedEvent, storage: Storage = localStorage): void {
+  if (event.properties.funnelId === "MOUNJARO") return;
   if (!experimentFunnel.some((step) => step.event === event.event)) return;
   // Links ?ab=a e ?ab=b existem somente para QA visual. Eles nunca entram na
   // amostra, evitando contaminar o experimento com visitas da própria equipe.
-  if (new URLSearchParams(window.location.search).has("ab")) return;
+  if (event.properties.experimentMode === "qa" || new URLSearchParams(window.location.search).has("ab")) return;
   const variant = event.properties.experimentVariant;
   if (variant !== "a" && variant !== "b") return;
   const observation: ExperimentObservation = {

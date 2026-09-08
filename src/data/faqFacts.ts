@@ -93,10 +93,10 @@ export const faqFacts: readonly FaqFact[] = [
   },
   {
     id: "faq-resultados",
-    question: "Os resultados são iguais para todas?",
+    question: "Como o CeluClin entra na minha rotina de cuidado?",
     answer:
-      "Não. As imagens publicadas são resultados reais autorizados, mas experiências individuais podem variar.",
-    links: [{ label: "Ver resultados", href: "#resultados" }],
+      "CeluClin reúne vitamina C, zinco e outros ingredientes para complementar a alimentação. A vitamina C auxilia na formação do colágeno e o zinco auxilia na proteção dos danos causados pelos radicais livres. Consulte a composição e siga o uso informado no rótulo, considerando suas necessidades individuais.",
+    links: [{ label: "Entender o papel do produto", href: "#resultados" }],
     status: "confirmed",
     source: "editorial-rule",
   },

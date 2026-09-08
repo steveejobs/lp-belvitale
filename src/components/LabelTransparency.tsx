@@ -201,13 +201,12 @@ export function LabelTransparency() {
         <p>Tabela, composição, uso e avisos na arte original da embalagem.</p>
       </div>
 
-      <div className="section-shell label-focus" role="tablist" aria-label="Áreas do rótulo">
+      <div className="section-shell label-focus" role="group" aria-label="Áreas do rótulo">
         {labelFocusOptions.map((option) => (
           <button
             key={option.id}
             type="button"
-            role="tab"
-            aria-selected={activeFocus === option.id}
+            aria-pressed={activeFocus === option.id}
             onClick={() => setActiveFocus(option.id)}
           >
             {option.label}

@@ -22,7 +22,7 @@ export function ResultProof({ concern }: { readonly concern: ConcernId }) {
     >
       <header className="q7-result-proof__heading">
         <p className="q7-step-label">Registros visuais autorizados</p>
-        <h2 id="q7-result-proof-title">Imagens diferentes, exibidas por inteiro e sem promessa de resultado igual.</h2>
+        <h2 id="q7-result-proof-title">Veja os registros. Considere também o contexto.</h2>
         <p>Estes registros de {concernLabels[concern].toLocaleLowerCase("pt-BR")} foram enviados e autorizados pela marca. Não recebemos identidade, data, duração ou cronologia para atribuir a cada imagem.</p>
       </header>
 

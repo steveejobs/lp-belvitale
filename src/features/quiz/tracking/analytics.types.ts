@@ -9,13 +9,19 @@ export type QuizAnalyticsEvent =
   | "quiz_reward_revealed" | "quiz_coupon_copied" | "quiz_timer_started"
   | "quiz_timer_5m" | "quiz_timer_1m" | "quiz_reward_expired"
   | "quiz_offer_changed" | "quiz_checkout_clicked" | "quiz_checkout_returned"
-  | "quiz_restarted";
+  | "quiz_restarted" | "quiz_abandon" | "result_view" | "sales_page_view" | "cta_click";
 
 export interface QuizAnalyticsProperties {
   readonly sessionId: string;
   readonly campaignId: string;
-  readonly stageId?: QuizStageId;
-  readonly questionId?: QuizQuestionId;
+  readonly stageId?: QuizStageId | (string & {});
+  readonly questionId?: QuizQuestionId | (string & {});
+  readonly funnelId?: "NORMAL" | "MOUNJARO";
+  readonly experienceId?: string;
+  readonly experimentId?: string;
+  readonly experimentMode?: string;
+  readonly funnelSessionId?: string;
+  readonly contentRevision?: string;
   readonly optionId?: string;
   readonly profileId?: NarrativeProfileId;
   readonly concernId?: ConcernId;

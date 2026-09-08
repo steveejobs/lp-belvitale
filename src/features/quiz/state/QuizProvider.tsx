@@ -38,9 +38,9 @@ export function QuizProvider({ children }: { readonly children: ReactNode }) {
     dispatch,
     restart: () => {
       clearQuizSession();
-      clearIssuedReward();
+      try { clearIssuedReward(); } catch { /* storage unavailable */ }
       dispatch({ type: "RESTART", state: createQuizSession() });
-      window.history.replaceState({}, "", "/quiz");
+      window.history.replaceState({}, "", "/quiz" + window.location.search);
     },
   }), [state]);
 

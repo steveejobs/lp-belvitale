@@ -16,8 +16,8 @@ export function QuizHeader({ stageId, answers, canGoBack, onBack, onRestart }: Q
         <button className="q7-icon-button" type="button" onClick={onBack} disabled={!canGoBack} aria-label="Voltar à etapa anterior">
           <span aria-hidden="true">←</span>
         </button>
-        <a className="q7-brand" href="/quiz" aria-label="Belvitale">
-          <img src="/brand/belvitale-wordmark-editorial.webp" width="490" height="75" alt="Belvitale" />
+        <a className="q7-brand" href={"/quiz" + window.location.search} aria-label="Belvitale">
+          <span className="q7-wordmark">Belvitale</span>
         </a>
         <button className="q7-restart" type="button" onClick={onRestart}>Reiniciar</button>
       </div>

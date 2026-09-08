@@ -21,17 +21,17 @@ export const quizProfiles: Readonly<Record<NarrativeProfileId, QuizProfileConten
   "clear-first": {
     id: "clear-first",
     title: "Clareza antes do impulso",
-    recognition: "Você se move melhor quando entende o essencial e reduz o número de dúvidas antes do primeiro gesto.",
-    friction: "Informação demais pode prolongar a comparação até a decisão perder força.",
-    orientation: "Escolha um critério verificável, decida por ele e deixe os detalhes secundários para depois.",
+    recognition: "Suas respostas sugerem que entender a proposta vem antes de comprar. Você quer saber o que está levando para casa e o que pode esperar.",
+    friction: "Ainda faltam respostas antes de decidir?",
+    orientation: "Confira a composição, os limites da evidência e o custo total. A comparação abaixo reúne esses pontos para você escolher sem pressa.",
     center: { actionBias: 42, clarityNeed: 88, recoveryCapacity: 52, structurePreference: 58, proofNeed: 76 },
   },
   "return-ready": {
     id: "return-ready",
     title: "Retomar vale mais que recomeçar",
-    recognition: "Seu padrão não depende de uma sequência perfeita. Ele melhora quando a volta continua pequena e possível.",
+    recognition: "Você marcou respostas ligadas a começar, interromper e tentar novamente. Um cuidado precisa caber também nos dias em que a rotina muda.",
     friction: "Quando a pausa parece exigir um plano novo, a retomada fica maior do que precisa.",
-    orientation: "Defina um gesto de retorno que não compense nem aumente a meta: apenas reabre o caminho.",
+    orientation: "Se decidir incluir um cuidado, escolha um horário possível e siga as orientações do rótulo. Uma pausa não precisa virar uma cobrança sobre você.",
     center: { actionBias: 72, clarityNeed: 42, recoveryCapacity: 92, structurePreference: 48, proofNeed: 40 },
   },
   "proof-led": {
@@ -45,7 +45,7 @@ export const quizProfiles: Readonly<Record<NarrativeProfileId, QuizProfileConten
   "continuity-minded": {
     id: "continuity-minded",
     title: "Estrutura reduz decisões",
-    recognition: "Você protege melhor uma escolha quando o próximo passo já está visível e não precisa ser reaberto toda semana.",
+    recognition: "Você deu importância a ter uma rotina possível. Saber como usar, quanto dura e quando avaliar a continuidade pode ajudar a organizar sua escolha.",
     friction: "Começar sem uma âncora ou sem continuidade definida deixa a rotina vulnerável aos dias cheios.",
     orientation: "Organize um ponto fixo, uma alternativa para dias fora do padrão e uma data simples de revisão.",
     center: { actionBias: 60, clarityNeed: 56, recoveryCapacity: 64, structurePreference: 94, proofNeed: 48 },

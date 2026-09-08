@@ -3,29 +3,22 @@ import { useQuizScrollReveal } from "../motion/useQuizScrollReveal";
 
 const moments = [
   {
-    src: "/lifestyle/quiz-desire-01.webp",
-    width: 992,
-    height: 1056,
-    croppedRatio: "992 / 976",
-    alt: "Cena editorial de uma mulher em um momento de autocuidado",
+    src: "/lifestyle/freedom-01-768.webp",
+    width: 768,
+    height: 960,
+    croppedRatio: "4 / 5",
+    alt: "Cena ilustrativa de uma mulher de camisa clara junto à janela",
   },
   {
-    src: "/lifestyle/quiz-desire-02.webp",
-    width: 960,
-    height: 1088,
-    croppedRatio: "960 / 1000",
-    alt: "Cena editorial sobre confiança corporal e autocuidado",
-  },
-  {
-    src: "/lifestyle/quiz-desire-03.webp",
-    width: 992,
-    height: 1056,
-    croppedRatio: "992 / 976",
-    alt: "Mulher durante um ritual cotidiano de cuidado pessoal",
+    src: "/lifestyle/routine-01.webp",
+    width: 1122,
+    height: 1402,
+    croppedRatio: "4 / 5",
+    alt: "Cena ilustrativa de mãos servindo água em um copo, em casa",
   },
 ] as const;
 
-export function DesireMosaic() {
+export function DesireMosaic({ scene }: { readonly scene?: string | undefined }) {
   const { ref: revealRef, visible } = useQuizScrollReveal<HTMLElement>();
 
   return (
@@ -36,9 +29,9 @@ export function DesireMosaic() {
       aria-labelledby="q7-desire-title"
     >
       <header>
-        <p className="q7-step-label">O que existe por trás desse incômodo</p>
-        <h2 id="q7-desire-title">Talvez você não queira outro corpo. Talvez queira voltar a viver bem no seu.</h2>
-        <p>Vestir uma peça sem trocar três vezes. Sair em uma foto sem procurar defeito. Sentir que o cuidado voltou a caber na sua vida.</p>
+        <p className="q7-step-label">O que você quer viver com mais leveza</p>
+        <h2 id="q7-desire-title">{scene === "easy-photos" ? "Estar na foto. E gostar de guardar esse momento." : scene === "calm-beach" ? "Escolher o biquíni. E aproveitar o dia." : scene === "saved-clothes" ? "Tirar aquela roupa do armário. Porque deu vontade." : "Se cuidar e seguir com a vida. Sem esperar um corpo perfeito."}</h2>
+        <p>Esse desejo importa. O cuidado que você escolher precisa respeitar suas expectativas, seu tempo e o que cabe no seu dia.</p>
       </header>
       <div className="q7-desire__mosaic" aria-label="Cenas ilustrativas de confiança e autocuidado">
         {moments.map((moment, index) => (

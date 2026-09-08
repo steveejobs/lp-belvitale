@@ -33,7 +33,7 @@ export function FormulaSection() {
       ? []
       : getPublishableIngredients(ingredientFacts);
   const [activeId, setActiveId] = useState(
-    () => ingredients[0]?.id ?? null,
+    () => ingredients.find((ingredient) => ingredient.id === "vitamin-c")?.id ?? ingredients[0]?.id ?? null,
   );
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const active =
@@ -141,6 +141,8 @@ export function FormulaSection() {
               </span>
               <p className="formula-focus__amount">{active.amount}</p>
               <h3>{active.name}</h3>
+              {active.id === "vitamin-c" ? <p className="formula-focus__benefit">A vitamina C auxilia na formação do colágeno.</p> : null}
+              {active.id === "zinc" ? <p className="formula-focus__benefit">O zinco é um antioxidante que auxilia na proteção dos danos causados pelos radicais livres.</p> : null}
               <p className="formula-focus__source">{formula.source}</p>
               <span className="formula-focus__capsule" aria-hidden="true" />
             </div>

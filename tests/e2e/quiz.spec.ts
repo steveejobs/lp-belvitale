@@ -28,20 +28,20 @@ async function completeToResult(page: Page) {
   await choose(page, /Quando experimento uma roupa/);
   await choose(page, /Depois eu resolvo/);
   await choose(page, /Na hora de me vestir/);
-  await waitForHeading(page, /Até aqui, percebemos uma coisa interessante/);
-  await choose(page, /^Continuar/);
+  await waitForHeading(page, /Às vezes, a escolha da roupa/);
+  await choose(page, /Olhar para o meu dia a dia/);
   await choose(page, /Troco de roupa/);
   await choose(page, /Algumas vezes/);
   await choose(page, /Não conseguir manter uma rotina/);
   await choose(page, /Prometi a mim mesma/);
-  await waitForHeading(page, /Talvez o problema nunca tenha sido falta de vontade/);
-  await choose(page, /Faz sentido/);
+  await waitForHeading(page, /A celulite não mede/);
+  await choose(page, /Considerar o que já tentei/);
   await choose(page, /Começo animada e paro depois/);
   await choose(page, /Falta de tempo/);
   await choose(page, /Quero algo simples/);
   await choose(page, /Usaria aquela roupa guardada/);
   await choose(page, /Quero criar uma rotina/);
-  await waitForHeading(page, /Sua dificuldade parece estar menos ligada à disciplina/);
+  await waitForHeading(page, /Uma rotina possível começa/);
   await choose(page, /Ver meu resultado/);
   await waitForHeading(page, /Clareza antes|Retomar vale|Confiança move|Estrutura reduz/);
 }
@@ -155,16 +155,18 @@ test.describe("experiência mobile", () => {
 
   test("mantém o progresso visual sem exibir números de etapas", async ({ page }) => {
     const visibleStageCount = /\b\d+\s*(?:de|\/)\s*\d+\b/i;
+    // O CNPJ do rodapé contém números separados por barra; não é contador de etapa.
+    const journey = page.locator('.q7-header, #conteudo-quiz');
 
-    await expect(page.locator("body")).not.toContainText(visibleStageCount);
+    for (const region of await journey.all()) await expect(region).not.toContainText(visibleStageCount);
     await expect(page.locator(".q7-opening__visual > img")).toHaveAttribute("src", "/lifestyle/quiz-hero-confidence.jpg");
     await expect(page.getByText("sem promessa milagrosa", { exact: true })).toBeVisible();
     await choose(page, /Começar agora|Descobrir meu caminho/);
     await expect(page.getByRole("heading", { name: /Como posso te chamar/ })).toBeVisible();
-    await expect(page.locator("body")).not.toContainText(visibleStageCount);
+    for (const region of await journey.all()) await expect(region).not.toContainText(visibleStageCount);
     await choose(page, /Prefiro continuar sem informar/);
     await expect(page.getByRole("heading", { name: /Quando você percebe mais a celulite/ })).toBeVisible();
-    await expect(page.locator("body")).not.toContainText(visibleStageCount);
+    for (const region of await journey.all()) await expect(region).not.toContainText(visibleStageCount);
   });
 
   test("conclui a conversa, mostra resultado sustentado e alcança checkout", async ({ page }) => {
@@ -185,14 +187,14 @@ test.describe("experiência mobile", () => {
     }))).toBe(true);
     await page.getByRole("button", { name: /Ver todos os 9 registros/ }).click();
     await expect(proofMosaic.locator("img")).toHaveCount(9);
-    await choose(page, /Comparar 30 e 90 dias/);
+    await choose(page, /Comparar opções e preços/);
     await waitForHeading(page, /Nossa sugestão para quem busca/);
     await expect(page.getByRole("heading", { name: "90 dias · 3 frascos", exact: true })).toBeVisible();
     await expect(page.getByText("180", { exact: true })).toBeVisible();
     await expect(page.getByText("R$ 169,90").first()).toBeVisible();
     await expect(page.getByText("R$ 591,00")).toHaveCount(0);
     await expect(page.getByRole("heading", { name: /30 ou 90 dias/ })).toBeVisible();
-    await expect(page.getByRole("link", { name: /Quero construir 90 dias/ }).first()).toHaveAttribute("href", /1E8NNCGJW9/);
+    await expect(page.getByRole("link", { name: /Comprar 3 frascos/ }).first()).toHaveAttribute("href", /1E8NNCGJW9/);
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     const footerFit = await page.evaluate(() => {
       const footerContent = document.querySelector(".q7-footer__inner")?.getBoundingClientRect();
@@ -213,12 +215,12 @@ test.describe("experiência mobile", () => {
     await choose(page, /Quando me olho no espelho/);
     await choose(page, /Já tentei tanta coisa/);
     await choose(page, /Em fotos/);
-    await choose(page, /^Continuar/);
+    await choose(page, /Olhar para o meu dia a dia/);
     await choose(page, /Tento ignorar/);
     await choose(page, /Algumas vezes/);
     await choose(page, /Sentir que nada funciona/);
     await choose(page, /Uma roupa deixou de servir/);
-    await choose(page, /Faz sentido/);
+    await choose(page, /Considerar o que já tentei/);
     await choose(page, /Já investi em produtos/);
     await choose(page, /Não vejo resultados rápidos/);
     await choose(page, /Tenho medo de criar expectativa/);
@@ -233,10 +235,10 @@ test.describe("experiência mobile", () => {
         eventWindow.__quizEvents?.push((event as CustomEvent<{ event?: string; properties?: Record<string, unknown> }>).detail);
       });
     });
-    await choose(page, /Comparar 30 e 90 dias/);
+    await choose(page, /Comparar opções e preços/);
     await expect(page.getByRole("heading", { name: "90 dias · 3 frascos", exact: true })).toBeVisible();
     await expect(page.getByText("R$ 169,90").first()).toBeVisible();
-    await expect(page.getByRole("link", { name: /Quero construir 90 dias/ }).first()).toHaveAttribute("href", /1E8NNCGJW9/);
+    await expect(page.getByRole("link", { name: /Comprar 3 frascos/ }).first()).toHaveAttribute("href", /1E8NNCGJW9/);
     await expect(page.locator(".q7-comparison__card")).toHaveCount(2);
     await expect(page.locator(".q7-offer")).toHaveAttribute("data-recommended-offer", "three-months");
     await page.locator(".q7-comparison__card").first().click();
@@ -336,6 +338,8 @@ test.describe("experimento A/B do quiz", () => {
     await expect(page.locator("[data-experiment-variant='a']")).toBeVisible();
     await expect(page.getByRole("button", { name: "Começar agora" })).toHaveAttribute("data-ab-variant", "a");
 
+    // A second QA condition requires an explicitly fresh assignment.
+    await page.evaluate(() => localStorage.clear());
     await page.goto("/quiz?ab=b");
     await expect(page.locator("[data-experiment-variant='b']")).toBeVisible();
     await expect(page.getByRole("button", { name: "Descobrir meu caminho" })).toHaveAttribute("data-ab-variant", "b");
@@ -358,7 +362,7 @@ test.describe("experimento A/B do quiz", () => {
 
     await page.getByRole("button", { name: "Carregar demonstração" }).click();
     await expect(page.locator(".ab-dashboard__metrics article").first()).toContainText("240");
-    await expect(page.getByRole("heading", { name: /Variante B lidera nos cliques/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Demonstração — não indica uma vencedora/ })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1280);
   });
 });

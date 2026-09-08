@@ -39,7 +39,7 @@ export function FaqSection() {
       if (next.has(id)) {
         next.delete(id);
         if (window.location.hash === `#${id}`) {
-          window.history.replaceState(null, "", window.location.pathname);
+          window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
         }
       } else {
         next.add(id);

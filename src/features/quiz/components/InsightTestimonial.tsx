@@ -11,8 +11,10 @@ export function InsightTestimonial({ proof }: { readonly proof: InsightTestimoni
   }, [open]);
 
   return (
-    <aside className="q7-insight-proof" aria-label="Depoimento de cliente">
-      <div className="q7-insight-proof__eyebrow"><b>Relato autorizado</b><small>experiência individual</small></div>
+    <aside className="q7-insight-proof" aria-label="Conversa fornecida pela marca">
+      <div className="q7-insight-proof__eyebrow"><b>Na conversa com a marca</b></div>
+      {proof.excerpt === undefined ? null : <blockquote>“{proof.excerpt}”</blockquote>}
+      <p className="q7-insight-proof__context">Trecho do material fornecido pela Belvitale. Experiência individual, sem garantia de resultado.</p>
       <button type="button" onClick={() => setOpen(true)} aria-label="Abrir depoimento completo">
         <img
           src={proof.src}
@@ -29,11 +31,12 @@ export function InsightTestimonial({ proof }: { readonly proof: InsightTestimoni
       <dialog
         ref={dialogRef}
         className="q7-insight-proof__dialog"
+        aria-label="Conversa completa fornecida pela Belvitale"
         onClose={() => setOpen(false)}
         onClick={(event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }}
       >
         <button type="button" onClick={() => dialogRef.current?.close()} aria-label="Fechar depoimento">×</button>
-        <img src={proof.src} width={proof.width} height={proof.height} alt="Conversa completa enviada por uma cliente à Belvitale" />
+        {open ? <img src={proof.src} width={proof.width} height={proof.height} alt="Conversa completa enviada por uma cliente à Belvitale" /> : null}
         <p>Relato individual fornecido pela marca. Experiências variam e não representam garantia de resultado.</p>
       </dialog>
     </aside>

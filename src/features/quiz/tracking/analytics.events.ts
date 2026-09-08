@@ -2,6 +2,7 @@ import { quizPromotion } from "../campaign/campaign.config";
 import { getQuizExperimentAssignment } from "../experiment/quiz.experiment";
 import type { QuizAnalyticsEvent, QuizAnalyticsProperties, QuizTrackedEvent } from "./analytics.types";
 import { dispatchToAnalyticsAdapters } from "./analytics.adapter";
+import { funnelEventProperties, readFunnelAttribution } from "../../../analytics/funnelAttribution";
 
 const emitted = new Set<string>();
 
@@ -14,7 +15,8 @@ function safeAttributionValue(value: string | null): value is string {
 
 function attribution(): NonNullable<QuizAnalyticsProperties["utm"]> {
   if (typeof window === "undefined") return {};
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(readFunnelAttribution()?.utm ?? {});
+  new URLSearchParams(window.location.search).forEach((value, key) => params.set(key, value));
   const entries = [
     ["source", params.get("utm_source")],
     ["medium", params.get("utm_medium")],
@@ -35,12 +37,14 @@ export function trackQuizEvent(
   const key = dedupeKey === undefined ? null : event + ":" + properties.sessionId + ":" + dedupeKey;
   if (key !== null && emitted.has(key)) return null;
   if (key !== null) emitted.add(key);
+  const context = readFunnelAttribution();
   const tracked: QuizTrackedEvent = {
     event,
     properties: {
       ...properties,
+      ...funnelEventProperties(context),
       campaignId: quizPromotion.id,
-      experimentVariant: getQuizExperimentAssignment().variant,
+      experimentVariant: context?.variant ?? getQuizExperimentAssignment().variant,
       deviceClass: typeof window !== "undefined" && window.matchMedia("(max-width: 47.99rem)").matches ? "mobile" : "desktop",
       utm: attribution(),
     },

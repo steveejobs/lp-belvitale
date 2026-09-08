@@ -18,6 +18,7 @@ export interface InsightTestimonialProof {
   readonly width: number;
   readonly height: number;
   readonly position: string;
+  readonly excerpt?: string;
 }
 
 export const concernCopy: Readonly<Record<ConcernId, Readonly<{
@@ -50,25 +51,24 @@ function selectedLabel(answers: QuizAnswers, questionId: QuizQuestionId, fallbac
 }
 
 const proofs = {
-  clothes: { src: "/testimonials/conversa-41.webp", width: 720, height: 1563, position: "center 20%" },
-  confidence: { src: "/testimonials/conversa-14.webp", width: 720, height: 1405, position: "center 18%" },
-  experience: { src: "/testimonials/conversa-01.webp", width: 720, height: 658, position: "center top" },
-  continuity: { src: "/testimonials/conversa-28.webp", width: 720, height: 755, position: "center top" },
-  comparison: { src: "/testimonials/conversa-31.webp", width: 720, height: 768, position: "center top" },
-  progress: { src: "/testimonials/conversa-07.webp", width: 720, height: 1279, position: "center 16%" },
+  clothes: { src: "/testimonials/conversa-41.webp", width: 720, height: 1563, position: "center 20%", excerpt: "Olha como já tô me sentindo melhor com meu corpo" },
+  confidence: { src: "/testimonials/conversa-14.webp", width: 720, height: 1405, position: "center 18%", excerpt: "Tô me sentindo muito mais confiante pra usar meus shorts e biquínis agora." },
+  experience: { src: "/testimonials/conversa-01.webp", width: 720, height: 658, position: "center top", excerpt: "Eu tava bem insegura, mas agora até me sinto melhor pra usar roupas mais justas." },
+  continuity: { src: "/testimonials/conversa-28.webp", width: 720, height: 755, position: "center top", excerpt: "Olha a diferença, não está 100% ainda, mas já dá pra ver bem!" },
+  comparison: { src: "/testimonials/conversa-31.webp", width: 720, height: 768, position: "center top", excerpt: "Obrigada! Vocês são muito atenciosos. Isso faz toda a diferença!" },
 } as const satisfies Readonly<Record<string, InsightTestimonialProof>>;
 
 function firstProof(answers: QuizAnswers): InsightTestimonialProof {
   if (answers["situation-weight"] === "beach") return proofs.confidence;
   if (answers["situation-weight"] === "comparison") return proofs.comparison;
-  if (answers["situation-weight"] === "photos") return proofs.progress;
+  if (answers["situation-weight"] === "photos") return proofs.experience;
   return proofs.clothes;
 }
 
 function secondProof(answers: QuizAnswers): InsightTestimonialProof {
   if (answers["deepest-impact"] === "confidence") return proofs.confidence;
   if (answers["deepest-impact"] === "routine") return proofs.continuity;
-  if (answers["deepest-impact"] === "nothing-works") return proofs.progress;
+  if (answers["deepest-impact"] === "nothing-works") return proofs.comparison;
   return proofs.experience;
 }
 
@@ -82,12 +82,12 @@ function thirdProof(answers: QuizAnswers): InsightTestimonialProof {
 function firstInsight(answers: QuizAnswers): PersonalizedInsight {
   return {
     sequence: 1,
-    eyebrow: "Uma observação importante",
-    title: "Até aqui, percebemos uma coisa interessante.",
-    explanation: "Suas respostas mostram que o incômodo com a celulite não aparece o tempo todo. Ele costuma surgir em momentos específicos. É assim que, quase sem perceber, a insegurança pode influenciar pequenas escolhas do dia a dia.",
-    cta: "Continuar",
-    note: "Nenhum diagnóstico milagroso. Nenhuma IA. Apenas uma observação humana.",
-    reflection: `Você marcou “${selectedLabel(answers, "perception", "quando a celulite aparece")}” e “${selectedLabel(answers, "situation-weight", "quando isso pesa mais")}”. O padrão começa nesses momentos.`,
+    eyebrow: "O incômodo tem um contexto",
+    title: answers["situation-weight"] === "beach" ? "O biquíni deveria ser uma escolha simples." : answers["situation-weight"] === "photos" ? "Uma foto pode chamar mais atenção para a celulite do que você gostaria." : answers["situation-weight"] === "comparison" ? "A comparação nem sempre mostra a história inteira." : "Às vezes, a escolha da roupa demora mais do que você gostaria.",
+    explanation: "Você apontou momentos em que a celulite chama atenção. Isso ajuda a entender o que importa para você, mas não mede a intensidade da celulite nem define como deveria se sentir com seu corpo.",
+    cta: "Olhar para o meu dia a dia",
+    note: "Você pode querer cuidar da aparência da pele sem precisar gostar menos de si.",
+    reflection: `Você escolheu: “${selectedLabel(answers, "situation-weight", "Na hora de me vestir.")}”`,
     signals: selectedLabels(answers, ["perception", "first-thought", "situation-weight"]),
     testimonial: firstProof(answers),
   };
@@ -96,10 +96,11 @@ function firstInsight(answers: QuizAnswers): PersonalizedInsight {
 function secondInsight(answers: QuizAnswers): PersonalizedInsight {
   return {
     sequence: 2,
-    eyebrow: "Uma nova perspectiva",
-    title: "Talvez o problema nunca tenha sido falta de vontade.",
-    explanation: "Até aqui, suas respostas mostram um padrão comum. Você parece saber que gostaria de mudar. O difícil não é decidir. É conseguir manter a decisão quando a rotina volta ao normal.",
-    cta: "Faz sentido",
+    eyebrow: "Uma distinção que ajuda",
+    title: answers.avoidance === "never" || answers.avoidance === "rarely" ? "Cuidar da pele pode ser uma preferência, sem virar uma cobrança." : answers["deepest-impact"] === "nothing-works" ? "Um cuidado que não funcionou não prova falta de esforço." : "A celulite não mede o quanto você se cuida.",
+    explanation: answers["deepest-impact"] === "routine" ? "Você destacou a rotina. Simplificar um hábito pode ajudar a mantê-lo, mas constância e eficácia são coisas diferentes. Vale entender o que um produto pode oferecer antes de assumir um compromisso." : "Celulite envolve a estrutura da pele e dos tecidos abaixo dela. Pode aparecer mesmo em mulheres que treinam. Alimentação, exercício, cremes e procedimentos têm papéis diferentes; nenhuma dessas escolhas deve ser tratada como uma prova de disciplina.",
+    cta: "Considerar o que já tentei",
+    note: "Na próxima etapa, seu histórico ajuda a definir o que precisa ficar claro antes de uma compra.",
     reflection: `Você disse “${selectedLabel(answers, "reaction", "tento seguir")}” e apontou “${selectedLabel(answers, "deepest-impact", "o impacto na rotina")}” como o que mais incomoda.`,
     signals: selectedLabels(answers, ["reaction", "deepest-impact", "restart-trigger"]),
     testimonial: secondProof(answers),
@@ -109,9 +110,9 @@ function secondInsight(answers: QuizAnswers): PersonalizedInsight {
 function thirdInsight(answers: QuizAnswers): PersonalizedInsight {
   return {
     sequence: 3,
-    eyebrow: "O padrão por trás do recomeço",
-    title: "Sua dificuldade parece estar menos ligada à disciplina do que à forma como você tenta recomeçar.",
-    explanation: "Muitas mulheres acreditam que precisam de mais força de vontade. Mas, na prática, elas precisam de uma rotina simples o bastante para ser mantida até nos dias corridos. É exatamente por isso que algumas estratégias duram poucos dias, enquanto outras conseguem fazer parte da vida.",
+    eyebrow: "Um critério para a próxima escolha",
+    title: answers.history === "disappointed" ? "Depois de uma decepção, pedir mais clareza faz sentido." : answers["decision-weight"] === "money" ? "O próximo cuidado também precisa caber no seu orçamento." : "Uma rotina possível começa com expectativas claras.",
+    explanation: answers.history === "disappointed" || answers["decision-weight"] === "expectation" ? "Você não precisa trocar sua dúvida por entusiasmo. Confira a composição, o que foi estudado e o que ainda não foi. Um relato pode ajudar a conhecer uma experiência, mas não prevê o seu resultado." : "Antes de escolher, compare o uso, a quantidade por embalagem e o custo total. Duração do frasco não é prazo para mudança na pele. Seu resultado vai reunir essas informações para você decidir com calma.",
     cta: "Ver meu resultado",
     reflection: `Você contou “${selectedLabel(answers, "dropoff", "a rotina interrompe")}”. E também escolheu “${selectedLabel(answers, "future-goal", "quero parar de recomeçar")}”. É entre esses dois pontos que sua resposta aparece.`,
     signals: selectedLabels(answers, ["history", "dropoff", "future-goal"]),

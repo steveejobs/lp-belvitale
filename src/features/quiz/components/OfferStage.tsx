@@ -45,7 +45,7 @@ export function OfferStage({ sessionId, recommendation, selectedOfferId, onSelec
   }, [recommendation.offerId, recommendationOverride, selectedOfferId, sessionId]);
 
   const checkout = () => {
-    sessionStorage.setItem("belvitale.quiz.checkout-return", new Date().toISOString());
+    try { sessionStorage.setItem("belvitale.quiz.checkout-return", new Date().toISOString()); } catch { /* purchase navigation still works */ }
     trackQuizEvent("quiz_checkout_clicked", {
       sessionId,
       recommendedOfferId: recommendation.offerId,

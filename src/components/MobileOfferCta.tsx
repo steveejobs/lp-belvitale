@@ -35,7 +35,7 @@ export function MobileOfferCta() {
 
     const protectedSurfaces = Array.from(
       document.querySelectorAll<HTMLElement>(
-        "#celuclin, #composicao, #resultados, #rotulo, #faq",
+        "#liberdade, .skin-context, #celuclin, #resultados, #descobrir, #rotulo, #faq",
       ),
     );
     const visibleProtectedSurfaces = new Set<Element>();
@@ -98,7 +98,7 @@ export function MobileOfferCta() {
           : -1
       }
     >
-      Ver opções
+      Ver kits e preços
     </a>
   );
 }

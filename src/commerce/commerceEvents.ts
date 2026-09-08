@@ -1,3 +1,4 @@
+import { funnelEventProperties } from "../analytics/funnelAttribution";
 export type CommerceEvent =
   | "offer_view"
   | "offer_select"
@@ -28,7 +29,7 @@ export function recordCommerceEvent(
   event: CommerceEvent,
   payload: CommerceEventPayload,
 ): void {
-  const localEvent: LocalCommerceEvent = { event, payload };
+  const localEvent: LocalCommerceEvent = { event, payload: { ...payload, ...funnelEventProperties() } };
   listeners.forEach((listener) => listener(localEvent));
 
   if (typeof window !== "undefined") {
